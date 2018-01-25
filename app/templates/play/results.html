@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{super()}}Resuts Page{% endblock %}
+
+{% block page_content %}
+<h1>Drawing REF: {{bom.ref}}</h1>
+<p>A saw error of {{ bom.error }}mm is allowed for.</p>
+
+{% for size in bom.cut_beams %}
+	<h2>Cut list for {{ size }} beams.</h2>
+	{% for beam in bom.cut_beams[size]['cut'] %}
+		<h3>Beam length: {{ beam }}mm</h3>
+		{% for length in bom.cut_beams[size]['cut'][beam] %}
+
+			{% include'play/_beam_table.html' %}
+		
+
+
+		{% endfor %}
+
+	{% endfor %}
+	{% if bom.cut_beams[size]['left']|length > 0 %}
+	<h3>Part not cut.</h3>
+	{% for beam in bom.cut_beams[size]['left'] %}
+	<p>Item No: {{beam['ITEM NO.']}}, Length: {{beam['LENGTH']}}, QTY: {{beam['QTY.']}} </p>
+	{% endfor %}
+	{% endif %}
+
+{% endfor %}
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

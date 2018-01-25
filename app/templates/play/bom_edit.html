@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{super()}}Form page{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script type="text/javascript">
+    function rename(name, t){
+
+        var output = name+t+n;
+
+        n++;
+        return output;
+
+</script>
+{% endblock %}
+{% block page_content %}
+<form method="POST">
+    {{ form.csrf_token }}
+    <p>Add beam length and quantity below. All measurements should be in millimeters.</p>
+    <p><strong>Due to lack of understanding with javascript please add the values in the following format. "Beam length" x "QTY"</strong>An example of this would be <strong>6100x5</strong>. This say the beam is 6100 long and there are 5 of them.</p>
+
+    {% for key in keys %}
+        {% include 'play/_repeater.html' %}
+
+    {% endfor %}
+
+
+
+    {{form.submit }}
+
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+$(function(){
+
+    $(document).on('focus', 'div.form-group-options div.input-group-option:last-child input', function(){
+
+        var sInputGroupHtml = $(this).parent().html();
+        var sInputGroupClasses = $(this).parent().attr('class');
+        $(this).parent().parent().append('<div class="'+sInputGroupClasses+'">'+sInputGroupHtml+'</div>');
+
+    });
+
+    $(document).on('click', 'div.form-group-options .input-group-addon-remove', function(){
+
+        $(this).parent().remove();
+
+    });
+
+});
+
+var n = 1;
+
+function rename(name, t){
+
+    var output = name+t+n;
+
+    n++;
+    return output;
+
+}
+
+    </script>
+{% endblock %}
