@@ -1,6 +1,7 @@
-from flask import render_template, redirect, url_for, abort, flash, request,\
-    current_app, make_response, session
+from flask import render_template, redirect, url_for, abort, flash, request, \
+    current_app, make_response, session, config
 
+from config import Config
 from . import main
 from .forms import CSVForm, BasicForm
 from werkzeug.utils import secure_filename
@@ -32,7 +33,8 @@ def bom_start():
         f = form.csv.data
         session['ref'] = form.name.data
         filename = secure_filename(f.filename)
-        name = os.path.join('/home/boomatang/', 'Public', filename)
+        # name = os.path.join(Config.UPLOADS, filename)
+        name = os.path.join(os.environ.get('CLUE_UPLOADS'), filename)
         f.save(name)
         session['filename'] = str(name)
         return redirect(url_for('.bom_edit'))

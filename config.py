@@ -3,7 +3,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    SECRET_KEY = os.environ.get('CLUE_SECRET_KEY') or 'hard to guess string'
     SSL_DISABLE = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -13,13 +13,15 @@ class Config:
     MAIL_USE_TLS = False
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'System Server <jimfity@gmail.com>'
-    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
-    FLASKY_POSTS_PER_PAGE = 21
-    FLASKY_FOLLOWERS_PER_PAGE = 50
-    FLASKY_COMMENTS_PER_PAGE = 30
-    FLASKY_SLOW_DB_QUERY_TIME=0.5
+    MAIL_SUBJECT_PREFIX = '[Flasky]'
+    MAIL_SENDER = 'System Server <jimfity@gmail.com>'
+    ADMIN = os.environ.get('CLUE_ADMIN')
+    POSTS_PER_PAGE = 21
+    FOLLOWERS_PER_PAGE = 50
+    COMMENTS_PER_PAGE = 30
+    SLOW_DB_QUERY_TIME = 0.5
+    UPLOADS = os.environ.get('CLUE_UPLOADS')
+
 
     @staticmethod
     def init_app(app):

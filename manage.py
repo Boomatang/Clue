@@ -20,7 +20,7 @@ from flask_script import Manager, Shell
 
 
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = create_app(os.getenv('CLUE_CONFIG') or 'default')
 manager = Manager(app)
 
 
@@ -37,7 +37,7 @@ def test(coverage=False):
         os.environ['FLASK_COVERAGE'] = '1'
         os.execvp(sys.executable, [sys.executable] + sys.argv)
     import unittest
-    tests = unittest.TestLoader().discover('tests')
+    tests = unittest.TestLoader().discover('tests')/home/boomatang
     unittest.TextTestRunner(verbosity=2).run(tests)
     if COV:
         COV.stop()
