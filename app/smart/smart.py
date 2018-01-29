@@ -130,8 +130,9 @@ class BOM:
                         else:
                             run = False
                 beam_usage = (i - beam_length)
+                waste = i - beam_usage
                 if len(cut_beam) > 0:
-                    self.cut_beams[beam]['cut'][i].append((cut_beam, beam_usage))
+                    self.cut_beams[beam]['cut'][i].append((cut_beam, beam_usage, waste))
                 t += 1
 
         for part in work:

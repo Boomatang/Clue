@@ -6,7 +6,7 @@
 
 {% block page_content %}
 <h1>Drawing REF: {{bom.ref}}</h1>
-<p>A saw error of {{ bom.error }}mm is allowed for.</p>
+<p>Saw margin : {{ bom.error }}mm.</p>
 
 {% for size in bom.cut_beams %}
 	<h2>Cut list for {{ size }} beams.</h2>

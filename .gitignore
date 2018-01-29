@@ -184,6 +184,6 @@ ENV/
 
 # My Folders
 .idea
-.sqlite
-.pyc
-.conf
+*.sqlite
+*.pyc
+*.conf

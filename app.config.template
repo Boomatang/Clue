@@ -5,22 +5,22 @@
 # You should never enter private variable into source control.
 
 # Config for email.
-# export CLUE_MAIL_SERVER = 'MAIL SERVER SAMPLE'
-# export CLUE_MAIL_PORT = 25
-# export CLUE_MAIL_USE_TLS = True
-# export CLUE_MAIL_USERNAME = 'SAMLPE@SMAPLE.CO'
-# export CLUE_MAIL_PASSWORD = 'PASSWORD'
-# export CLUE_MAIL_SENDER = 'SAMPLE@SAMPLE.COM'
+# export CLUE_MAIL_SERVER='MAIL SERVER SAMPLE'
+# export CLUE_MAIL_PORT=25
+# export CLUE_MAIL_USE_TLS=True
+# export CLUE_MAIL_USERNAME='SAMLPE@SMAPLE.CO'
+# export CLUE_MAIL_PASSWORD='PASSWORD'
+# export CLUE_MAIL_SENDER='SAMPLE@SAMPLE.COM'
 #
 #
 # Site required values
-# export CLUE_SECRET_KEY = 'HARD TO GUESS STRING'
-# export CLUE_ADMIN = 'Admin <admin@email.com>'
+# export CLUE_SECRET_KEY='HARD TO GUESS STRING'
+# export CLUE_ADMIN='Admin <admin@email.com>'
 
 # Path to where files are uploaded to.
- export CLUE_UPLOADS = '/PATH/TO/UPLOADS/'
+ export CLUE_UPLOADS='/PATH/TO/UPLOADS/'
 
 # Site config state.
 # This config state has the following possible values
 # 'development' , 'testing' , 'production' , 'heroku' , 'unix'
- export CLUE_CONFIG = 'development'
+ export CLUE_CONFIG='development'
