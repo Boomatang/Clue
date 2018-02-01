@@ -5,16 +5,17 @@
 {% block title %}{{super()}}Bar Spacer{% endblock %}
 
 {% block page_content %}
-<form method="POST" enctype="multipart/form-data">
+<form  method="POST" enctype="multipart/form-data">
     {{ wtf.quick_form(form)  }}
 </form>
 
 {% if bar%}
-<hr>
+
+	
+<div >
+	<hr>
 
 <h1>Your results</h1>
-
-<div>
 	<p>
 		Edge to center : <strong>{{ bar.real_edge_to_center }}</strong><br>
 		Center to center : <strong>{{ bar.real_center_to_center }}</strong><br>

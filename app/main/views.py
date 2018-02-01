@@ -37,6 +37,14 @@ def bom_start():
         name = os.path.join(os.environ.get('CLUE_UPLOADS'), filename)
         f.save(name)
         session['filename'] = str(name)
+
+        if isFloat(form.saw.data):
+            session['saw'] = float(form.saw.data)
+        else:
+            session['saw'] = float(form.saw.default)
+            flash(f'The entered saw margin value was not a number. '
+                  f'The default value of {form.saw.default} will be used.')
+
         return redirect(url_for('.bom_edit'))
 
     return render_template('/play/bom_start.html', form=form)
@@ -71,6 +79,7 @@ def result():
 
     bom = BOM(session['filename'], ref=session['ref'])
     items = session['values']
+    bom.set_saw_error_value(session['saw'])
     for item in items:
         bom.update_stock(item)
     bom.create_results()

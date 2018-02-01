@@ -130,12 +130,15 @@ class BOM:
                         else:
                             run = False
                 beam_usage = (i - beam_length)
-                waste = i - beam_usage
+                waste = i - beam_usage + self.error
                 if len(cut_beam) > 0:
-                    self.cut_beams[beam]['cut'][i].append((cut_beam, beam_usage, waste))
+                    self.cut_beams[beam]['cut'][i].append((cut_beam, beam_usage, int(waste)))
                 t += 1
 
         for part in work:
             if part[QTY] > 0:
                 self.cut_beams[beam]['left'].append(part)
+
+    def set_saw_error_value(self, value):
+        self.error = value
 
