@@ -1,7 +1,5 @@
 from flask import render_template, redirect, url_for, abort, flash, request, \
     current_app, make_response, session, config
-
-from config import Config
 from . import main
 from .forms import CSVForm, BasicForm, BarSpacer
 from werkzeug.utils import secure_filename
@@ -31,10 +29,12 @@ def bom_start():
 
     if form.validate_on_submit():
         f = form.csv.data
-        session['ref'] = form.name.data
+
+
         filename = secure_filename(f.filename)
         # name = os.path.join(Config.UPLOADS, filename)
         name = os.path.join(os.environ.get('CLUE_UPLOADS'), filename)
+
         f.save(name)
         session['filename'] = str(name)
 
@@ -44,6 +44,14 @@ def bom_start():
             session['saw'] = float(form.saw.default)
             flash(f'The entered saw margin value was not a number. '
                   f'The default value of {form.saw.default} will be used.')
+        if form.name.data:
+            session['ref'] = form.name.data
+        else:
+            base_name = os.path.basename(name)
+
+            temp = os.path.splitext(base_name)[0]
+            session['ref'] = temp
+            flash(f'No reference number was given. Using file file name as reference : {temp}.')
 
         return redirect(url_for('.bom_edit'))
 
