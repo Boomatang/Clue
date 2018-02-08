@@ -6,16 +6,20 @@ LENGTH = 'LENGTH'
 QTY = 'QTY.'
 ITEM = 'ITEM NO.'
 
+TOTAL = 'total'
+
 
 class BOM:
 
     def __init__(self, file_name, ref=None):
+        self.massages = []
         self.ref = ref
         self.data = []
         self.beam_data = {}
         self.stock = {}
         self.cut_beams = {}
         self.error = 50
+        self.total_qty = 1
         self.read_csv(file_name)
         self.setup()
 
@@ -29,7 +33,6 @@ class BOM:
         self._get_beam_types()
         self._sort_data()
         self._required_stock()
-
 
     def keys(self):
         return self.beam_data.keys()
@@ -48,10 +51,30 @@ class BOM:
     def _sort_data(self):
         for item in self.data:
             if item[DESC] in self.beam_data.keys():
+
+                self._has_total(item)
+
                 length = int(item[LENGTH])
-                qty = int(item[QTY])
+                qty = int(item[QTY]) * self.total_qty
                 mark = item[ITEM]
                 self.beam_data[item[DESC]].append({LENGTH: length, QTY: qty, ITEM: mark})
+
+    def _has_total(self, item):
+        first = True
+
+        if self.total_qty > 1:
+            first = False
+
+        for key in item.keys():
+            if key.lower() == TOTAL:
+                temp = int(item[key])
+                qty = int(item[QTY])
+                self.total_qty = temp / qty
+
+                if self.total_qty > 1 and first:
+                    first = False
+                    self.massages.append((f'Looks like the total unit quantity is more that one. '
+                                          f'The total unit quantity been used is {int(self.total_qty)}', 'General'))
 
     def _add_beam_to_stock(self, beam):
         stock = beam[0]

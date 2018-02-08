@@ -65,6 +65,7 @@ def bom_edit():
     bom = BOM(session['filename'])
     keys = bom.keys()
     session_values = []
+    flash_massages(bom.massages)
 
     if form.is_submitted():
         for item in request.values.items(multi=True):
@@ -76,7 +77,6 @@ def bom_edit():
         # bom.create_results()
 
         session['values'] = session_values
-
         return redirect(url_for('.result'))
 
     return render_template('/play/bom_edit.html', keys=keys, form=form)
@@ -91,6 +91,7 @@ def result():
     for item in items:
         bom.update_stock(item)
     bom.create_results()
+    flash_massages(bom.massages)
     session.clear()
 
     return render_template('/play/results.html', bom=bom)
@@ -127,3 +128,12 @@ def isFloat(num):
         return True
     except ValueError:
         return False
+
+
+def flash_massages(massage_list):
+    for massage in massage_list:
+        if massage[1] is None:
+            status = 'General'
+        else:
+            status = massage[1]
+        flash(massage[0], status)
