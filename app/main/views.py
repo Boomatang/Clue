@@ -1,10 +1,11 @@
 from flask import render_template, redirect, url_for, abort, flash, request, \
-    current_app, make_response, session, config
+    current_app, session
 from . import main
 from .forms import CSVForm, BasicForm, BarSpacer
 from werkzeug.utils import secure_filename
 import os
 from ..smart import BOM, BarSpacingCalculator
+from ..utils import file_ext_checker, isFloat
 
 
 @main.route('/shutdown')
@@ -30,12 +31,15 @@ def bom_start():
     if form.validate_on_submit():
         f = form.csv.data
 
-
         filename = secure_filename(f.filename)
-        # name = os.path.join(Config.UPLOADS, filename)
         name = os.path.join(os.environ.get('CLUE_UPLOADS'), filename)
 
         f.save(name)
+
+        if not file_ext_checker(str(name)):
+            flash('File type was not a CSV file type.', 'Error')
+            return redirect(url_for('.bom_start'))
+
         session['filename'] = str(name)
 
         if isFloat(form.saw.data):
@@ -61,8 +65,11 @@ def bom_start():
 @main.route('/form2', methods=['POST', 'GET'])
 def bom_edit():
     form = BasicForm()
+    try:
+        bom = BOM(session['filename'])
+    except KeyError:
+        return redirect(url_for('.bom_start'))
 
-    bom = BOM(session['filename'])
     keys = bom.keys()
     session_values = []
     flash_massages(bom.massages)
@@ -84,8 +91,12 @@ def bom_edit():
 
 @main.route('/result')
 def result():
+    try:
+        bom = BOM(session['filename'], ref=session['ref'])
+    except KeyError:
 
-    bom = BOM(session['filename'], ref=session['ref'])
+        return redirect(url_for('.bom_start'))
+
     items = session['values']
     bom.set_saw_error_value(session['saw'])
     for item in items:
@@ -120,14 +131,6 @@ def bar_spacer():
         return render_template('/utls/bar-spacer.html', form=form, bar=bar)
 
     return render_template('/utls/bar-spacer.html', form=form, bar=bar)
-
-
-def isFloat(num):
-    try:
-        float(str(num))
-        return True
-    except ValueError:
-        return False
 
 
 def flash_massages(massage_list):

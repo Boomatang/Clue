@@ -1,5 +1,7 @@
 from csv import DictReader
 
+from app.utils import isFloat
+
 DESC = 'DESCRIPTION'
 PLATE = 'PL'
 LENGTH = 'LENGTH'
@@ -54,7 +56,10 @@ class BOM:
 
                 self._has_total(item)
 
-                length = int(item[LENGTH])
+                if isFloat(item[LENGTH]):
+                    length = int(float(item[LENGTH]))
+                else:
+                    length = int(item[LENGTH])
                 qty = int(item[QTY]) * self.total_qty
                 mark = item[ITEM]
                 self.beam_data[item[DESC]].append({LENGTH: length, QTY: qty, ITEM: mark})
