@@ -1,67 +1,62 @@
-$(document).ready(function() {
-    var activeSystemClass = $('.list-group-item.active');
+// This function was found here
+// https://bootsnipp.com/snippets/featured/panel-tables-with-filter
 
-    //something is entered in search form
-    $('#system-search').keyup( function() {
-       var that = this;
-        // affect all table rows on in systems table
-        var tableBody = $('.table-list-search tbody');
-        var tableRowsClass = $('.table-list-search tbody tr');
-        $('.search-sf').remove();
-        tableRowsClass.each( function(i, val) {
 
-            //Lower text for case insensitive
-            var rowText = $(val).text().toLowerCase();
-            var inputText = $(that).val().toLowerCase();
-            if(inputText != '')
-            {
-                $('.search-query-sf').remove();
-                tableBody.prepend('<tr class="search-query-sf"><td colspan="6"><strong>Searching for: "'
-                    + $(that).val()
-                    + '"</strong></td></tr>');
-            }
-            else
-            {
-                $('.search-query-sf').remove();
-            }
-
-            if( rowText.indexOf( inputText ) == -1 )
-            {
-                //hide rows
-                tableRowsClass.eq(i).hide();
-
-            }
-            else
-            {
-                $('.search-sf').remove();
-                tableRowsClass.eq(i).show();
-            }
-        });
-        //all tr elements are hidden
-        if(tableRowsClass.children(':visible').length == 0)
-        {
-            tableBody.append('<tr class="search-sf"><td class="text-muted" colspan="6">No entries found.</td></tr>');
+/*
+*   I don't recommend using this plugin on large tables, I just wrote it to make the demo useable. It will work fine for smaller tables 
+*   but will likely encounter performance issues on larger tables.
+*
+*       <input type="text" class="form-control" id="dev-table-filter" data-action="filter" data-filters="#dev-table" placeholder="Filter Developers" />
+*       $(input-element).filterTable()
+*       
+*   The important attributes are 'data-action="filter"' and 'data-filters="#table-selector"'
+*/
+(function(){
+    'use strict';
+    var $ = jQuery;
+    $.fn.extend({
+        filterTable: function(){
+            return this.each(function(){
+                $(this).on('keyup', function(e){
+                    $('.filterTable_no_results').remove();
+                    var $this = $(this), 
+                        search = $this.val().toLowerCase(), 
+                        target = $this.attr('data-filters'), 
+                        $target = $(target), 
+                        $rows = $target.find('tbody tr');
+                        
+                    if(search == '') {
+                        $rows.show(); 
+                    } else {
+                        $rows.each(function(){
+                            var $this = $(this);
+                            $this.text().toLowerCase().indexOf(search) === -1 ? $this.hide() : $this.show();
+                        })
+                        if($target.find('tbody tr:visible').size() === 0) {
+                            var col_count = $target.find('tr').first().find('td').size();
+                            var no_results = $('<tr class="filterTable_no_results"><td colspan="'+col_count+'">No results found</td></tr>')
+                            $target.find('tbody').append(no_results);
+                        }
+                    }
+                });
+            });
         }
     });
-});
+    $('[data-action="filter"]').filterTable();})(jQuery);
 
 $(function(){
-
-    $(document).on('focus', 'div.form-group-options div.input-group-option:last-child input', function(){
-
-        var sInputGroupHtml = $(this).parent().html();
-        var sInputGroupClasses = $(this).parent().attr('class');
-        $(this).parent().parent().append('<div class="'+sInputGroupClasses+'">'+sInputGroupHtml+'</div>');
-
+    // attach table filter plugin to inputs
+    $('[data-action="filter"]').filterTable();
+    
+    $('.container').on('click', '.panel-heading span.filter', function(e){
+        var $this = $(this), 
+            $panel = $this.parents('.panel');
+        
+        $panel.find('.panel-body').slideToggle();
+        if($this.css('display') != 'none') {
+            $panel.find('.panel-body input').focus();
+        }
     });
-
-    $(document).on('click', 'div.form-group-options .input-group-addon-remove', function(){
-
-        $(this).parent().remove();
-
-    });
-
-
-
-
-});
+    $('[data-toggle="tooltip"]').tooltip();
+})
+// end section

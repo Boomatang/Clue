@@ -139,3 +139,30 @@ div.input-group-multiple-select{
 }
 
 /* end CSS for repaeting list from Bootsnipp */
+<<<<<<< HEAD
+=======
+
+/*The following can be found here*/
+/*https://bootsnipp.com/snippets/featured/panel-tables-with-filter*/
+
+    	.row{
+		    margin-top:40px;
+		    padding: 0 10px;
+		}
+		.clickable{
+		    cursor: pointer;   
+		}
+
+		.panel-heading div {
+			margin-top: -18px;
+			font-size: 15px;
+		}
+		.panel-heading div span{
+			margin-left:5px;
+		}
+		.panel-body{
+			display: none;
+		}
+
+/*End section*/
+>>>>>>> Working on stuff

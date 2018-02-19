@@ -30,6 +30,7 @@ def index():
     return render_template('index.html')
 
 
+<<<<<<< HEAD
 @main.route('/dashboard', methods=['POST', 'GET'])
 def dashboard():
 
@@ -43,6 +44,9 @@ def dashboard():
 
 # This section is for the create cutting list
 
+=======
+# creating cut list
+>>>>>>> Working on stuff
 
 @main.route('/form1', methods=['POST', 'GET'])
 def bom_start():
@@ -453,6 +457,27 @@ def error_builder(errors):
         msg = msg + error + " "
 
     return msg
+
+
+# BOM Profiling
+
+@main.route('/materials', methods=['POST', 'GET'])
+def material_view():
+    return render_template('/materials/index.html')
+
+
+@main.route('/material-edit', methods=['POST', 'GET'])
+def material_edit():
+
+    if request.method == 'POST':
+        flash('Got Post')
+
+        for item in request.values.items(multi=True):
+            print(item)
+
+    return render_template('/materials/edit.html')
+
+# Random stuff
 
 
 def flash_massages(massage_list):

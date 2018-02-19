@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ super() }}Landing Page{% endblock %}
+
+{% block page_content %}
+<form title="50x50x5 SHS" method="POST">
+	<div>
+		<h1>50x50x5 SHS</h1>
+	</div>
+
+	<div class="row">
+		<div class="container col-md-10">
+			<h3>Select beams preferred length</h3>
+			<div class="radio">
+				<label><input type="radio" name="default" value="6100" checked> 6100</label>
+			</div>
+			<div class="radio">
+				<label><input type="radio" name="default" value="12200"> 12200</label>
+			</div>	
+			<div class="radio">
+				<label><input type="radio" name="default" value="14000"> 14000</label>
+			</div>
+		</div>
+	</div>
+
+		<div class="row">
+		<div class="container col-md-10">
+			<h3>Add more stock lengths</h3>
+			<div class="form-group form-group-options col-xs-11 col-sm-8 col-md-4">
+    		<div class="input-group input-group-option col-xs-12">
+    			<input type="text" name="length" class="form-control" placeholder="length">
+    			<span class="input-group-addon input-group-addon-remove">
+    				<span class="glyphicon glyphicon-remove"></span>
+                    
+    			</span>
+    		</div>
+    	</div>
+
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="container col-md-10">
+			<input class="btn btn-success" type="submit" name="UpdateBeam" value="Update Beam">
+		</div>
+	</div>
+</form>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+$(function(){
+
+    $(document).on('focus', 'div.form-group-options div.input-group-option:last-child input', function(){
+
+        var sInputGroupHtml = $(this).parent().html();
+        var sInputGroupClasses = $(this).parent().attr('class');
+        $(this).parent().parent().append('<div class="'+sInputGroupClasses+'">'+sInputGroupHtml+'</div>');
+
+    });
+
+    $(document).on('click', 'div.form-group-options .input-group-addon-remove', function(){
+
+        $(this).parent().remove();
+
+    });
+
+});
+
+var n = 1;
+
+function rename(name, t){
+
+    var output = name+t+n;
+
+    n++;
+    return output;
+
+}
+
+    </script>
+{% endblock %}
