@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
 
+from app.models import Sample
+
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
     import coverage
@@ -14,20 +16,23 @@ if os.path.exists('.env'):
         if len(var) == 2:
             os.environ[var[0]] = var[1]
 
-from app import create_app
+from app import create_app, db
 from flask_script import Manager, Shell
-
-
+from flask_migrate import Migrate, MigrateCommand
 
 
 app = create_app(os.getenv('CLUE_CONFIG') or 'default')
 manager = Manager(app)
+migrate = Migrate(app, db)
 
 
 def make_shell_context():
-    return dict(app=app)
+    return dict(app=app, db=db, Sample=Sample)
+
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
+manager.add_command('db', MigrateCommand)
+
 
 @manager.command
 def test(coverage=False):
@@ -37,7 +42,7 @@ def test(coverage=False):
         os.environ['FLASK_COVERAGE'] = '1'
         os.execvp(sys.executable, [sys.executable] + sys.argv)
     import unittest
-    tests = unittest.TestLoader().discover('tests')/home/boomatang
+    tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
     if COV:
         COV.stop()
@@ -58,6 +63,16 @@ def profile(length=25, profile_dir=None):
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
                                       profile_dir=profile_dir)
     app.run()
+
+
+@manager.command
+def deploy():
+    """Run deployment tasks."""
+    from flask_migrate import upgrade
+    from app.models import Sample
+
+    # migrate database to latest revision
+    upgrade()
 
 
 if __name__ == '__main__':

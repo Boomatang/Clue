@@ -24,6 +24,8 @@ def index():
     return render_template('index.html')
 
 
+# This section is for the create cutting list
+
 @main.route('/form1', methods=['POST', 'GET'])
 def bom_start():
     form = CSVForm()
@@ -107,6 +109,8 @@ def result():
 
     return render_template('/play/results.html', bom=bom)
 
+# this section is for calculates
+
 
 @main.route('/bar-spacer', methods=['POST', 'GET'])
 def bar_spacer():
@@ -131,6 +135,28 @@ def bar_spacer():
         return render_template('/utls/bar-spacer.html', form=form, bar=bar)
 
     return render_template('/utls/bar-spacer.html', form=form, bar=bar)
+
+# This section is for the material library
+
+
+@main.route('/material', methods=['POST', 'GET'])
+def material_library():
+    units = [1, 2, 3, 4, 5, 6]
+    return render_template('/materials/index.html', units=units)
+
+
+@main.route('/material/<material_id>', methods=['POST', 'GET'])
+def material_view(material_id):
+    print(material_id)
+    return render_template('/materials/view.html')
+
+
+@main.route('/material/add', methods=['POST', 'GET'])
+def material_add():
+    return render_template('/materials/add.html')
+
+
+# This section has helper methods
 
 
 def flash_massages(massage_list):
