@@ -12,21 +12,11 @@ Add Material
 
 {% block page_content %}
 
-<h1>This is in dev mode.</h1>
-
 <form class="form-horizontal" method="POST">
 <fieldset>
 
 <!-- Form Name -->
-<legend>Add Material</legend>
-
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="size">Material</label>  
-  <div class="col-md-4">
-  <input id="size" name="size" placeholder="placeholder" class="form-control input-md" type="text">
-  </div>
-</div>
+<legend>Add Lengths for {{ material }}</legend>
 
 
 <div class="form-group">
@@ -52,7 +42,7 @@ Add Material
 <div class="form-group">
 
   <div class="col-md-4">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save Material</button>
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save Material Lengths</button>
   </div>
 </div>
 

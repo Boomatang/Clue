@@ -1,11 +1,16 @@
 from flask import render_template, redirect, url_for, abort, flash, request, \
     current_app, session
+from pprint import pprint
+
+from app import db
+from app.models import MaterialSize, BomFile, MaterialLength, BomSession, BomSessionLength, BomSessionSize
+from app.smart import RawBomFile, CreateBom
 from . import main
-from .forms import CSVForm, BasicForm, BarSpacer
+from .forms import CSVForm, BasicForm, BarSpacer, BOMUpload
 from werkzeug.utils import secure_filename
 import os
 from ..smart import BOM, BarSpacingCalculator
-from ..utils import file_ext_checker, isFloat
+from ..utils import *
 
 
 @main.route('/shutdown')
@@ -153,10 +158,206 @@ def material_view(material_id):
 
 @main.route('/material/add', methods=['POST', 'GET'])
 def material_add():
+
+    if request.method == "POST":
+
+        size = request.form.get('size')
+        lengths = request.form.getlist('lengths')
+
+        checked_lengths = []
+        failed_lengths = []
+
+        for length in lengths:
+            if isInt(length):
+                checked_lengths.append(int(length))
+            else:
+                failed_lengths.append(length)
+
+        if len(failed_lengths) > 1:
+            flash(error_builder(failed_lengths))
+
+        if hasName(size) and hasValues(checked_lengths):
+            MaterialSize.add_new_material(size, checked_lengths)
+            flash(f'{size} has been added to the database')
+
+        else:
+            flash('There was some error with your input please try again')
+            return redirect(url_for('.material_add'))
+
+        print(f'this was the size {size}')
+        print(f'lengths are {checked_lengths}')
+
     return render_template('/materials/add.html')
 
 
+@main.route('/material/missing', methods=['POST', 'GET'])
+def material_missing():
+    material = session['material_missing']
+
+    if request.method == "POST":
+
+        size = material
+        lengths = request.form.getlist('lengths')
+
+        checked_lengths = []
+        failed_lengths = []
+
+        for length in lengths:
+            if isInt(length):
+                checked_lengths.append(int(length))
+            else:
+                failed_lengths.append(length)
+
+        if len(failed_lengths) > 1:
+            flash(error_builder(failed_lengths))
+
+        if hasName(size) and hasValues(checked_lengths):
+            MaterialSize.add_new_material(size, checked_lengths)
+            flash(f'{size} has been added to the database')
+            return redirect(url_for('.BOM_setup'))
+
+        else:
+            flash('There was some error with your input please try again')
+            return redirect(url_for('.material_missing'))
+
+    return render_template('/materials/missing.html', material=material)
+
+# This section is to do with uploading and creating the BOM
+
+
+@main.route('/BOM/upload', methods=['POST', 'GET'])
+def BOM_upload():
+    form = BOMUpload()
+
+    if form.validate_on_submit():
+        f = form.file_name.data
+        filename = secure_filename(f.filename)
+
+        name = os.path.join(os.environ.get('CLUE_UPLOADS', '/home/boomatang/Public'), filename)
+
+        if not file_ext_checker(str(name)):
+            flash('File type was not a CSV file type.', 'Error')
+            return redirect(url_for('.BOM_upload'))
+
+        f.save(name)
+
+        d = RawBomFile(name)
+
+        entry = d.return_entry()
+        entry.comment = form.comment.data
+        db.session.add(entry)
+        db.session.commit()
+        entry.configure_file()
+
+        session['file'] = entry.id
+
+        return redirect(url_for('.BOM_setup'))
+
+    return render_template('BOM/upload.html', form=form)
+
+
+@main.route('/BOM/setup', methods=['POST', 'GET'])
+def BOM_setup():
+
+    bom = BomFile.query.filter_by(id=session['file']).first()
+
+    materials = bom.materials_required()
+    materials_used = []
+
+    for material in materials:
+        item = MaterialSize.query.filter_by(size=material).first()
+        if item is not None:
+            materials_used.append(item)
+        else:
+            session['material_missing'] = material
+            return redirect(url_for('.material_missing'))
+
+    if request.method == "POST":
+        values = []
+
+        # create a session object
+        # passer keys
+        # key values to session object
+        """
+        dict = {material: size,
+                lengths: [ints],
+                default: int}
+        """
+        for material in materials:
+            value = {'material': material,
+                     'lengths': []}
+            for item in request.values.items(multi=True):
+                if item[0].startswith(material):
+
+                    if key_preferred(item[0]):
+                        preferred_length = MaterialLength.query.filter_by(id=int(item[1])).first()
+                        value['default'] = preferred_length.length
+
+                    if key_checkbox(item[0]):
+                        length = MaterialLength.query.filter_by(id=int(item[1])).first()
+                        value['lengths'].append(length.length)
+            values.append(value)
+
+        entry = BomSession()
+
+        db.session.add(entry)
+        db.session.commit()
+        for value in values:
+
+            beams = BomSessionSize(size=value['material'], default=value['default'])
+            entry.sizes.append(beams)
+            db.session.add(beams)
+            db.session.commit()
+            for length in value.get('lengths', None):
+                if length is not None:
+                    beam = BomSessionLength(length=length)
+                    beams.lengths.append(beam)
+
+        db.session.commit()
+
+        session['session_id'] = entry.id
+
+        return redirect(url_for('.BOM_calculate'))
+
+    return render_template('BOM/setup.html', materials=materials_used)
+
+
+@main.route('/BOM/calculate')
+def BOM_calculate():
+
+    setup_id = session['session_id']
+    data_id = session['file']
+
+    BOM = CreateBom(setup_id, data_id)
+    BOM.run()
+
+    return render_template('BOM/calculate.html')
+
+
 # This section has helper methods
+
+
+def key_preferred(value: str):
+    if value.endswith('preferred'):
+        return True
+    else:
+        return False
+
+
+def key_checkbox(value: str):
+    if value.endswith('checkboxes'):
+        return True
+    else:
+        return False
+
+
+def error_builder(errors):
+    msg = 'There was a problem with: '
+
+    for error in errors:
+        msg = msg + error + " "
+
+    return msg
 
 
 def flash_massages(massage_list):

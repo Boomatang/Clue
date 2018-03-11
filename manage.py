@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 
-from app.models import Sample
+from app.models import MaterialSize, MaterialLength, BomFileContents, BomFile
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -27,7 +27,12 @@ migrate = Migrate(app, db)
 
 
 def make_shell_context():
-    return dict(app=app, db=db, Sample=Sample)
+    return dict(app=app, db=db,
+                MaterialSize=MaterialSize,
+                MaterialLength=MaterialLength,
+                BomFile=BomFile,
+                BomFileContents=BomFileContents,
+                )
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
@@ -62,14 +67,13 @@ def profile(length=25, profile_dir=None):
     from werkzeug.contrib.profiler import ProfilerMiddleware
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
                                       profile_dir=profile_dir)
-    app.run()
+    app.run
 
 
 @manager.command
 def deploy():
     """Run deployment tasks."""
     from flask_migrate import upgrade
-    from app.models import Sample
 
     # migrate database to latest revision
     upgrade()

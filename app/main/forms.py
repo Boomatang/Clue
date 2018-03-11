@@ -19,3 +19,9 @@ class BarSpacer(FlaskForm):
     spacing = StringField('Target bar gap', default='100', validators=[DataRequired()])
     bar_size = StringField('Bar size', default='12', validators=[DataRequired()])
     submit = SubmitField('Calculate')
+
+
+class BOMUpload(FlaskForm):
+    comment = StringField('Add a comment for use Later')
+    file_name = FileField('Upload File, This should be a CSV file.', validators=[DataRequired()])
+    submit = SubmitField('Submit')

@@ -1,6 +1,9 @@
 from csv import DictReader
+from pathlib import Path as P
 
-from app.utils import isFloat
+from app.models import BomFile, BomFileContents, BomSession
+from app.utils import isFloat, isInt
+from pprint import pprint
 
 DESC = 'DESCRIPTION'
 PLATE = 'PL'
@@ -29,7 +32,7 @@ class BOM:
         f = DictReader(open(file_name))
         for row in f:
             self.data.append(row)
-        del(f)
+        del f
 
     def setup(self):
         self._get_beam_types()
@@ -82,6 +85,8 @@ class BOM:
                                           f'The total unit quantity been used is {int(self.total_qty)}', 'General'))
 
     def _add_beam_to_stock(self, beam):
+            # for row in values:
+            #     print(row)
         stock = beam[0]
         length, qty = self._get_stock_data(beam[1])
         if length is not None:        
@@ -170,3 +175,206 @@ class BOM:
     def set_saw_error_value(self, value):
         self.error = value
 
+
+class RawBomFile:
+
+    ITEM_NO = 'ITEM NO.'
+    PART_NUMBER = 'PART NUMBER'
+    DESCRIPTION = 'DESCRIPTION'
+    BB_LENGTH = '3D-Bounding Box Length'
+    BB_WIDTH = '3D-Bounding Box Width'
+    BB_THICKNESS = '3D-Bounding Box Thickness'
+    LENGTH = 'LENGTH'
+    QTY = 'QTY.'
+
+    def __init__(self, file):
+        self.file = P(file)
+
+        self.entry = BomFile(name=self.file.name)
+        self.setup()
+
+    def setup(self):
+
+        with open(self.file) as f:
+            data = DictReader(f)
+            for row in data:
+                value = self._convert_data(row)
+                item = self._add_value_to_db(value)
+                self._add_value_to_entry(item)
+        # add items to the  bom file
+        # Check that all formats
+        # find child parents
+
+    def return_entry(self):
+        return self.entry
+
+    def _read_csv(self):
+        with open(self.file, 'r') as f:
+            values = DictReader(f)
+            print(values)
+            # for row in values:
+            #     print(row)
+
+    def _add_value_to_entry(self, value):
+        self.entry.items.append(value)
+
+    def _add_value_to_db(self, value):
+        item = BomFileContents()
+        item.item_no = value[self.ITEM_NO]
+        item.part_number = value[self.PART_NUMBER]
+        item.description = value[self.DESCRIPTION]
+        item.BB_length = value[self.BB_LENGTH]
+        item.BB_width = value[self.BB_WIDTH]
+        item.BB_thickness = value[self.BB_THICKNESS]
+        item.length = value[self.LENGTH]
+        item.qty = value[self.QTY]
+        item.parent = None
+
+        return item
+
+    def _convert_data(self, data):
+        data[self.ITEM_NO] = self._check_is_string(data[self.ITEM_NO])
+        data[self.PART_NUMBER] = self._check_is_string(data[self.PART_NUMBER])
+        data[self.DESCRIPTION] = self._check_is_string(data[self.DESCRIPTION])
+
+        data[self.BB_LENGTH] = self._check_is_float(data[self.BB_LENGTH])
+        data[self.BB_WIDTH] = self._check_is_float(data[self.BB_WIDTH])
+        data[self.BB_THICKNESS] = self._check_is_float(data[self.BB_THICKNESS])
+        data[self.LENGTH] = self._check_is_float(data[self.LENGTH])
+
+        data[self.QTY] = self._check_is_int(data[self.QTY])
+
+        return data
+
+    @staticmethod
+    def _check_is_string(string):
+        value = string.strip()
+
+        if len(value) > 0:
+            return value
+        else:
+            return None
+
+    @staticmethod
+    def _check_is_float(num):
+
+        value = RawBomFile._check_is_string(num)
+
+        if isFloat(value):
+            return float(value)
+        else:
+            return None
+
+    @staticmethod
+    def _check_is_int(num):
+
+        value = RawBomFile._check_is_string(num)
+
+        if isInt(value):
+            return int(value)
+        else:
+            return None
+
+
+class CreateBom:
+    """
+        data_store = {'50x50': [{'item': '1.1',
+                                 'description': '50x50',
+                                 'length': 500,
+                                 'total': 10,
+                                 'missing': 10,
+                                 'cuttable': True}],
+                      'unused': [{'item': '1.1',
+                                  'description': 'Floor Panel',
+                                  'length': 500,
+                                  'total': 10,
+                                  'missing': 10,
+                                  'cuttable': True}]
+                     }
+        beam = {'description': '50x50',
+                'length': 6500,
+                'items': [],
+                'waste': 500,
+                'percent': 90}
+        """
+
+    def __init__(self, setup, data):
+        self.data: BomFile = BomFile.query.filter_by(id=data).first()
+        self.setup: BomSession = BomSession.query.filter_by(id=setup).first()
+        self.data_store = {'unused': []}
+        self.beams = {}
+        self.un_cut_parts = {}
+
+    def run(self):
+        self._setup_data_store_basic_information()
+        self._setup_parts_for_cutting()
+        
+        self._create_cutting_list()
+
+    def _setup_data_store_basic_information(self):
+        for size in self.setup.sizes:
+            self.data_store[size.size] = []
+
+    def _setup_parts_for_cutting(self):
+        self._add_parts_to_data_store()
+        self._sort_parts_by_length()
+
+    def _add_parts_to_data_store(self):
+        for item in self.data.items:
+            total = item.total_required()
+            value = {'item': item.item_no,
+                     'description': item.description,
+                     'length': item.length,
+                     'total': total,
+                     'missing': total,
+                     'cuttable': True}
+            if value['description'] in self.data_store.keys():
+                self.data_store[value['description']].append(value)
+            else:
+                self.data_store['unused'].append(value)
+
+    def _sort_parts_by_length(self):
+        for size in self.setup.sizes:
+            if size.size == 'unused':
+                break
+
+            items = self.data_store[size.size]
+            items.sort(key=self.item_length)
+            items.reverse()
+            self.data_store[size.size] = items
+
+    @staticmethod
+    def item_length(x):
+        """This is a helper method"""
+        try:
+            return float(x['length'])
+        except TypeError:
+            return 0
+
+    def _create_cutting_list(self):
+
+        for size in self.setup.sizes:
+            parts = self.data_store.get(size.size)
+            if size.size == 'unused':
+                break
+
+            beam_length = size.default
+            counter = 0
+            for part in parts:
+                while self._part_qty(part):
+                    if part['length'] is not None:
+                        if (beam_length - part['length']) > 0:
+                            beam_length -= part['length']
+                            part['missing'] -= 1
+                        else:
+                            counter += 1
+                            beam_length = size.default
+
+            print(f'Beam : {size.size}, Count : {counter}')
+
+    @staticmethod
+    def _part_qty(part):
+        if part['missing'] > 0:
+            return True
+        else:
+            return False
