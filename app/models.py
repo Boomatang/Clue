@@ -1,4 +1,7 @@
+import statistics
 from datetime import datetime
+
+from pprint import pprint
 
 from . import db
 
@@ -53,6 +56,7 @@ class BomFile(db.Model):
     comment = db.Column(db.String)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     items = db.relationship('BomFileContents', backref='file', lazy=True)
+    results = db.relationship('BomResult', backref='file', lazy=True)
 
     def configure_file(self):
         for item in self.items:
@@ -175,3 +179,131 @@ class BomSessionLength(db.Model):
 
     def __repr__(self):
         return f'<BomSessionLength : {self.length}>'
+
+
+class BomResult(db.Model):
+    __tablename__ = 'bom_result'
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    comment = db.Column(db.String)
+    file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
+    material = db.relationship('BomResultMaterial', backref='result', lazy=True)
+
+    def material_review(self):
+
+        return (i.size for i in self.material)
+
+    def required_lengths(self, size):
+        lengths = []
+        for item in self.material:
+            if item.size == size:
+                for beam in item.beams:
+                    if beam.length not in lengths:
+                        lengths.append(beam.length)
+        return lengths
+
+    def required_length_qty(self, size, length):
+        counter = 0
+        for item in self.material:
+            if item.size == size:
+                for beam in item.beams:
+                    if beam.length == length:
+                        counter += 1
+        return counter
+
+    def material_missing(self, material):
+        for item in self.material:
+            if material == item.size:
+                return len(item.missing)
+
+    def get_beams_for_material(self, material):
+
+        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+
+        return size.beams
+
+    def get_missing_parts_for_material(self, material):
+
+        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+
+        return size.missing
+
+    def material_average_percentage(self, material):
+        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+
+        return size.average()
+
+    def material_low_percentage(self, material):
+        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+
+        return size.low()
+
+    def material_high_percentage(self, material):
+        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+
+        return size.high()
+
+
+class BomResultMaterial(db.Model):
+    __tablename__ = 'bom_result_material'
+    id = db.Column(db.Integer, primary_key=True)
+    size = db.Column(db.String(64))
+    beams = db.relationship('BomResultBeam', backref='material', lazy=True)
+    missing = db.relationship('BomResultMissingPart', backref='material', lazy=True)
+    result_id = db.Column(db.Integer, db.ForeignKey('bom_result.id'), nullable=False)
+
+    def average(self):
+        return round(statistics.mean(self._all_lengths()))
+
+    def low(self):
+
+        return min([x for x in self._all_lengths()])
+
+    def high(self):
+        return max([x for x in self._all_lengths()])
+
+    def _all_lengths(self):
+        avg = []
+        for beam in self.beams:
+            avg.append(beam.get_percentage())
+        return avg
+
+
+class BomResultBeam(db.Model):
+    __tablename__ = 'bom_result_beam'
+    id = db.Column(db.Integer, primary_key=True)
+    length = db.Column(db.Integer)
+    waste = db.Column(db.Integer)
+    material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)
+    parts = db.relationship('BomResultBeamPart', backref='beam', lazy=True)
+
+    def get_percentage(self):
+        one = self.length / 100
+        total = self.length - self.waste
+        return round(total / one)
+
+    def progress_bar_state(self):
+        if self.get_percentage() < 60:
+            return "progress-bar-danger"
+        elif self.get_percentage() < 80:
+            return "progress-bar-warning"
+        else:
+            return "progress-bar-success"
+
+
+class BomResultBeamPart(db.Model):
+    __tablename__ = 'bom_result_beam_part'
+    id = db.Column(db.Integer, primary_key=True)
+    item_no = db.Column(db.String(64))
+    length = db.Column(db.Float)
+    qty = db.Column(db.Integer)
+    beam_id = db.Column(db.Integer, db.ForeignKey('bom_result_beam.id'), nullable=False)
+
+
+class BomResultMissingPart(db.Model):
+    __tablename__ = 'bom_result_missing_part'
+    id = db.Column(db.Integer, primary_key=True)
+    item_no = db.Column(db.String(64))
+    length = db.Column(db.Float)
+    qty = db.Column(db.Integer)
+    material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)

@@ -3,7 +3,8 @@ from flask import render_template, redirect, url_for, abort, flash, request, \
 from pprint import pprint
 
 from app import db
-from app.models import MaterialSize, BomFile, MaterialLength, BomSession, BomSessionLength, BomSessionSize
+from app.models import MaterialSize, BomFile, MaterialLength, BomSession, BomSessionLength, BomSessionSize, BomResult, \
+    BomResultMaterial, BomResultBeam, BomResultBeamPart, BomResultMissingPart
 from app.smart import RawBomFile, CreateBom
 from . import main
 from .forms import CSVForm, BasicForm, BarSpacer, BOMUpload
@@ -331,7 +332,49 @@ def BOM_calculate():
     BOM = CreateBom(setup_id, data_id)
     BOM.run()
 
-    return render_template('BOM/calculate.html')
+    values = BOM.beams
+    missing = BOM.un_cut_parts
+
+    result: BomResult = BomResult()
+    item: BomFile = BomFile.query.filter_by(id=session['file']).first()
+    result.comment = item.comment
+    item.results.append(result)
+    db.session.add(result)
+    db.session.commit()
+
+    for key in values.keys():
+        material = BomResultMaterial(size=key)
+        result.material.append(material)
+        db.session.commit()
+
+        for beam in values[key]:
+            b = BomResultBeam(length=beam['length'], waste=beam['waste'])
+            material.beams.append(b)
+            db.session.commit()
+
+            for thing in beam['items']:
+                part = BomResultBeamPart(item_no=beam['items'][thing]['item'],
+                                         length=beam['items'][thing]['length'],
+                                         qty=beam['items'][thing]['qty'])
+                b.parts.append(part)
+                db.session.commit()
+
+        for item in missing:
+            if key == item['description']:
+                part_missing = BomResultMissingPart(item_no=item['item'], length=item['length'], qty=item['missing'])
+                material.missing.append(part_missing)
+                db.session.commit()
+    return redirect(url_for('.BOM_result', result_id=result.id))
+    # return render_template('BOM/calculate.html', values=values, missing=missing)
+
+
+@main.route('/BOM/result/<result_id>', methods=['POST', 'GET'])
+def BOM_result(result_id):
+    result: BomResult = BomResult.query.filter_by(id=result_id).first_or_404()
+
+    session['file'] = result.file_id
+
+    return render_template('BOM/results.html', result=result)
 
 
 # This section has helper methods

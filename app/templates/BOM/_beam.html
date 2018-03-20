@@ -1,0 +1,25 @@
+<div class="container">
+    <h1>{{ material }}</h1>
+
+    {% for beam in  result.get_beams_for_material(material) %}
+        <div class="container space row-item">
+            <div class="progress">
+                <div class="progress-bar {{ beam.progress_bar_state() }}" role="progressbar"
+                     style="width: {{ beam.get_percentage() }}%;" aria-valuenow="{{ beam.get_percentage() }}"
+                     aria-valuemin="0" aria-valuemax="100">{{ beam.get_percentage() }}%
+                </div>
+            </div>
+            <div class="container-fluid">
+                <strong>Beam Length: {{ beam.length }}, Waste: {{ beam.waste }}</strong>
+                <div class="row-fluid">
+                    {% for part in beam.parts %}
+                        {% include("BOM/_part_result.html") %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    {% endfor %}
+
+</div>

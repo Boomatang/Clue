@@ -1,3 +1,14 @@
+.space{
+	margin: 5px 5px 15px;
+}
+
+.row-item{
+	display:inline-block;
+	border: dimgrey thin solid;
+	padding: .5%;
+	margin: .5%;
+}
+
 .my_green{
 	color: green;
 }

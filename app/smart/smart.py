@@ -3,7 +3,6 @@ from pathlib import Path as P
 
 from app.models import BomFile, BomFileContents, BomSession
 from app.utils import isFloat, isInt
-from pprint import pprint
 
 DESC = 'DESCRIPTION'
 PLATE = 'PL'
@@ -92,7 +91,8 @@ class BOM:
         if length is not None:        
             self.stock[stock][length] = qty
 
-    def _get_stock_data(self, beam):
+    @staticmethod
+    def _get_stock_data(beam):
         if len(beam) > 0:
             value = beam.lower()
             value = value.split('x')
@@ -303,7 +303,7 @@ class CreateBom:
         self.setup: BomSession = BomSession.query.filter_by(id=setup).first()
         self.data_store = {'unused': []}
         self.beams = {}
-        self.un_cut_parts = {}
+        self.un_cut_parts = []
 
     def run(self):
         self._setup_data_store_basic_information()
@@ -354,23 +354,64 @@ class CreateBom:
     def _create_cutting_list(self):
 
         for size in self.setup.sizes:
-            parts = self.data_store.get(size.size)
+            self.parts = self.data_store.get(size.size)
             if size.size == 'unused':
                 break
 
-            beam_length = size.default
-            counter = 0
-            for part in parts:
-                while self._part_qty(part):
-                    if part['length'] is not None:
-                        if (beam_length - part['length']) > 0:
-                            beam_length -= part['length']
-                            part['missing'] -= 1
-                        else:
-                            counter += 1
-                            beam_length = size.default
+            self.beams[size.size] = []
 
-            print(f'Beam : {size.size}, Count : {counter}')
+            counter = self._total_number_of_parts()
+
+            while counter:
+                entry, count = self._create_beam(size.default)
+                if entry is not None:
+                    self.beams[size.size].append(entry)
+                counter -= count
+
+    def _create_beam(self, size):
+        beam = {'length': size,
+                'items': {}}
+        beam_length = beam['length']
+
+        counter = 0
+        for part in self.parts:
+            short = False
+            while self._part_is_usable(part) and not short:
+                if part['length'] is not None:
+                    
+                    if part['length'] > beam['length']:
+                        beam['length'] = self._get_next_beam_length(part)
+                        beam_length = beam['length']
+
+                    if beam['length'] is None:
+                        part['cuttable'] = False
+                        self.un_cut_parts.append(part)
+                        return None, part['missing']
+
+                    if (beam_length - part['length']) > 0:
+
+                        key, value = self._create_item_for_beam(part)
+
+                        if key in beam['items']:
+
+                            beam['items'][key]['qty'] += 1
+                        else:
+                            beam['items'][key] = value
+                        beam_length -= part['length']
+                        part['missing'] -= 1
+                        counter += 1
+                    else:
+
+                        short = True
+                else:
+                    part['cuttable'] = False
+                    self.un_cut_parts.append(part)
+                    counter += part["missing"]
+
+        beam['waste'] = int(beam_length)
+        output = beam
+
+        return output, counter
 
     @staticmethod
     def _part_qty(part):
@@ -378,3 +419,50 @@ class CreateBom:
             return True
         else:
             return False
+
+    @staticmethod
+    def _create_item_for_beam(part):
+
+        key = part['item']
+        value = {
+            'item': part['item'],
+            'description': part['description'],
+            'length': part['length'],
+            'qty': 1
+        }
+        return key, value
+
+    def _get_next_beam_length(self, part):
+
+        for size in self.setup.sizes:
+
+            if size.size == part['description']:
+                lengths = []
+                for item in size.lengths:
+                    lengths.append(item.length)
+
+                lengths.sort()
+
+                for length in lengths:
+                    if length > part['length']:
+                        return length
+
+        return None
+
+    def _total_number_of_parts(self):
+        count = 0
+        for item in self.parts:
+            count += item['total']
+
+        return count
+
+    @staticmethod
+    def _is_cuttable(part):
+        return part['cuttable']
+
+    def _part_is_usable(self, part):
+        if self._part_qty(part) and self._is_cuttable(part):
+            return True
+        else:
+            return False
+
