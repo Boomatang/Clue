@@ -1,0 +1,21 @@
+<table class="table">
+    <thead class="container">
+    <tr>
+        <th>Comment</th>
+        <th>File</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for result in BOM_results %}
+        <tr>
+    <td>{{ result.comment }}</td>
+    <td>{{ result.file.name }}</td>
+    <td>{{ result.timestamp }}</td>
+            <td><a class="btn btn-info" href="{{url_for('main.BOM_result', result_id=result.id)}}">View</a></td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>

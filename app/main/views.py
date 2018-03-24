@@ -30,7 +30,19 @@ def index():
     return render_template('index.html')
 
 
+@main.route('/dashboard', methods=['POST', 'GET'])
+def dashboard():
+
+    BOM_results = BomResult.query.order_by(BomResult.timestamp).all()
+    temp = []
+    for r in BOM_results:
+        temp.append(r)
+
+    BOM_results = temp.reverse()
+    return render_template('user/dashboard.html', BOM_results=temp)
+
 # This section is for the create cutting list
+
 
 @main.route('/form1', methods=['POST', 'GET'])
 def bom_start():
