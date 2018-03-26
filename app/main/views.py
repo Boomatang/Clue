@@ -79,7 +79,7 @@ def bom_start():
 
         return redirect(url_for('.bom_edit'))
 
-    return render_template('/play/bom_start.html', form=form)
+    return render_template('play/bom_start.html', form=form)
 
 
 @main.route('/form2', methods=['POST', 'GET'])
@@ -106,7 +106,7 @@ def bom_edit():
         session['values'] = session_values
         return redirect(url_for('.result'))
 
-    return render_template('/play/bom_edit.html', keys=keys, form=form)
+    return render_template('play/bom_edit.html', keys=keys, form=form)
 
 
 @main.route('/result')
@@ -125,7 +125,7 @@ def result():
     flash_massages(bom.massages)
     session.clear()
 
-    return render_template('/play/results.html', bom=bom)
+    return render_template("play/results.html", bom=bom)
 
 # this section is for calculates
 
@@ -150,23 +150,45 @@ def bar_spacer():
                 return redirect(url_for('.bar_spacer'))
 
         bar = BarSpacingCalculator(float(gap), float(between_post), float(size))
-        return render_template('/utls/bar-spacer.html', form=form, bar=bar)
+        return render_template('utls/bar-spacer.html', form=form, bar=bar)
 
-    return render_template('/utls/bar-spacer.html', form=form, bar=bar)
+    return render_template('utls/bar-spacer.html', form=form, bar=bar)
 
 # This section is for the material library
 
 
 @main.route('/material', methods=['POST', 'GET'])
 def material_library():
-    units = [1, 2, 3, 4, 5, 6]
-    return render_template('/materials/index.html', units=units)
+    size = MaterialSize.query.order_by(MaterialSize.size).all()[:]
+    return render_template('materials/index.html', units=size)
 
 
 @main.route('/material/<material_id>', methods=['POST', 'GET'])
 def material_view(material_id):
-    print(material_id)
-    return render_template('/materials/view.html')
+    unit: MaterialSize = MaterialSize.query.filter_by(id=material_id).first_or_404()
+
+    if request.method == "POST":
+
+        new_length = request.form.get('new-length')
+        if len(new_length):
+            if isInt(new_length):
+                unit.add_length(new_length)
+                flash(f"{new_length} has been added to {unit.size}")
+                return redirect(url_for(".material_view", material_id=material_id))
+
+            else:
+                flash('The length most be a whole number.', 'error')
+                return redirect(url_for(".material_view", material_id=material_id))
+
+        remove_lengths = request.form.getlist('checkboxes')
+        remove_lengths = [int(l) for l in remove_lengths]
+
+        if len(remove_lengths):
+            unit.remove_lengths(remove_lengths)
+            flash(f"{remove_lengths} has been removed from {unit.size}")
+            return redirect(url_for(".material_view", material_id=material_id))
+
+    return render_template('materials/view.html', unit=unit)
 
 
 @main.route('/material/add', methods=['POST', 'GET'])
@@ -200,7 +222,7 @@ def material_add():
         print(f'this was the size {size}')
         print(f'lengths are {checked_lengths}')
 
-    return render_template('/materials/add.html')
+    return render_template('materials/add.html')
 
 
 @main.route('/material/missing', methods=['POST', 'GET'])
@@ -233,7 +255,7 @@ def material_missing():
             flash('There was some error with your input please try again')
             return redirect(url_for('.material_missing'))
 
-    return render_template('/materials/missing.html', material=material)
+    return render_template('materials/missing.html', material=material)
 
 # This section is to do with uploading and creating the BOM
 

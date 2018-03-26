@@ -4,61 +4,70 @@
 
 {% block title %}
 
-{{ super() }}
+    {{ super() }}
 
-Material View
+    Material View
 
 {% endblock %}
 
 {% block page_content %}
 
-<section>
-	<h1>50x50x5 SHS</h1>
 
-		<div class="form-group">
-  <label class="col-md-8 control-label" for="selectbasic">Set Default Length</label>
-  <div class="col-md-4">
-    <select id="selectbasic" name="selectbasic" class="form-control">
-      <option value="1">4000</option>
-      <option value="2" selected="selected">6500</option>
-      <option value="3">12000</option>
-    </select>
-  </div>
-</div>
-	
-<!-- Multiple Checkboxes -->
-<div class="form-group">
-  <label class="col-md-8 control-label" for="checkboxes">Beam Lengths to Remove</label>
-  <div class="col-md-4">
-  <div class="checkbox">
-    <label for="checkboxes-0">
-      <input name="checkboxes" id="checkboxes-0" value="1" type="checkbox">
-      4000
-    </label>
-	</div>
-  <div class="checkbox">
-    <label for="checkboxes-1">
-      <input name="checkboxes" id="checkboxes-1" value="2" type="checkbox">
-      6500
-    </label>
-	</div>
-	  <div class="checkbox">
-    <label for="checkboxes-3">
-      <input name="checkboxes" id="checkboxes-2" value="3" type="checkbox">
-      12000
-    </label>
-	</div>
-  </div>
-</div>
+    <section>
+        <form class="form-horizontal" method="POST">
 
-<div class="cll-md-8">
-<button type="submit" class="btn btn-info" formaction="{{ url_for('main.material_view', material_id=1) }}">Upadte Material</button>
-</div>
-</section>
+            <h1>{{ unit.size }}</h1>
+
+            <div class="form-group">
+                <label class="col-md-8 control-label" for="selectbasic">Set Default Length</label>
+                <div class="col-md-4">
+                    <select id="selectbasic" name="selectbasic" class="form-control">
+                        {% for length in unit.all_lengths %}
+                            <option value="{{ length }}">{{ length }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Multiple Checkboxes -->
+            <div class="form-group">
+                <label class="col-md-8 control-label" for="checkboxes">Beam Lengths to Remove</label>
+                <div class="col-md-4">
+                    {% for length in unit.all_lengths %}
+                        <div class="checkbox">
+                            <label for="checkboxes-{{ length }}">
+                                <input name="checkboxes" id="checkboxes-{{ length }}" value="{{ length }}"
+                                       type="checkbox">
+                                {{ length }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-8 control-label" for="checkboxes">Add Beam Length</label>
+                <div class="col-md-4">
+                    <div class="checkbox">
+                        <label for="new-length">
+                            <input name="new-length" id="new-length" type="text">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="cll-md-8">
+
+                    <button type="submit" class="btn btn-info"
+                            formaction="{{ url_for('main.material_view', material_id=unit.id) }}">Update Material
+                    </button>
+                </div>
+            </div>
+        </form>
+    </section>
 
 
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
+    {{ super() }}
 {% endblock %}

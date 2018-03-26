@@ -18,11 +18,10 @@ class MaterialSize(db.Model):
     size = db.Column(db.String(64), unique=True)
     lengths = db.relationship('MaterialLength', secondary=material_size_lengths, lazy='subquery',
                               backref=db.backref('sizes', lazy=True))
+    default = "Not Working"
 
     @staticmethod
     def add_new_material(size, lengths):
-        print('hello world')
-
         entry = MaterialSize.query.filter_by(size=size).first()
 
         if entry is None:
@@ -35,6 +34,22 @@ class MaterialSize(db.Model):
                 entry.lengths.append(entry_length)
         db.session.add(entry)
         db.session.commit()
+
+    @property
+    def all_lengths(self):
+        return (i.length for i in self.lengths)
+
+    def add_length(self, new_length):
+        existing = MaterialLength.query.filter_by(length=new_length).first()
+        if existing is None:
+            self.lengths.append(MaterialLength(length=new_length))
+        else:
+            self.lengths.append(existing)
+
+    def remove_lengths(self, lengths):
+        for length in self.lengths:
+            if length.length in lengths:
+                self.lengths.remove(length)
 
     def __repr__(self):
         return f'<Size : {self.size}>'
