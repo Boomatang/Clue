@@ -160,6 +160,8 @@ def bar_spacer():
 @main.route('/material', methods=['POST', 'GET'])
 def material_library():
     size = MaterialSize.query.order_by(MaterialSize.size).all()[:]
+    if not len(size):
+        return render_template('materials/no_materials.html')
     return render_template('materials/index.html', units=size)
 
 

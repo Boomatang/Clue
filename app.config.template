@@ -24,3 +24,7 @@
 # This config state has the following possible values
 # 'development' , 'testing' , 'production' , 'heroku' , 'unix'
  export CLUE_CONFIG='development'
+
+# Database stuff
+
+# export SQLALCHEMY_DATABASE_URI="mysql://username:password@hostname/database"
