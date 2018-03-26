@@ -188,3 +188,4 @@ ENV/
 *.pyc
 *.conf
 .migrations
+migrations/
