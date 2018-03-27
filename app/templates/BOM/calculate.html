@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ super() }}{% endblock %}
+
+{% block page_content %}
+
+    <h1>BOM Calculate</h1>
+
+    {% for size in values %}
+
+        <div class="row">
+
+            <h2>{{ size }}</h2>
+            {% for beam in values.get(size) %}
+                <div class="container col-md-3 col-sm-6">
+                    <h3>Beam Length : {{ beam['length'] }}</h3>
+                    <h3>Beam Waste : {{ beam['waste'] }}</h3>
+                    <div class="container">
+                        {% for item in beam['items'] %}
+                            <div class="row">
+                                <p>Item: {{ beam['items'][item]['item'] }}</p>
+                                <p>Length: {{ beam['items'][item]['length'] }}</p>
+                                <p>Qty: {{ beam['items'][item]['qty'] }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <div class="container">
+        <h1>Parts that are missing</h1>
+        {% for part in missing %}
+
+            <div class="container col-sm-3 col-md-2">
+                <p>Item: {{ part['item'] }}</p>
+                <p>Size: {{ part['description'] }}</p>
+                <p>Length: {{ part['length'] }}</p>
+                <p>Missing: {{ part['missing'] }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

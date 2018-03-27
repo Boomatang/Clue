@@ -22,7 +22,6 @@ class Config:
     SLOW_DB_QUERY_TIME = 0.5
     UPLOADS = os.environ.get('CLUE_UPLOADS')
 
-
     @staticmethod
     def init_app(app):
         pass

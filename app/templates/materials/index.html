@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Material Library
+
+{% endblock %}
+
+{% block page_content %}
+
+<div class="row">
+	<div class="col-md-9">
+		<form method="get">
+			<table class="table table-list-search">
+				<thead>
+					<tr>
+						<th>Description</th>
+						<th>Default</th>
+						<th>Lengths</th>
+						
+
+					</tr>
+				</thead>
+				<tbody>
+					{% for unit in units %}
+					<tr>
+						<td>{{ unit.size }}</td>
+						<td>{{ unit.default }}</td>
+						<td>{% for length in unit.all_lengths %}
+                        {{ length }},
+                        {% endfor %}
+                            </td>
+					
+						<td><button type="submit" class="btn btn-info" formaction="{{ url_for('main.material_view', material_id=unit.id) }}">EDIT</button></td>
+
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Page Title
+
+{% endblock %}
+
+{% block page_content %}
+
+<div class="container">
+    <div class="col-md-6 col-sm-8">
+        <p>
+            <strong>Comment: </strong> {{ result.comment }} <br>
+            <strong>File Used: </strong> {{ result.file.name }} <br>
+            <strong>Create Date: </strong> {{ result.timestamp }} <br>
+            <strong>Result Reference: </strong> {{ result.id }}
+        </p>
+    </div>
+<div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a class="btn btn-success btn-lg" href="{{ url_for('main.BOM_setup') }}">Rerun BOM Tool</a></li>
+
+            </ul>
+
+        </div>
+</div>
+</div>
+
+    <div class="container">
+    <h2>Required Materials</h2>
+    {% for material in result.material_review() %}
+    <div>
+        <strong>
+            {{ material }}
+            {% if result.material_missing(material) %}
+                <span class="label label-danger">Parts Missing</span>
+            {% endif %}
+</strong><br>
+        Average: {{ result.material_average_percentage(material) }}%, High: {{ result.material_high_percentage(material) }}%, Low: {{ result.material_low_percentage(material) }}%
+
+
+    <ul>
+        {% for length in result.required_lengths(material) %}
+            <li>{{ length }} &mdash; {{ result.required_length_qty(material, length) }} Qty</li>
+        {% endfor %}
+    </ul>
+    </div>
+    {% endfor %}
+    </div>
+
+
+
+
+
+    <div class="container">
+        {% for material in result.material_review() %}
+
+            {% include("BOM/_beam.html") %}
+             {% if result.material_missing(material) %}
+
+        <h2>{{ material }} is missing parts</h2>
+
+    {% endif %}
+            {% for part in result.get_missing_parts_for_material(material) %}
+                {% include("BOM/_part_result.html") %}
+            {% endfor %}
+
+      {% endfor %}
+
+
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}

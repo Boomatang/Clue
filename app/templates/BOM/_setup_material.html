@@ -1,0 +1,46 @@
+<div class="container col-md-4 col-sm-6">
+<h2>{{ material.size }}</h2>
+
+
+		<div class="form-group">
+  <label class="col-md-8 control-label" for="selectbasic">Preferred Length</label>
+  <div class="col-md-4">
+    <select id="selectbasic" name="{{material.size}}-preferred" class="form-control">
+      {% for size in material.lengths %}
+
+
+      <option value="{{size.id}}">{{ size.length }}</option>
+
+      {% endfor %}
+
+    </select>
+  </div>
+</div>
+	
+<!-- Multiple Checkboxes -->
+<div class="form-group">
+  <label class="col-md-8 control-label" for="{{material.name}}-checkboxes">Beam Lengths That Can Be Used</label>
+  <div class="col-md-4">
+
+
+	 {% for size in material.lengths %}
+
+
+      <div class="checkbox">
+    <label for="{{material.size}}-{{ size.length }}">
+      <input name="{{material.size}}-checkboxes" id="{{material.size}}-{{ size.length }}" value="{{size.id}}" type="checkbox">
+      {{ size.length }}
+    </label>
+	</div>
+
+    {% endfor %}
+
+
+  
+
+  </div>
+</div>
+
+
+
+</div>

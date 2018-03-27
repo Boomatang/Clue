@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Add Material
+
+{% endblock %}
+
+{% block page_content %}
+
+<form class="form-horizontal" method="POST">
+<fieldset>
+
+<!-- Form Name -->
+<legend>Add Lengths for {{ material }}</legend>
+
+
+<div class="form-group">
+
+<div class="row">
+	<label class="col-md-4 control-label" for="lengths">Material Lengths</label>  
+        <div class="form-group form-group-options col-xs-11 col-sm-8 col-md-4">
+    		<div class="input-group input-group-option col-xs-12">
+    			<input type="text" name="lengths" class="form-control" placeholder="Beam Length">
+    			<span class="input-group-addon input-group-addon-remove">
+    				<span class="glyphicon glyphicon-remove"></span>
+                    
+    			</span>
+    		</div>
+    	</div>
+    </div>
+
+
+
+</div>
+
+<!-- Button -->
+<div class="form-group">
+
+  <div class="col-md-4">
+    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save Material Lengths</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+    <script>
+$(function(){
+
+    $(document).on('focus', 'div.form-group-options div.input-group-option:last-child input', function(){
+
+        var sInputGroupHtml = $(this).parent().html();
+        var sInputGroupClasses = $(this).parent().attr('class');
+        $(this).parent().parent().append('<div class="'+sInputGroupClasses+'">'+sInputGroupHtml+'</div>');
+
+    });
+
+    $(document).on('click', 'div.form-group-options .input-group-addon-remove', function(){
+
+        $(this).parent().remove();
+
+    });
+
+});
+
+var n = 1;
+
+function rename(name, t){
+
+    var output = name+t+n;
+
+    n++;
+    return output;
+
+}
+
+    </script>
+{% endblock %}

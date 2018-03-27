@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Material not Found
+
+{% endblock %}
+
+{% block page_content %}
+
+    <h1>There is no materials found</h1>
+    <p>To add materials to the library you most create a bill of materials form a csv
+        file that that has been saved out of solidworks in the correct format.</p>
+    <p>The names of the materials are taken from the solidworks library and most match them.</p>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}

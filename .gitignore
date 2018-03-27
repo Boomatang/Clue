@@ -187,3 +187,5 @@ ENV/
 *.sqlite
 *.pyc
 *.conf
+.migrations
+migrations/
