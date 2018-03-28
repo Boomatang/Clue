@@ -27,4 +27,4 @@
 
 # Database stuff
 
-# export SQLALCHEMY_DATABASE_URI="mysql://username:password@hostname/database"
+# export DATABASE_URL="mysql://username:password@hostname/database"
