@@ -2,7 +2,8 @@
     <h1>{{ material }}</h1>
 
     {% for beam in  result.get_beams_for_material(material) %}
-        <div class="container space row-item">
+        <div class="container col-lg-4 inner-padding">
+        <div class="drop-shadow">
             <div class="progress">
                 <div class="progress-bar {{ beam.progress_bar_state() }}" role="progressbar"
                      style="width: {{ beam.get_percentage() }}%;" aria-valuenow="{{ beam.get_percentage() }}"
@@ -17,6 +18,7 @@
                     {% endfor %}
                 </div>
             </div>
+        </div>
         </div>
 
 

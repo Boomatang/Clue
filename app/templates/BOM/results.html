@@ -59,21 +59,31 @@
 
 
 
+<div class="container">
+<hr/>
+        {% for material in result.material_review() %}
+            {% if result.is_missing_parts_for_material(material) %}
+            <div class="container-fluid col-lg-4">
+            <div class="container-fluid drop-shadow">
+            <h3>Parts missing in {{ material }}</h3>
+        {% for part in result.get_missing_parts_for_material(material) %}
+
+                {% include("BOM/_part_result.html") %}
+            {% endfor %}
+            </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+</div>
+
+
     <div class="container">
+    <hr>
         {% for material in result.material_review() %}
 
             {% include("BOM/_beam.html") %}
-            {% if result.material_missing(material) %}
-
-                <h2>{{ material }} is missing parts</h2>
-
-            {% endif %}
-            {% for part in result.get_missing_parts_for_material(material) %}
-                {% include("BOM/_part_result.html") %}
-            {% endfor %}
 
         {% endfor %}
-
 
     </div>
 
