@@ -195,7 +195,7 @@ class RawBomFile:
 
     def setup(self):
 
-        with open(self.file) as f:
+        with open(self.file, encoding='ISO-8859-1') as f:
             data = DictReader(f)
             for row in data:
                 value = self._convert_data(row)
@@ -210,7 +210,7 @@ class RawBomFile:
 
     def _read_csv(self):
         with open(self.file, 'r') as f:
-            values = DictReader(f)
+            values = DictReader(f, encoding='ISO-8859-1')
             print(values)
             # for row in values:
             #     print(row)

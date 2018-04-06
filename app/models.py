@@ -251,6 +251,13 @@ class BomResult(db.Model):
 
         return False
 
+    def has_missing_parts(self):
+        for item in self.material:
+            if len(item.missing):
+                return True
+
+        return False
+
     def material_average_percentage(self, material):
         size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
 
