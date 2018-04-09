@@ -310,7 +310,10 @@ class BomResultBeam(db.Model):
     def get_percentage(self):
         one = self.length / 100
         total = self.length - self.waste
-        return round(total / one)
+        try:
+            return round(total / one)
+        except ZeroDivisionError:
+            return 0
 
     def progress_bar_state(self):
         if self.get_percentage() < 60:
