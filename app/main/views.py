@@ -52,7 +52,7 @@ def bom_start():
         f = form.csv.data
 
         filename = secure_filename(f.filename)
-        name = os.path.join(os.environ.get('CLUE_UPLOADS'), filename)
+        name = os.path.join(os.environ.get('CLUE_UPLOADS', os.environ.get('HOME')+"/Public"), filename)
 
         f.save(name)
 

@@ -20,7 +20,8 @@ class Config:
     FOLLOWERS_PER_PAGE = 50
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5
-    UPLOADS = os.environ.get('CLUE_UPLOADS')
+    UPLOADS = os.environ.get('CLUE_UPLOADS', os.environ.get('HOME')+"/Public")
+
 
     @staticmethod
     def init_app(app):
