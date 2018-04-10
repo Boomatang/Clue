@@ -70,8 +70,8 @@ class BomFile(db.Model):
     name = db.Column(db.String(64))
     comment = db.Column(db.String)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    items = db.relationship('BomFileContents', backref='file', lazy=True)
-    results = db.relationship('BomResult', backref='file', lazy=True)
+    items = db.relationship('BomFileContents', cascade="all, delete-orphan", backref='file', lazy=True)
+    results = db.relationship('BomResult', cascade="all, delete-orphan", backref='file', lazy=True)
 
     def configure_file(self):
         for item in self.items:
@@ -168,7 +168,7 @@ class BomSession(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    sizes = db.relationship('BomSessionSize', backref='session', lazy=True)
+    sizes = db.relationship('BomSessionSize', cascade="all, delete-orphan", backref='session', lazy=True)
 
     def __repr__(self):
         return f'<BomSession : {self.id} Timestamp : {self.timestamp}>'
@@ -179,7 +179,7 @@ class BomSessionSize(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     size = db.Column(db.String(64))
     default = db.Column(db.Integer)
-    lengths = db.relationship('BomSessionLength', backref='size', lazy=True)
+    lengths = db.relationship('BomSessionLength', cascade="all, delete-orphan", backref='size', lazy=True)
     session_id = db.Column(db.Integer, db.ForeignKey('bom_session.id'), nullable=False)
 
     def __repr__(self):
@@ -202,7 +202,14 @@ class BomResult(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     comment = db.Column(db.String)
     file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
-    material = db.relationship('BomResultMaterial', backref='result', lazy=True)
+    material = db.relationship('BomResultMaterial', cascade="all, delete-orphan", backref='result', lazy=True)
+
+    def delete(self):
+        for material in self.material:
+            material.delete()
+
+        db.session.delete(self)
+        # db.session.commit()
 
     def material_review(self):
 
@@ -279,8 +286,18 @@ class BomResultMaterial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     size = db.Column(db.String(64))
     beams = db.relationship('BomResultBeam', backref='material', lazy=True)
-    missing = db.relationship('BomResultMissingPart', backref='material', lazy=True)
+    missing = db.relationship('BomResultMissingPart', cascade="all,delete-orphan", backref='material', lazy=True)
     result_id = db.Column(db.Integer, db.ForeignKey('bom_result.id'), nullable=False)
+
+    def delete(self):
+        for beam in self.beams:
+            beam.delete()
+
+        for part in self.missing:
+            part.delete()
+
+        db.session.delete(self)
+        # db.session.commit()
 
     def average(self):
         return round(statistics.mean(self._all_lengths()))
@@ -305,7 +322,14 @@ class BomResultBeam(db.Model):
     length = db.Column(db.Integer)
     waste = db.Column(db.Integer)
     material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)
-    parts = db.relationship('BomResultBeamPart', backref='beam', lazy=True)
+    parts = db.relationship('BomResultBeamPart', cascade="all, delete-orphan", backref='beam', lazy=True)
+
+    def delete(self):
+        for part in self.parts:
+            part.delete()
+
+        db.session.delete(self)
+        # db.session.commit()
 
     def get_percentage(self):
         one = self.length / 100
@@ -332,6 +356,10 @@ class BomResultBeamPart(db.Model):
     qty = db.Column(db.Integer)
     beam_id = db.Column(db.Integer, db.ForeignKey('bom_result_beam.id'), nullable=False)
 
+    def delete(self):
+        db.session.delete(self)
+        # db.session.commit()
+
 
 class BomResultMissingPart(db.Model):
     __tablename__ = 'bom_result_missing_part'
@@ -340,3 +368,7 @@ class BomResultMissingPart(db.Model):
     length = db.Column(db.Float)
     qty = db.Column(db.Integer)
     material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)
+
+    def delete(self):
+        db.session.delete(self)
+        # db.session.commit()

@@ -401,7 +401,6 @@ def BOM_calculate():
                 material.missing.append(part_missing)
                 db.session.commit()
     return redirect(url_for('.BOM_result', result_id=result.id))
-    # return render_template('BOM/calculate.html', values=values, missing=missing)
 
 
 @main.route('/BOM/result/<result_id>', methods=['POST', 'GET'])
@@ -412,6 +411,23 @@ def BOM_result(result_id):
 
     return render_template('BOM/results.html', result=result)
 
+
+@main.route('/BOM/results/remove/<result_id>', methods=['POST', 'GET'])
+def BOM_remove_result(result_id):
+    result: BomResult = BomResult.query.filter_by(id=result_id).first_or_404()
+    massage = f"Your about to remove result {result.id}: {result.comment}"
+    if request.method == "POST":
+        print(request.values)
+        for item in request.values.items(multi=True):
+            if item[0] == 'disagree':
+                return redirect(url_for('.dashboard'))
+            print(item)
+        print('deleting the item')
+        result.delete()
+        db.session.commit()
+        return redirect(url_for('.dashboard'))
+
+    return render_template('user/yes_no.html', massage=massage)
 
 # This section has helper methods
 
