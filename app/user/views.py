@@ -1,5 +1,6 @@
 from flask import render_template
 
+from app.models import BomResult
 from app.user import user
 
 

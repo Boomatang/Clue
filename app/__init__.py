@@ -34,4 +34,7 @@ def create_app(config_name):
     from .librarys import library as library_blueprint
     app.register_blueprint(library_blueprint)
 
+    from .BOM import BOM as BOM_blueprint
+    app.register_blueprint(BOM_blueprint)
+
     return app

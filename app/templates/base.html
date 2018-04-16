@@ -27,17 +27,13 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('main.bom_start') }}">Create Cut List</a></li>
+                <li><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('cutlist.bom_start') }}">Create Cut List</a></li>
 
-                <li><a href="{{ url_for('main.BOM_upload') }}">Create BOM</a></li>
+                <li><a href="{{ url_for('BOM.BOM_upload') }}">Create BOM</a></li>
 
-                <li><a href="{{ url_for('main.bar_spacer') }}">Calculate Bar Spacing</a></li>
-<<<<<<< HEAD
-                <li><a href="{{ url_for('main.material_library') }}">Material Library</a></li>
-=======
-                <li><a href="{{ url_for('main.material_view') }}">Material Library</a></li>
->>>>>>> Working on stuff
+                <li><a href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a></li>
+                <li><a href="{{ url_for('library.material_library') }}">Material Library</a></li>
             </ul>
     
         </div>

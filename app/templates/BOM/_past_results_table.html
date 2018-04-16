@@ -15,8 +15,8 @@
             <td>{{ result.comment }}</td>
             <td>{{ result.file.name }}</td>
             <td>{{ result.timestamp }}</td>
-            <td><a class="btn btn-info" href="{{ url_for('main.BOM_result', result_id=result.id) }}">View</a></td>
-            <td><a class="btn btn-warning" href="{{ url_for('main.BOM_remove_result', result_id=result.id) }}">Remove</a></td>
+            <td><a class="btn btn-info" href="{{ url_for('BOM.BOM_result', result_id=result.id) }}">View</a></td>
+            <td><a class="btn btn-warning" href="{{ url_for('BOM.BOM_remove_result', result_id=result.id) }}">Remove</a></td>
         </tr>
     {% endfor %}
 

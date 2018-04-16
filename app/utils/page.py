@@ -8,3 +8,12 @@ def flash_massages(massage_list):
         else:
             status = massage[1]
         flash(massage[0], status)
+
+
+def error_builder(errors):
+    msg = 'There was a problem with: '
+
+    for error in errors:
+        msg = msg + error + " "
+
+    return msg
