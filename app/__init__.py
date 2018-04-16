@@ -6,6 +6,7 @@ from config import config
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -20,5 +21,17 @@ def create_app(config_name):
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    from .user import user as user_blueprint
+    app.register_blueprint(user_blueprint)
+
+    from .cutlist import cutlist as cutlist_blueprint
+    app.register_blueprint(cutlist_blueprint)
+
+    from .tools import tools as tools_blueprint
+    app.register_blueprint(tools_blueprint)
+
+    from .librarys import library as library_blueprint
+    app.register_blueprint(library_blueprint)
 
     return app
