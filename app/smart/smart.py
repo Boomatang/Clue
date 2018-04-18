@@ -388,7 +388,7 @@ class CreateBom:
                         self.un_cut_parts.append(part)
                         return None, part['missing']
 
-                    if (beam_length - part['length']) > 0:
+                    if (beam_length - part['length']) >= 0:
 
                         key, value = self._create_item_for_beam(part)
 
