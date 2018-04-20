@@ -5,7 +5,7 @@ def key_preferred(value: str):
         return False
 
 
-def key_checkbox(value: str):
+def key_checkboxes(value: str):
     if value.endswith('checkboxes'):
         return True
     else:

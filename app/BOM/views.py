@@ -9,7 +9,7 @@ from app.BOM.forms import BOMUpload
 from app.models import BomFile, MaterialSize, MaterialLength, BomSession, BomSessionSize, BomResult, BomResultMaterial, \
     BomResultBeam, BomResultBeamPart, BomResultMissingPart, BomSessionLength
 from app.smart import RawBomFile, CreateBom
-from app.utils import file_ext_checker, key_preferred, key_checkbox
+from app.utils import file_ext_checker, key_preferred, key_checkboxes
 
 
 @BOM.route('/BOM/upload', methods=['POST', 'GET'])
@@ -22,7 +22,7 @@ def BOM_upload():
 
         name = os.path.join(os.environ.get('CLUE_UPLOADS', '/home/boomatang/Public'), filename)
 
-        if not file_ext_checker(str(name)):
+        if not file_ext_checker(str(name), '.csv'):
             flash('File type was not a CSV file type.', 'Error')
             return redirect(url_for('.BOM_upload'))
 
@@ -80,7 +80,7 @@ def BOM_setup():
                         preferred_length = MaterialLength.query.filter_by(id=int(item[1])).first()
                         value['default'] = preferred_length.length
 
-                    if key_checkbox(item[0]):
+                    if key_checkboxes(item[0]):
                         length = MaterialLength.query.filter_by(id=int(item[1])).first()
                         value['lengths'].append(length.length)
             values.append(value)

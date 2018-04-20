@@ -189,3 +189,4 @@ ENV/
 *.conf
 .migrations
 migrations/
+.pytest_cache/

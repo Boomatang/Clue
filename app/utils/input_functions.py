@@ -1,8 +1,11 @@
 def hasName(string):
     """Checks if a string is longer than zero"""
-    if len(string) > 0:
-        return True
-    else:
+    try:
+        if len(string) > 0:
+            return True
+        else:
+            return False
+    except TypeError:
         return False
 
 

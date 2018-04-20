@@ -21,7 +21,7 @@ def bom_start():
 
         f.save(name)
 
-        if not file_ext_checker(str(name)):
+        if not file_ext_checker(str(name), '.csv'):
             flash('File type was not a CSV file type.', 'Error')
             return redirect(url_for('.bom_start'))
 
