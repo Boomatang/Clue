@@ -1,33 +1,61 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
-{% block title %}{{super()}}Bar Spacer{% endblock %}
+{% block title %}{{ super() }}Bar Spacer{% endblock %}
 
 {% block page_content %}
-<form  method="POST" enctype="multipart/form-data">
-    {{ wtf.quick_form(form)  }}
-</form>
+  <div class="ui two column centered grid">
+  <div class="centered column">
+    <form class="ui form" method="POST" enctype="multipart/form-data">
 
-{% if bar%}
+      <div class="field">
+        <label class="ui" for="bar-size">{{ form.bar_size.label }}</label>
+        <div class="ui input">
+          <label for="bar-size">
+            {{ form.bar_size }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="ui" for="post-to-post">{{ form.post_to_post.label }}</label>
+        <div class="ui input">
+          <label for="post-to-post">
+            {{ form.post_to_post }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="ui" for="spacing">{{ form.spacing.label }}</label>
+        <div class="ui input">
+          <label for="spacing">
+            {{ form.spacing }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        {{ form.submit(class_="ui large positive button") }}
+      </div>
+    </form>
+  </div>
 
-	
-<div >
-	<hr>
+  {% if bar %}
 
-<h1>Your results</h1>
-	<p>
-		Edge to center : <strong>{{ bar.real_edge_to_center }}</strong><br>
-		Center to center : <strong>{{ bar.real_center_to_center }}</strong><br>
-		Number of bars : <strong>{{ bar.real_No_bars }}</strong><br><br>
-		Actual gap : <strong>{{ bar.real_gap_size }}</strong>
-	</p>
-</div>
-{% endif %}
+
+    <div class="column">
+
+      <h1>Your results</h1>
+      <p>
+        Edge to center : <strong>{{ bar.real_edge_to_center }}</strong><br>
+        Center to center : <strong>{{ bar.real_center_to_center }}</strong><br>
+        Number of bars : <strong>{{ bar.real_No_bars }}</strong><br><br>
+        Actual gap : <strong>{{ bar.real_gap_size }}</strong>
+      </p>
+    </div>
+  {% endif %}
 
 {% endblock %}
-
+</div>
 {% block scripts %}
-{{ super() }}
+  {{ super() }}
 {% endblock %}
 	

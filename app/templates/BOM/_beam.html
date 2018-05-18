@@ -1,27 +1,31 @@
-<div class="container">
-    <h1>{{ material }}</h1>
+  <h1>{{ material }}</h1>
 
+<div class="ui raised column segment">
+  <div class="ui three column stackable grid container">
+  <br>
     {% for beam in  result.get_beams_for_material(material) %}
-        <div class="container col-lg-4 inner-padding">
-        <div class="drop-shadow">
-            <div class="progress">
-                <div class="progress-bar {{ beam.progress_bar_state() }}" role="progressbar"
-                     style="width: {{ beam.get_percentage() }}%;" aria-valuenow="{{ beam.get_percentage() }}"
-                     aria-valuemin="0" aria-valuemax="100">{{ beam.get_percentage() }}%
-                </div>
-            </div>
-            <div class="container-fluid">
-                <strong>Beam Length: {{ beam.length }}, Waste: {{ beam.waste }}</strong>
-                <div class="row-fluid">
-                    {% for part in beam.parts %}
-                        {% include("BOM/_part_result.html") %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        </div>
+      <div class="ui column segment">
+        <div class="ui progress {{ beam.progress_bar_state() }}">
+          <div class="bar"
+               style="width: {{ beam.get_percentage() }}%;">
+                      <div class="progress">{{ beam.get_percentage() }}%</div>
 
+          </div>
+        </div>
+        <div class="">
+        <div class="ui padded container">
+          <strong>Beam Length: {{ beam.length }}, Waste: {{ beam.waste }}</strong>
+        <br>
+        </div>
+          <div class="ui two column grid container">
+          <br>
+            {% for part in beam.parts %}
+              {% include("BOM/_part_result.html") %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
 
     {% endfor %}
-
+  </div>
 </div>

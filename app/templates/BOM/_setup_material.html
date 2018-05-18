@@ -1,10 +1,10 @@
-<div class="container col-md-4 col-sm-6">
+<div class="container ">
+<div class="ui raised segment">
 <h2>{{ material.size }}</h2>
 
-
-		<div class="form-group">
-  <label class="col-md-8 control-label" for="selectbasic">Preferred Length</label>
-  <div class="col-md-4">
+		<div class="">
+  <label class="" for="selectbasic">Preferred Length</label>
+  <div class="">
     <select id="selectbasic" name="{{material.size}}-preferred" class="form-control">
       {% for size in material.lengths %}
 
@@ -18,29 +18,33 @@
 </div>
 	
 <!-- Multiple Checkboxes -->
-<div class="form-group">
-  <label class="col-md-8 control-label" for="{{material.name}}-checkboxes">Beam Lengths That Can Be Used</label>
-  <div class="col-md-4">
+<div class="grouped fields">
+  <label class="" for="{{material.name}}-checkboxes">Beam Lengths That Can Be Used</label>
 
 
 	 {% for size in material.lengths %}
 
 
-      <div class="checkbox">
+      <div class="field">
+      <div class="ui toggle checkbox">
     <label for="{{material.size}}-{{ size.length }}">
-      <input name="{{material.size}}-checkboxes" id="{{material.size}}-{{ size.length }}" value="{{size.id}}" type="checkbox">
       {{ size.length }}
     </label>
+
+
+      <input name="{{material.size}}-checkboxes" id="{{material.size}}-{{ size.length }}" value="{{size.id}}" type="checkbox">
 	</div>
+      </div>
 
     {% endfor %}
 
 
   
 
-  </div>
 </div>
 
 
-
 </div>
+</div>
+
+

@@ -1,73 +1,80 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}
 
-    {{ super() }}
+  {{ super() }}
 
-    Material View
+  Material View
 
 {% endblock %}
 
 {% block page_content %}
 
 
-    <section>
-        <form class="form-horizontal" method="POST">
+  <section>
+    <form class="ui form" method="POST">
 
-            <h1>{{ unit.size }}</h1>
+      <h1>{{ unit.size }}</h1>
 
-            <div class="form-group">
-                <label class="col-md-8 control-label" for="selectbasic">Set Default Length</label>
-                <div class="col-md-4">
-                    <select id="selectbasic" name="selectbasic" class="form-control">
-                        {% for length in unit.all_lengths %}
-                            <option value="{{ length }}">{{ length }}</option>
-                        {% endfor %}
-                    </select>
+      <div class="ui two column stackable grid">
+        <!-- Multiple Checkboxes -->
+        <div class="column">
+
+          <div class="field">
+
+            <label class="header">Beam Lengths to Remove</label>
+            <div class="list">
+              {% for length in unit.all_lengths %}
+                <div class="item">
+                  <div class="ui toggle checkbox">
+                    <label for="checkboxes-{{ length }}">
+                      {{ length }}
+                    </label>
+
+
+                    <input name="checkboxes" id="checkboxes-{{ length }}" value="{{ length }}"
+                           type="checkbox">
+                    <br>
+                  </div>
+
                 </div>
+              {% endfor %}
             </div>
 
-            <!-- Multiple Checkboxes -->
-            <div class="form-group">
-                <label class="col-md-8 control-label" for="checkboxes">Beam Lengths to Remove</label>
-                <div class="col-md-4">
-                    {% for length in unit.all_lengths %}
-                        <div class="checkbox">
-                            <label for="checkboxes-{{ length }}">
-                                <input name="checkboxes" id="checkboxes-{{ length }}" value="{{ length }}"
-                                       type="checkbox">
-                                {{ length }}
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-8 control-label" for="checkboxes">Add Beam Length</label>
-                <div class="col-md-4">
-                    <div class="checkbox">
-                        <label for="new-length">
-                            <input name="new-length" id="new-length" type="text">
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="cll-md-8">
+          </div>
 
-                    <button type="submit" class="btn btn-info"
-                            formaction="{{ url_for('library.material_view', material_id=unit.id) }}">Update Material
-                    </button>
-                </div>
+        </div>
+
+        <div class="column">
+          <div class="field">
+            <label class="ui" for="new-length">Add Beam Length</label>
+            <div class="ui input">
+
+
+              <label for="new-length">
+                <input name="new-length" id="new-length" type="text">
+              </label>
             </div>
-        </form>
-    </section>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="ui container">
+
+        <button type="submit" class="ui large negative button"
+                formaction="{{ url_for('library.material_view', material_id=unit.id) }}"><i class="pencil alternate
+ icon"></i> Update Material
+        </button>
+      </div>
+    </form>
+  </section>
 
 
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
+  {{ super() }}
 {% endblock %}

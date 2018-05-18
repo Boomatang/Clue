@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}
@@ -12,15 +11,15 @@ Material Library
 
 {% block page_content %}
 
-<div class="row">
-	<div class="col-md-9">
+<div class="container">
 		<form method="get">
-			<table class="table table-list-search">
+			<table class="ui table">
 				<thead>
 					<tr>
 						<th>Description</th>
 						<th>Default</th>
 						<th>Lengths</th>
+            <th></th>
 						
 
 					</tr>
@@ -35,14 +34,13 @@ Material Library
                         {% endfor %}
                             </td>
 					
-						<td><button type="submit" class="btn btn-info" formaction="{{ url_for('library.material_view', material_id=unit.id) }}">EDIT</button></td>
+						<td><button type="submit" class="ui positive button" formaction="{{ url_for('library.material_view', material_id=unit.id) }}"><i class="edit icon"></i> EDIT</button></td>
 
 					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
 		</form>
-	</div>
 </div>
 
 {% endblock %}

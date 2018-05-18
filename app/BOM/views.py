@@ -170,11 +170,11 @@ def BOM_remove_result(result_id):
         print(request.values)
         for item in request.values.items(multi=True):
             if item[0] == 'disagree':
-                return redirect(url_for('.dashboard'))
+                return redirect(url_for('user.dashboard'))
             print(item)
         print('deleting the item')
         result.delete()
         db.session.commit()
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('user.dashboard'))
 
     return render_template('user/yes_no.html', massage=massage)

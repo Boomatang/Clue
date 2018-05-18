@@ -1,14 +1,10 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}{{ super() }}Landing Page{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <h1>Clue</h1>
-</div>
-<div class="container">
+    <h1 class="header">Clue</h1>
 	<p>Clue is an open source project that is been build to help stream line production aspects. All input is welcome, if you wish to request a feature please do. More so if you want to take part in the development of this system, links to a github account will be provided in the near future.</p>
 	<p>With the time that this system saves you, I hope you can help others be more.</p>
 	<p>As there is so many features that could be created we need a few rules to help the prioritize features over others. Use the list below to guide your choice</p>
@@ -20,7 +16,6 @@
 		<li>If a feature enables the system to support more new features.</li>
 	</ul>
 
-</div>
     {% include('history.html') %}
 
 {% endblock %}
