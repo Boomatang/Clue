@@ -203,6 +203,18 @@ class BomResult(db.Model):
     comment = db.Column(db.String)
     file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
     material = db.relationship('BomResultMaterial', cascade="all, delete-orphan", backref='result', lazy=True)
+    __job_number = None
+
+    @property
+    def job_number(self):
+        return self.__job_number
+
+    @job_number.getter
+    def job_number(self):
+        if self.__job_number is not None:
+            return self.__job_number
+        else:
+            return "Unknown"
 
     def delete(self):
         for material in self.material:
@@ -279,6 +291,7 @@ class BomResult(db.Model):
         size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
 
         return size.high()
+
 
 
 class BomResultMaterial(db.Model):
