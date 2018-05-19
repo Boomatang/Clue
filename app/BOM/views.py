@@ -126,30 +126,26 @@ def BOM_calculate():
     result.comment = item.comment
     item.results.append(result)
     db.session.add(result)
-    db.session.commit()
 
     for key in values.keys():
         material = BomResultMaterial(size=key)
         result.material.append(material)
-        db.session.commit()
 
         for beam in values[key]:
             b = BomResultBeam(length=beam['length'], waste=beam['waste'])
             material.beams.append(b)
-            db.session.commit()
 
             for thing in beam['items']:
                 part = BomResultBeamPart(item_no=beam['items'][thing]['item'],
                                          length=beam['items'][thing]['length'],
                                          qty=beam['items'][thing]['qty'])
                 b.parts.append(part)
-                db.session.commit()
 
         for item in missing:
             if key == item['description']:
                 part_missing = BomResultMissingPart(item_no=item['item'], length=item['length'], qty=item['missing'])
                 material.missing.append(part_missing)
-                db.session.commit()
+    db.session.commit()
     return redirect(url_for('.BOM_result', result_id=result.id))
 
 
