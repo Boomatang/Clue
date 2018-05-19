@@ -37,4 +37,7 @@ def create_app(config_name):
     from .BOM import BOM as BOM_blueprint
     app.register_blueprint(BOM_blueprint)
 
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix="/api/v1")
+
     return app
