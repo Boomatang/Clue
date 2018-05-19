@@ -93,4 +93,8 @@ def test_seeded_data_found(client):
 def test_seed_data_not_found(client):
     assert 404 == client.get("/api/v1/bom/100").status_code
 
+def test_un_real_test_data_request(client):
+    check = b"What are you playing at."
+    result = client.get(f"/api/v1/bom/t{10**4+1}").data
+    assert check in result
 

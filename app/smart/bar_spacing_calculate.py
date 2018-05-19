@@ -30,21 +30,3 @@ class BarSpacingCalculator:
 
     def _edge_to_center(self):
         return self._gap() + (self.input_bar_size / 2)
-
-    def _close_upper_function(self):
-        return math.isclose(math.ceil(self._gap()),
-                            self._gap(),
-                            rel_tol=self._relative_tolerance)
-
-    def _close_lower_function(self):
-        return math.isclose(math.floor(self._gap()),
-                            self._gap(),
-                            rel_tol=self._relative_tolerance)
-
-    def _rounding_function(self, unit):
-        if self._close_upper_function():
-            return math.ceil(unit)
-        elif self._close_lower_function():
-            return math.floor(unit)
-        else:
-            return math.ceil(unit) - 0.5
