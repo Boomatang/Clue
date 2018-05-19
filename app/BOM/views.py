@@ -16,7 +16,7 @@ from app.utils import file_ext_checker, key_preferred, key_checkboxes
 def BOM_upload():
     form = BOMUpload()
 
-    if form.validate_on_submit():
+    if form.is_submitted():
         f = form.file_name.data
         filename = secure_filename(f.filename)
 

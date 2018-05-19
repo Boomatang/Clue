@@ -4,18 +4,6 @@
 
 {% block title %}{{super()}}Form page{% endblock %}
 
-{% block head %}
-{{ super() }}
-<script type="text/javascript">
-    function rename(name, t){
-
-        var output = name+t+n;
-
-        n++;
-        return output;}
-
-</script>
-{% endblock %}
 {% block page_content %}
 <form method="POST">
     {{ form.csrf_token }}
