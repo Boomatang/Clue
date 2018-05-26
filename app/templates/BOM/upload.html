@@ -5,9 +5,30 @@
 {% block title %}{{super()}}form page{% endblock %}
 
 {% block page_content %}
-<form method="POST" enctype="multipart/form-data">
-    {{ wtf.quick_form(form)  }}
+<form class="ui form" method="POST" enctype="multipart/form-data">
+
+      <div class="field">
+        <label class="ui" for="comment">{{ form.comment.label }}</label>
+        <div class="ui input">
+          <label for="comment">
+            {{ form.comment }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="ui" for="csv">{{ form.file_name.label }}</label>
+        <div class="ui input">
+          <label for="csv">
+            {{ form.file_name }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        {{ form.submit(class_="ui large positive button") }}
+      </div>
+
 </form>
+
 {% endblock %}
 
 {% block scripts %}

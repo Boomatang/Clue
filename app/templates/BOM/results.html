@@ -12,8 +12,8 @@
 
 {% block page_content %}
 
-    <div class="container">
-        <div class="col-md-6 col-sm-8">
+    <div class="ui raised equal width grid segment">
+        <div class=" column">
             <p>
                 <strong>Comment: </strong> {{ result.comment }} <br>
                 <strong>File Used: </strong> {{ result.file.name }} <br>
@@ -21,24 +21,19 @@
                 <strong>Result Reference: </strong> {{ result.id }}
             </p>
         </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a class="btn btn-success btn-lg" href="{{ url_for('BOM.BOM_setup') }}">Rerun BOM Tool</a></li>
-
-            </ul>
-
+        <div class="column">
+                <a class="ui primary button" href="{{ url_for('BOM.BOM_setup') }}"><i class="power off icon"></i> Rerun BOM Tool</a></li>
         </div>
     </div>
-    </div>
+        <h1 class="header">Required Materials</h1>
 
-    <div class="container">
-        <h2>Required Materials</h2>
+    <div class="ui raised segment">
         {% for material in result.material_review() %}
             <div>
-                <strong>
+                <strong class="header">
                     {{ material }}
                     {% if result.material_missing(material) %}
-                        <span class="label label-danger">Parts Missing</span>
+                        <span class="ui red label">Parts Missing</span>
                     {% endif %}
                 </strong><br>
                 Average: {{ result.material_average_percentage(material) }}%,
@@ -59,12 +54,15 @@
 
 
 {% if result.has_missing_parts() %}
-<div class="container drop-shadow">
+  <h1 class="header">Missing Parts</h1>
+
+<div class="ui raised segment">
         {% for material in result.material_review() %}
             {% if result.is_missing_parts_for_material(material) %}
-            <div class="container-fluid col-lg-4">
-            <div class="container-fluid drop-shadow">
-            <h3>Parts missing in {{ material }}</h3>
+            <div class="ui vertical segment">
+            <h3 class="header">Parts missing in {{ material }}</h3>
+            <div class="ui equal width grid">
+            <br>
         {% for part in result.get_missing_parts_for_material(material) %}
 
                 {% include("BOM/_part_result.html") %}
@@ -77,8 +75,9 @@
 
     {% endif %}
 
+<h1 class="header">Used Beams</h1>
 
-    <div class="container drop-shadow">
+    <div class="ui raised stackable gird segment">
         {% for material in result.material_review() %}
 
             {% include("BOM/_beam.html") %}

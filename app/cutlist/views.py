@@ -13,7 +13,7 @@ from app.utils import file_ext_checker, isFloat, flash_massages
 def bom_start():
     form = CSVForm()
 
-    if form.validate_on_submit():
+    if form.is_submitted():
         f = form.csv.data
 
         filename = secure_filename(f.filename)
@@ -61,7 +61,7 @@ def bom_edit():
 
     if form.is_submitted():
         for item in request.values.items(multi=True):
-            print(f"Item been passed in is {item}")
+            # print(f"Item been passed in is {item}")
             session_values.append(item)
 
         session['values'] = session_values

@@ -5,8 +5,36 @@
 {% block title %}{{super()}}form page{% endblock %}
 
 {% block page_content %}
-<form method="POST" enctype="multipart/form-data">
-    {{ wtf.quick_form(form)  }}
+<form class="ui form" method="POST" enctype="multipart/form-data">
+
+      <div class="field">
+        <label class="ui" for="name">{{ form.name.label }}</label>
+        <div class="ui input">
+          <label for="name">
+            {{ form.name }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="ui" for="csv">{{ form.csv.label }}</label>
+        <div class="ui input">
+          <label for="csv">
+            {{ form.csv }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="ui" for="saw">{{ form.saw.label }}</label>
+        <div class="ui input">
+          <label for="saw">
+            {{ form.saw }}
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        {{ form.submit(class_="ui large positive button") }}
+      </div>
+
 </form>
 {% endblock %}
 

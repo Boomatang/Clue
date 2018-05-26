@@ -4,32 +4,22 @@
 
 {% block title %}{{super()}}Form page{% endblock %}
 
-{% block head %}
-{{ super() }}
-<script type="text/javascript">
-    function rename(name, t){
-
-        var output = name+t+n;
-
-        n++;
-        return output;
-
-</script>
-{% endblock %}
 {% block page_content %}
 <form method="POST">
     {{ form.csrf_token }}
     <p>Add beam length and quantity below. All measurements should be in millimeters.</p>
     <p><strong>Due to lack of understanding with javascript please add the values in the following format. "Beam length" x "QTY"</strong>An example of this would be <strong>6100x5</strong>. This say the beam is 6100 long and there are 5 of them.</p>
-
+<div class="ui container form">
     {% for key in keys %}
         {% include 'play/_repeater.html' %}
 
     {% endfor %}
 
 
-
-    {{form.submit }}
+</div>
+    <div class="field">
+        {{ form.submit(class_="ui large positive button") }}
+      </div>
 
 </form>
 {% endblock %}

@@ -1,8 +1,8 @@
 
-<div class="container">
+<div class="ui stacked container">
 	<div class="row">
 		<div class="span5">
-            <table class="table table-striped table-condensed">
+            <table class="ui celled striped table">
                   <thead>
                   <tr>
                   	<th>Item No.</th>
@@ -13,19 +13,20 @@
               </thead>   
               <tbody>
                 <tr>
-                	<th>Length</th>
+                	<td>Length</td>
 					{% for i in length[0] %}
                 	<td>{{ i['LENGTH'] }}</td>
                 	{% endfor %}
                                                          
                 </tr>          
                 <tr>
-                  <th>Approx Waste:</th>
+                  <td>Approx Waste:</td>
                   <td>{{length[2]}}</td>
                 </tr>
 
               </tbody>
             </table>
+    <br>
             </div>
 	</div>
 </div>

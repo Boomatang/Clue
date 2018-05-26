@@ -1,18 +1,17 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}
 
 {{ super() }}
 
-Page Title
+Dashboard
 
 {% endblock %}
 
 {% block page_content %}
 
-<h1>User Dashboard</h1>
+<h1 class="header">User Dashboard</h1>
 <p>Over time more items will be added here</p>
     {% include('BOM/_past_results_table.html') %}
 {% endblock %}

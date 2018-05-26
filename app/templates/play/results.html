@@ -7,7 +7,7 @@
 {% block page_content %}
     <h1>Drawing REF: {{ bom.ref }}</h1>
     <p>Saw margin : {{ bom.error }}mm.</p>
-    <p class="alert-danger">This list is to be used as a guide. Please refer to the appropriate drawing for further
+    <p class="red warning">This list is to be used as a guide. Please refer to the appropriate drawing for further
         details</p>
 
     {% for size in bom.cut_beams %}

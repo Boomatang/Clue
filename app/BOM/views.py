@@ -16,7 +16,7 @@ from app.utils import file_ext_checker, key_preferred, key_checkboxes
 def BOM_upload():
     form = BOMUpload()
 
-    if form.validate_on_submit():
+    if form.is_submitted():
         f = form.file_name.data
         filename = secure_filename(f.filename)
 
@@ -166,11 +166,11 @@ def BOM_remove_result(result_id):
         print(request.values)
         for item in request.values.items(multi=True):
             if item[0] == 'disagree':
-                return redirect(url_for('.dashboard'))
+                return redirect(url_for('user.dashboard'))
             print(item)
         print('deleting the item')
         result.delete()
         db.session.commit()
-        return redirect(url_for('.dashboard'))
+        return redirect(url_for('user.dashboard'))
 
     return render_template('user/yes_no.html', massage=massage)

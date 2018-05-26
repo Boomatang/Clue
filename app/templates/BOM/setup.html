@@ -1,40 +1,39 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}
 
-{{ super() }}
+  {{ super() }}
 
-Manage BOM setup
+  Manage BOM setup
 
 {% endblock %}
 
 {% block page_content %}
 
-<h1>Manage BOM setup</h1>
+  <h1>Manage BOM setup</h1>
 
-<p>Materials that is required</p>
+  <p>Materials that is required</p>
 
-<form class="conatiner" method="POST">
-	<div class="form-group row">
-	{% for material in materials %}
-	{% include 'BOM/_setup_material.html' %}
-	{% endfor %}
-</div>
-<div class="form-group row">
+  <form class="ui form" method="POST">
+    <div class="ui grid">
+      {% for material in materials %}
+        {% include 'BOM/_setup_material.html' %}
+      {% endfor %}
+    </div>
+    <div><br></div>
+    <div class="ui container">
+      <button id="singlebutton" name="singlebutton" class="ui large primary button"><i class="save icon"></i> Save Material
+        Setup
+      </button>
+    </div>
 
-  <div class="col-md-4">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save Material Setup</button>
-  </div>
-</div>
-
-</form>
+  </form>
 
 
 
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
+  {{ super() }}
 {% endblock %}

@@ -354,11 +354,11 @@ class BomResultBeam(db.Model):
 
     def progress_bar_state(self):
         if self.get_percentage() < 60:
-            return "progress-bar-danger"
+            return "error"
         elif self.get_percentage() < 80:
-            return "progress-bar-warning"
+            return "warning"
         else:
-            return "progress-bar-success"
+            return "success"
 
 
 class BomResultBeamPart(db.Model):

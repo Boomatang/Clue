@@ -1,5 +1,5 @@
-<table class="table">
-    <thead class="container">
+<table class="ui single line table">
+    <thead class="">
     <tr>
         <th>Comment</th>
         <th>File</th>
@@ -15,8 +15,8 @@
             <td>{{ result.comment }}</td>
             <td>{{ result.file.name }}</td>
             <td>{{ result.timestamp }}</td>
-            <td><a class="btn btn-info" href="{{ url_for('BOM.BOM_result', result_id=result.id) }}">View</a></td>
-            <td><a class="btn btn-warning" href="{{ url_for('BOM.BOM_remove_result', result_id=result.id) }}">Remove</a></td>
+          <td><a class="ui positive button" href="{{ url_for('BOM.BOM_result', result_id=result.id) }}"><i class="eye icon"></i> View</a></td>
+            <td><a class="ui negative icon button" href="{{ url_for('BOM.BOM_remove_result', result_id=result.id) }}"><i class="trash icon"></i></a></td>
         </tr>
     {% endfor %}
 

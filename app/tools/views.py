@@ -11,7 +11,7 @@ def bar_spacer():
     form = BarSpacer()
     bar = None
 
-    if form.validate_on_submit():
+    if form.is_submitted():
         between_post = form.post_to_post.data
         gap = form.spacing.data
         size = form.bar_size.data
