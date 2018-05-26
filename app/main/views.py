@@ -16,5 +16,4 @@ def server_shutdown():
 
 @main.route('/')
 def index():
-    flash("I am a massage")
     return render_template('index.html')

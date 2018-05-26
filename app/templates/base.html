@@ -11,9 +11,10 @@
 
 </head>
 <body>
-<div class="ui container">
+
 {% block navbar %}
-  <div class="ui attached stackable pointing menu">
+  <div class="ui huge attached inverted stackable pointing menu">
+  <div class="ui container">
         <a class="item" href="{{ url_for('main.index') }}">Clue</a>
 
           <a class="item" href="{{ url_for('user.dashboard') }}">Dashboard</a>
@@ -23,9 +24,13 @@
 
           <a class="item" href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a>
           <a class="item" href="{{ url_for('library.material_library') }}">Material Library</a>
-
+</div>
   </div>
+  <br>
 {% endblock %}
+
+<div class="ui container">
+
 <div class="ui container">
 {% block content %}
    <script type="application/javascript">

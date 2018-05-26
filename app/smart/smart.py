@@ -465,4 +465,3 @@ class CreateBom:
             return True
         else:
             return False
-
