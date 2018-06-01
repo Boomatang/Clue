@@ -7,7 +7,6 @@ from app.librarys import library
 from app.librarys.forms import AddClass, testform, RemoveClassForm
 from app.models import MaterialSize, MaterialClass
 from app.utils import isInt, hasName, hasValues, error_builder
-from manage import app
 
 
 @library.route('/', methods=['POST', 'GET'])
