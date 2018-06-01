@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Add Material
+
+{% endblock %}
+
+{% block page_content %}
+
+<div class="ui segment">
+  <h2>Add new material classes</h2>
+
+  <form class="ui form" method="POST" enctype="multipart/form-data">
+      {{ add_form.csrf_token }}
+      <div class="field">
+        <label class="ui" for="add_form_name">{{ add_form.name.label }}</label>
+        <div class="ui input">
+          <label for="add_form_name">
+            {{ add_form.name }}
+          </label>
+        </div>
+
+      <div class="field">
+        <label class="ui" for="add_form_description">{{ add_form.description.label}}</label>
+        <div class="ui input">
+          <label for="add_form_description">
+            {{ add_form.description }}
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        {{ add_form.submit(class_="ui large positive button") }}
+      </div>
+      </div>
+</form>
+
+
+
+
+</div>
+
+
+
+  <h2>Update old material classes</h2>
+  <div class="ui segment">
+  <h2>Remove remove classes</h2>
+
+
+  <form class="ui form" method="post" enctype="multipart/form-data">
+          {{ remove_form.csrf_token }}
+
+  <div class="field">
+    {{ remove_form.check|safe }}
+  </div>
+  <div class="field">
+    {{ remove_form.submit(class_="ui large negative button") }}
+  </div>
+  </form>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+{% endblock %}

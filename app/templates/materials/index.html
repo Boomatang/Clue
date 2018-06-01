@@ -11,37 +11,56 @@ Material Library
 
 {% block page_content %}
 
-<div class="container">
-		<form method="get">
-			<table class="ui table">
+<div class="ui grid">
+  <!-- tab menu things -->
+  <div class="three wide column">
+    <div class="ui inverted vertical fluid pointing menu">
+      {% for type in types %}
+        <a class="item {% if loop.index == 1 %}active {% endif %}" data-tab="{{ type.name }}">{{ type.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="thirteen wide stretched column">
+  		<form method="get">
+
+    {% for type in types %}
+    <div class="ui raised tab segment {% if loop.index == 1 %}active {% endif %}" data-tab="{{ type.name }}">
+      {{ type.description }}
+
+    <table class="ui table">
 				<thead>
 					<tr>
 						<th>Description</th>
-						<th>Default</th>
 						<th>Lengths</th>
             <th></th>
-						
+
 
 					</tr>
 				</thead>
 				<tbody>
-					{% for unit in units %}
+					{% for unit in type.materials %}
 					<tr>
 						<td>{{ unit.size }}</td>
-						<td>{{ unit.default }}</td>
 						<td>{% for length in unit.all_lengths %}
                         {{ length }},
                         {% endfor %}
                             </td>
-					
+
 						<td><button type="submit" class="ui positive button" formaction="{{ url_for('library.material_view', material_id=unit.id) }}"><i class="edit icon"></i> EDIT</button></td>
 
 					</tr>
 					{% endfor %}
 				</tbody>
 			</table>
-		</form>
+    </div>
+    {% endfor %}
+      		</form>
+
+  </div>
 </div>
+
+
 
 {% endblock %}
 

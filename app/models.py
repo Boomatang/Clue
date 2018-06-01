@@ -1,8 +1,6 @@
 import statistics
 from datetime import datetime
 
-from pprint import pprint
-
 from . import db
 
 material_size_lengths = db.Table('material_size_lengths',
@@ -12,20 +10,63 @@ material_size_lengths = db.Table('material_size_lengths',
                                  )
 
 
+class MaterialClass(db.Model):
+    __tablename__ = 'material_class'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+    description = db.Column(db.String)
+    materials = db.relationship('MaterialSize', backref='type', lazy=True)
+
+    def has_materials(self):
+        if len(self.materials) > 0:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def setup():
+        MaterialClass._add_basic_classes()
+        MaterialClass._set_default_classes_on_materials()
+
+    @staticmethod
+    def _add_basic_classes():
+        items = [("Undefined", "This is the default when no class is add to the materials"),
+                 ("Miscellaneous", "A list of various materials from different sources")]
+
+        for item in items:
+            print(f"Working on {entry.size}")
+            entry = MaterialClass(name=item[0], description=item[1])
+            db.session.add(entry)
+        db.session.commit()
+
+    @staticmethod
+    def _set_default_classes_on_materials():
+        default = MaterialClass.query.filter_by(name="Undefined").first()
+
+        for entry in MaterialSize.query.all():
+            entry.type = default
+
+        db.session.commit()
+
+
 class MaterialSize(db.Model):
     __tablename__ = 'material'
     id = db.Column(db.Integer, primary_key=True)
     size = db.Column(db.String(64), unique=True)
     lengths = db.relationship('MaterialLength', secondary=material_size_lengths, lazy='subquery',
-                              backref=db.backref('sizes', lazy=True))
+                              backref=db.backref('sizes', lazy=False))
     default = "Not Working"
+    class_id = db.Column(db.Integer, db.ForeignKey('material_class.id'))
 
     @staticmethod
-    def add_new_material(size, lengths):
+    def add_new_material(size, lengths, group=None):
         entry = MaterialSize.query.filter_by(size=size).first()
 
         if entry is None:
             entry = MaterialSize(size=size)
+
+            if group:
+                entry.class_id = group
 
             for length in lengths:
                 entry_length = MaterialLength.query.filter_by(length=int(length)).first()
@@ -48,7 +89,7 @@ class MaterialSize(db.Model):
 
     def remove_lengths(self, lengths):
         for length in self.lengths:
-            if length.length in lengths:
+            if length.id in lengths:
                 self.lengths.remove(length)
 
     def __repr__(self):
@@ -200,14 +241,18 @@ class BomResult(db.Model):
     __tablename__ = 'bom_result'
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    __job_number = db.Column(db.String)
     comment = db.Column(db.String)
     file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
     material = db.relationship('BomResultMaterial', cascade="all, delete-orphan", backref='result', lazy=True)
-    __job_number = None
 
     @property
     def job_number(self):
         return self.__job_number
+
+    @job_number.setter
+    def job_number(self, number):
+        self.__job_number = number
 
     @job_number.getter
     def job_number(self):

@@ -11,70 +11,55 @@
 
 {% block page_content %}
 
-
-  <section>
-    <form class="ui form" method="POST">
-
-      <h1>{{ unit.size }}</h1>
-
-      <div class="ui two column stackable grid">
-        <!-- Multiple Checkboxes -->
-        <div class="column">
-
-          <div class="field">
-
-            <label class="header">Beam Lengths to Remove</label>
-            <div class="list">
-              {% for length in unit.all_lengths %}
-                <div class="item">
-                  <div class="ui toggle checkbox">
-                    <label for="checkboxes-{{ length }}">
-                      {{ length }}
-                    </label>
-
-
-                    <input name="checkboxes" id="checkboxes-{{ length }}" value="{{ length }}"
-                           type="checkbox">
-                    <br>
-                  </div>
-
-                </div>
-              {% endfor %}
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="column">
-          <div class="field">
-            <label class="ui" for="new-length">Add Beam Length</label>
-            <div class="ui input">
-
-
-              <label for="new-length">
-                <input name="new-length" id="new-length" type="text">
-              </label>
-            </div>
-
-          </div>
-        </div>
+  <form class="ui form" method="post">
+  {{ form.crsf_token }}
+    <div class="field">
+    <div class="ui header">Beam Lengths to Remove</div>
+  {{ form.check|safe }}
       </div>
 
+    <div class="field">
+      <label class="ui" for="new-length">{{ form.add.label }}</label>
+      <div class="ui input">
 
-      <div class="ui container">
 
-        <button type="submit" class="ui large negative button"
-                formaction="{{ url_for('library.material_view', material_id=unit.id) }}"><i class="pencil alternate
- icon"></i> Update Material
-        </button>
+        <label for="new-length">
+          {{ form.add }}
+        </label>
       </div>
-    </form>
-  </section>
 
+    </div>
+<div class="field">
+    <label class="ui" for="material">{{ form.choice.label }}</label>
+      <div class="ui input">
+
+
+        <label for="material">
+          {{ form.choice() }}
+        </label>
+      </div>
+</div>
+
+    <div class="field">
+    {{ form.submit(class_="ui large negative button") }}
+
+</div>
+
+  </form>
 
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
+
+  <script type="application/javascript">
+
+  SelectElement("choice", {{ choice }});
+
+function SelectElement(id, valueToSelect)
+{
+    var element = document.getElementById(id);
+    element.value = valueToSelect;
+}
+  </script>
 {% endblock %}

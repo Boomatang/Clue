@@ -16,7 +16,7 @@ class Config:
     MAIL_SUBJECT_PREFIX = '[Flasky]'
     MAIL_SENDER = 'System Server <jimfity@gmail.com>'
     ADMIN = os.environ.get('CLUE_ADMIN')
-    POSTS_PER_PAGE = 21
+    POSTS_PER_PAGE = 15
     FOLLOWERS_PER_PAGE = 50
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5

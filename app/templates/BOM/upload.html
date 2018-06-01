@@ -8,6 +8,14 @@
 <form class="ui form" method="POST" enctype="multipart/form-data">
 
       <div class="field">
+        <label class="ui" for="comment">{{ form.job_number.label }}</label>
+        <div class="ui input">
+          <label for="comment">
+            {{ form.job_number }}
+          </label>
+        </div>
+
+      <div class="field">
         <label class="ui" for="comment">{{ form.comment.label }}</label>
         <div class="ui input">
           <label for="comment">

@@ -32,7 +32,7 @@ def create_app(config_name):
     app.register_blueprint(tools_blueprint)
 
     from .librarys import library as library_blueprint
-    app.register_blueprint(library_blueprint)
+    app.register_blueprint(library_blueprint, url_prefix="/materials")
 
     from .BOM import BOM as BOM_blueprint
     app.register_blueprint(BOM_blueprint)

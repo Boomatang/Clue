@@ -32,6 +32,7 @@ def BOM_upload():
 
         entry = d.return_entry()
         entry.comment = form.comment.data
+        session['job_number'] = form.job_number.data
         db.session.add(entry)
         db.session.commit()
         entry.configure_file()
@@ -124,6 +125,7 @@ def BOM_calculate():
     result: BomResult = BomResult()
     item: BomFile = BomFile.query.filter_by(id=session['file']).first()
     result.comment = item.comment
+    result.job_number = session["job_number"]
     item.results.append(result)
     db.session.add(result)
 

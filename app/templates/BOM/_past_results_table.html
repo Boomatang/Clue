@@ -1,6 +1,7 @@
 <table class="ui single line table">
     <thead class="">
     <tr>
+        <th>Job Number</th>
         <th>Comment</th>
         <th>File</th>
         <th>Date</th>
@@ -12,11 +13,14 @@
 
     {% for result in BOM_results %}
         <tr>
+                            <td>{{ result.job_number }}</td>
+
             <td>{{ result.comment }}</td>
             <td>{{ result.file.name }}</td>
             <td>{{ result.timestamp }}</td>
-          <td><a class="ui positive button" href="{{ url_for('BOM.BOM_result', result_id=result.id) }}"><i class="eye icon"></i> View</a></td>
+            <td><a class="ui positive button" href="{{ url_for('BOM.BOM_result', result_id=result.id) }}"><i class="eye icon"></i> View</a></td>
             <td><a class="ui negative icon button" href="{{ url_for('BOM.BOM_remove_result', result_id=result.id) }}"><i class="trash icon"></i></a></td>
+
         </tr>
     {% endfor %}
 

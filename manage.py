@@ -18,6 +18,8 @@ if os.path.exists('.env'):
 from app import create_app, db
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
+from app.models import MaterialClass
+
 
 
 app = create_app(os.getenv('CLUE_CONFIG') or 'default')
@@ -26,7 +28,7 @@ migrate = Migrate(app, db)
 
 
 def make_shell_context():
-    return dict(app=app, db=db,
+    return dict(app=app, db=db, MaterialClass=MaterialClass,
                 )
 
 

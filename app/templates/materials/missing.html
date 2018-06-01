@@ -12,37 +12,48 @@ Add Material
 
 {% block page_content %}
 
-<form class="form-horizontal" method="POST">
+<form class="ui form segment" method="POST">
 <fieldset>
 
 <!-- Form Name -->
-<legend>Add Lengths for {{ material }}</legend>
+<h3>Select the class of material</h3>
+  <div class="field">
+    <select id="choice" name="choice">
+      {% for choice in choices %}
+      <option value="{{ choice['id'] }}"
+      {% if choice['selected'] %}
+          selected="selected"
+      {% endif %}
+      >{{ choice['description'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
+<div class="field">
 
-<div class="form-group">
-
-<div class="row">
-	<label class="col-md-4 control-label" for="lengths">Material Lengths</label>  
-        <div class="form-group form-group-options col-xs-11 col-sm-8 col-md-4">
-    		<div class="input-group input-group-option col-xs-12">
-    			<input type="text" name="lengths" class="form-control" placeholder="Beam Length">
+	<h3>Length</h3>
+    <div class="column">
+        <div class="field form-group form-group-options">
+    		<div class="field input-group input-group-option">
+          <div class="ui right icon input">
+    			<input type="text" name="lengths" class="form-control" placeholder="Length">
     			<span class="input-group-addon input-group-addon-remove">
-    				<span class="glyphicon glyphicon-remove"></span>
-                    
+    				<i class="large circular inverted red close icon"></i>
+
     			</span>
+          </div>
     		</div>
     	</div>
     </div>
-
-
-
 </div>
+
+
 
 <!-- Button -->
 <div class="form-group">
 
   <div class="col-md-4">
-    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Save Material Lengths</button>
+    <button id="singlebutton" name="singlebutton" class="ui button primary">Save Material Lengths</button>
   </div>
 </div>
 
@@ -71,17 +82,6 @@ $(function(){
     });
 
 });
-
-var n = 1;
-
-function rename(name, t){
-
-    var output = name+t+n;
-
-    n++;
-    return output;
-
-}
 
     </script>
 {% endblock %}

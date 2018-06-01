@@ -10,12 +10,15 @@ Dashboard
 {% endblock %}
 
 {% block page_content %}
-
+<div class="ui container">
 <h1 class="header">User Dashboard</h1>
 <p>Over time more items will be added here</p>
     {% include('BOM/_past_results_table.html') %}
+    <div class="pagination">
+       {{ macros.pagination_widget(pagination, '.dashboard') }}
+    </div>
 {% endblock %}
-
+</div>
 {% block scripts %}
 {{ super() }}
 {% endblock %}

@@ -23,7 +23,17 @@
           <a class="item" href="{{ url_for('BOM.BOM_upload') }}">Create BOM</a>
 
           <a class="item" href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a>
-          <a class="item" href="{{ url_for('library.material_library') }}">Material Library</a>
+    <div class="ui dropdown item">
+      &nbsp; Admin
+      <i class="large dropdown icon"></i>
+
+      <div class="menu">
+        <a class="item" href="{{ url_for('library.material_library') }}">Material Library</a>
+        <a class="item" href="{{ url_for('library.material_classes') }}">Material Classes</a>
+      </div>
+
+    </div>
+
 </div>
   </div>
   <br>
@@ -44,6 +54,7 @@
     {% endfor %}
 {% endblock %}
   </div>
+
     {% block page_content %}
 
 {% endblock %}
@@ -63,6 +74,7 @@
   });
 
   $('.ui.dropdown').dropdown();
+  $('.menu .item').tab();
   </script>
 
 

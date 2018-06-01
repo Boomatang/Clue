@@ -2,7 +2,8 @@ import pytest
 from flask import url_for
 
 paths = ['main.index', 'user.dashboard', 'cutlist.bom_start',
-         'BOM.BOM_upload', 'tools.bar_spacer', 'library.material_library']
+         'BOM.BOM_upload', 'tools.bar_spacer', 'library.material_library',
+         'library.material_add', 'library.material_classes']
 
 
 @pytest.mark.single_thread

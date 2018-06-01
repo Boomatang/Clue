@@ -17,3 +17,8 @@ def server_shutdown():
 @main.route('/')
 def index():
     return render_template('index.html')
+
+
+@main.route('/test')
+def item_testing():
+    return render_template('test.html')
