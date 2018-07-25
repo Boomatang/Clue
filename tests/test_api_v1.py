@@ -12,6 +12,7 @@ def test_end_points_good_status(client, path):
 paths = [2, 5, 8]
 
 
+@pytest.mark.xfail()
 @pytest.mark.parametrize('path', paths)
 def test_single_bom_results(client, path):
     compare = f"\"data id\": {path}"
@@ -75,6 +76,7 @@ def test_single_bom_is_good_fail_test_call(client):
 paths = [2, 5, 8]
 
 
+@pytest.mark.xfail()
 @pytest.mark.parametrize('path', paths)
 def test_single_bom_is_not_test_call(client, path):
     check = b"test"
@@ -84,6 +86,7 @@ def test_single_bom_is_not_test_call(client, path):
     assert check not in result.data and 200 == result.status_code
 
 
+@pytest.mark.xfail()
 def test_seeded_data_found(client):
     check = b'\"massage\": \"Found data for ID 2'
     result = client.get(f"/api/v1/bom/2").data
@@ -92,6 +95,7 @@ def test_seeded_data_found(client):
 
 def test_seed_data_not_found(client):
     assert 404 == client.get("/api/v1/bom/100").status_code
+
 
 def test_un_real_test_data_request(client):
     check = b"What are you playing at."

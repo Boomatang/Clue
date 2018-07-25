@@ -8,9 +8,18 @@ def app():
     app = create_app('testing')
     app_context = app.app_context()
     app_context.push()
-    # db.create_all()
+    db.create_all()
 
     yield app
 
     db.session.remove()
-    # db.drop_all()
+    db.drop_all()
+
+
+@pytest.fixture(scope='function')
+def clean_db(app):
+    db.session.remove()
+    db.drop_all()
+    db.create_all()
+    yield app
+
