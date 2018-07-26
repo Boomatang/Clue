@@ -8,9 +8,10 @@ from app.user import user
 def dashboard():
 
     page = request.args.get('page', 1, type=int)
-    pagination = BomResult.query.order_by(BomResult.timestamp.desc()).paginate(page,
-                                                                               per_page=current_app.config['POSTS_PER_PAGE'],
-                                                                               error_out=False)
+    pagination = BomResult.query.order_by(
+            BomResult.timestamp.desc()).paginate(page,
+                                                 per_page=current_app.config['POSTS_PER_PAGE'],
+                                                 error_out=False)
     temp = pagination.items
 
     return render_template('user/dashboard.html', BOM_results=temp, pagination=pagination)

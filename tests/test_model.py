@@ -4,8 +4,6 @@ from app.mocks import set_up_sample_bom_files, set_up_sample_bom_file_data
 from app.models import BomFile, BomFileContents
 
 
-
-
 def test_add_bom_file_class(client):
     # Checking if a bom file could have been uploaded
 
@@ -62,4 +60,3 @@ def test_add_four_items_to_mock_files(client, clean_db):
     set_up_sample_bom_file_data(id=1, qty=4)
     bom_file: BomFile = BomFile.query.filter_by(id=1).first()
     assert 4 == len(bom_file.items)
-

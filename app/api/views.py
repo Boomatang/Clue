@@ -1,4 +1,4 @@
-from flask import jsonify, abort
+from flask import jsonify
 
 from app.models import BomResult
 from app.utils import isInt

@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from flask import render_template, request, flash, redirect, url_for, session, logging
+from flask import render_template, request, flash, redirect, url_for, session
 
 from app import db
 from app.librarys import library

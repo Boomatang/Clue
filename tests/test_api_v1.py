@@ -67,7 +67,8 @@ def test_single_bom_is_good_test_call(client, path):
 
 
 def test_single_bom_is_good_fail_test_call(client):
-    check = jsonify({"error": "BOM ID not found \nPlease check your input"}).data
+    check = jsonify({"error": "BOM ID not found \n"
+                    "Please check your input"}).data
     result = client.get("/api/v1/bom/tf").data
 
     assert check == result
@@ -101,4 +102,3 @@ def test_un_real_test_data_request(client):
     check = b"What are you playing at."
     result = client.get(f"/api/v1/bom/t{10**4+1}").data
     assert check in result
-

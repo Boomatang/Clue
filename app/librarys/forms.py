@@ -3,7 +3,6 @@ from wtforms import StringField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import DataRequired
 from wtforms.widgets import html_params
 
-from app import db
 from app.models import MaterialSize, MaterialClass
 
 
@@ -41,7 +40,6 @@ class ClassList(ChoicesBase):
             results.append((item.id, item.name, False))
 
         return results
-
 
 
 def select_multi_checkbox(field, ul_class='', **kwargs):

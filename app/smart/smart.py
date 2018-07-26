@@ -88,7 +88,7 @@ class BOM:
             #     print(row)
         stock = beam[0]
         length, qty = self._get_stock_data(beam[1])
-        if length is not None:        
+        if length is not None:
             self.stock[stock][length] = qty
 
     @staticmethod
@@ -308,7 +308,6 @@ class CreateBom:
     def run(self):
         self._setup_data_store_basic_information()
         self._setup_parts_for_cutting()
-        
         self._create_cutting_list()
 
     def _setup_data_store_basic_information(self):
@@ -378,7 +377,6 @@ class CreateBom:
             short = False
             while self._part_is_usable(part) and not short:
                 if part['length'] is not None:
-                    
                     if part['length'] > beam['length']:
                         beam['length'] = self._get_next_beam_length(part)
                         beam_length = beam['length']

@@ -1,6 +1,7 @@
 import pytest
 
-from app.utils import hasName, isFloat, isInt, file_ext_checker, hasValues, key_preferred, key_checkboxes
+from app.utils import hasName, isFloat, isInt, file_ext_checker, hasValues,\
+    key_preferred, key_checkboxes
 
 has_name_fail = ['', [], {}, None]
 has_name_pass = ['1', [1], {1: 1}]
@@ -55,7 +56,8 @@ def test_is_int_pass(pass_value):
 
 
 file_ext_checker_fail = [('name', ' '), ('name.text', 'txt')]
-file_ext_checker_pass = [('name.tXt', 'TXT'), ('name.txt', '.txt'), ('name', '')]
+file_ext_checker_pass = [('name.tXt', 'TXT'),
+                         ('name.txt', '.txt'), ('name', '')]
 
 
 @pytest.mark.parametrize('fail_value', file_ext_checker_fail)

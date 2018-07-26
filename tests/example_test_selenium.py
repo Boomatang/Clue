@@ -9,14 +9,14 @@ from app.models import Role, User, Post
 
 class SeleniumTestCase(unittest.TestCase):
     client = None
-    
+
     @classmethod
     def setUpClass(cls):
         # start Firefox
         try:
             cls.client = webdriver.Firefox()
         except:
-            pass
+            print("I failed")
 
         # skip these tests if the browser could not be started
         if cls.client:
@@ -48,7 +48,7 @@ class SeleniumTestCase(unittest.TestCase):
             threading.Thread(target=cls.app.run).start()
 
             # give the server a second to ensure it is up
-            time.sleep(1) 
+            time.sleep(1)
 
     @classmethod
     def tearDownClass(cls):
@@ -70,7 +70,7 @@ class SeleniumTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-    
+
     def test_admin_home_page(self):
         # navigate to home page
         self.client.get('http://localhost:5000/')

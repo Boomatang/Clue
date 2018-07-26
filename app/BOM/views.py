@@ -6,8 +6,8 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.BOM import BOM
 from app.BOM.forms import BOMUpload
-from app.models import BomFile, MaterialSize, MaterialLength, BomSession, BomSessionSize, BomResult, BomResultMaterial, \
-    BomResultBeam, BomResultBeamPart, BomResultMissingPart, BomSessionLength
+from app.models import BomFile, MaterialSize, MaterialLength, BomSession, BomSessionSize, BomResult,\
+    BomResultMaterial, BomResultBeam, BomResultBeamPart, BomResultMissingPart, BomSessionLength
 from app.smart import RawBomFile, CreateBom
 from app.utils import file_ext_checker, key_preferred, key_checkboxes
 

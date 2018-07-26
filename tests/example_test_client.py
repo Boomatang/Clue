@@ -4,6 +4,7 @@ from flask import url_for
 from app import create_app, db
 from app.models import User, Role
 
+
 class FlaskClientTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
@@ -50,5 +51,6 @@ class FlaskClientTestCase(unittest.TestCase):
             b'You have confirmed your account' in response.data)
 
         # log out
-        response = self.client.get(url_for('auth.logout'), follow_redirects=True)
+        response = self.client.get(url_for('auth.logout'),
+                                   follow_redirects=True)
         self.assertTrue(b'You have been logged out' in response.data)

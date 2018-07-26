@@ -29,4 +29,3 @@ def bar_spacer():
         return render_template('utls/bar-spacer.html', form=form, bar=bar)
 
     return render_template('utls/bar-spacer.html', form=form, bar=bar)
-

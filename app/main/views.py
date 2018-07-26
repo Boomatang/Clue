@@ -1,5 +1,5 @@
 from flask import render_template, abort, request, \
-    current_app, flash
+    current_app
 from . import main
 
 

@@ -22,4 +22,3 @@ def clean_db(app):
     db.drop_all()
     db.create_all()
     yield app
-

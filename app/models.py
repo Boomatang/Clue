@@ -34,7 +34,6 @@ class MaterialClass(db.Model):
                  ("Miscellaneous", "A list of various materials from different sources")]
 
         for item in items:
-            print(f"Working on {entry.size}")
             entry = MaterialClass(name=item[0], description=item[1])
             db.session.add(entry)
         db.session.commit()
@@ -336,7 +335,6 @@ class BomResult(db.Model):
         size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
 
         return size.high()
-
 
 
 class BomResultMaterial(db.Model):

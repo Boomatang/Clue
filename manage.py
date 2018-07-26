@@ -21,7 +21,6 @@ from flask_migrate import Migrate, MigrateCommand
 from app.models import MaterialClass
 
 
-
 app = create_app(os.getenv('CLUE_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
@@ -78,4 +77,3 @@ def deploy():
 
 if __name__ == '__main__':
     manager.run()
-

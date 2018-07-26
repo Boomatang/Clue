@@ -12,4 +12,3 @@ class CSVForm(FlaskForm):
 
 class BasicForm(FlaskForm):
     submit = SubmitField('Submit')
-
