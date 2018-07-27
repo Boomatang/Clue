@@ -116,16 +116,25 @@ def BOM_calculate():
     setup_id = session['session_id']
     data_id = session['file']
 
-    BOM = CreateBom(setup_id, data_id)
-    BOM.run()
+    b_o_m = CreateBom(setup_id, data_id)
+    b_o_m.run()
 
-    values = BOM.beams
-    missing = BOM.un_cut_parts
+    result = create_result(b_o_m, session['file'])
+
+    return redirect(url_for('.BOM_result', result_id=result.id))
+
+
+def create_result(bom_data, session_id):
+    values = bom_data.beams
+    missing = bom_data.un_cut_parts
 
     result: BomResult = BomResult()
-    item: BomFile = BomFile.query.filter_by(id=session['file']).first()
+    item: BomFile = BomFile.query.filter_by(id=session_id).first()
     result.comment = item.comment
-    result.job_number = session["job_number"]
+    try:
+        result.job_number = session["job_number"]
+    except KeyError as e:
+        print(f'Found Error:\n {e}')
     item.results.append(result)
     db.session.add(result)
 
@@ -148,7 +157,8 @@ def BOM_calculate():
                 part_missing = BomResultMissingPart(item_no=item['item'], length=item['length'], qty=item['missing'])
                 material.missing.append(part_missing)
     db.session.commit()
-    return redirect(url_for('.BOM_result', result_id=result.id))
+
+    return result
 
 
 @BOM.route('/BOM/result/<result_id>', methods=['POST', 'GET'])

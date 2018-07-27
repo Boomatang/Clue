@@ -173,7 +173,7 @@ class BomFileContents(db.Model):
         if len(parent) == 1:
             return None
         else:
-            return '.'.join(parent[:1])
+            return '.'.join(parent[:-1])
 
     def is_plate(self):
         contains = ['pl', 'plate']
