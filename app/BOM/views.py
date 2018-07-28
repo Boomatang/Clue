@@ -166,8 +166,12 @@ def BOM_result(result_id):
     result: BomResult = BomResult.query.filter_by(id=result_id).first_or_404()
 
     session['file'] = result.file_id
+    # lengths = [6100, 7500, 12000]
+    lengths = result.lengths
 
-    return render_template('BOM/results.html', result=result)
+    lengths.sort()
+
+    return render_template('BOM/results.html', result=result, lengths=lengths)
 
 
 @BOM.route('/BOM/results/remove/<result_id>', methods=['POST', 'GET'])

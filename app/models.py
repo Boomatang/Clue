@@ -260,6 +260,19 @@ class BomResult(db.Model):
         else:
             return "Unknown"
 
+    @property
+    def lengths(self):
+        out = []
+
+        for material in self.material:
+            for beam in material.beams:
+                if beam.length not in out:
+                    out.append(beam.length)
+        return out
+
+    def timestamp_format(self):
+        return f"{self.timestamp:%d/%m/%Y}"
+
     def delete(self):
         for material in self.material:
             material.delete()
