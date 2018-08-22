@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ super() }}Working with certs{% endblock %}
+
+{% block page_content %}
+
+  <section class="ui segment center aligned">
+  <div class="ui section">
+  <i class="huge green sync icon"></i>
+  <h1>Now processing your file</h1>
+  <p>This may take some time</p>
+  <p>Your ID number 66</p>
+  <p></p>
+  </div>
+  <div class="ui section">
+    <a class="ui positive button" href="{{ url_for('cert.index') }}">Return to results page</a>
+  </div>
+  </section>
+
+
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+{% endblock %}

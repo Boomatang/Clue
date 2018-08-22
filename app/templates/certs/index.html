@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ super() }}Working with certs{% endblock %}
+
+{% block page_content %}
+
+  <section class="ui two column grid container">
+  <h1>Working with Certs</h1>
+    <div class="row">
+    <div class="column ">
+  <p>This page is design to rename cert files to a more human readable state. As a user its up to you to check the
+    output files are correct and match what is required.</p>
+    </div>
+  <form class="ui form column container" method="post" action="{{ url_for('cert.file_upload') }}">
+    <input type="file" class="ui positive button">
+    <input type="submit" class="ui positive button">
+  </form>
+      </div>
+  </section>
+
+  <section class="container">
+    <h2>Pass Results</h2>
+    <table class="ui center aligned table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>No. of Files</th>
+        <th>Runtime</th>
+        <th>Download</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>66</td>
+        <td>Now</td>
+        <td>Unknown</td>
+        <td>Unknown</td>
+        <td>Processing.. </td>
+      </tr>
+      <tr>
+        <td>64</td>
+        <td>Today</td>
+        <td>45</td>
+        <td>2 hours</td>
+        <td><i class="large blue download icon"></i></td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
+	
