@@ -40,8 +40,9 @@ def get_bom_ref_data(ID):
 
     for material in bom.material_review():
         for length in bom.required_lengths(material):
-            output["material"].append({"size": f"{material} x {length}",
-                                       "qty": bom.required_length_qty(material, length)})
+            output["material"].append({"size": f"{material} @ {length}",
+                                       "qty": bom.required_length_qty(material, length),
+                                       "grade": get_grade(material)})
 
     output["total"] = len(output["material"])
 
@@ -50,6 +51,13 @@ def get_bom_ref_data(ID):
                             "\n\n*** WARNING ***\nThis data reports that \nthere is missing parts"
 
     return output
+
+
+def get_grade(material):
+    try:
+        return material.grade
+    except AttributeError:
+        return "S235 S355 S275"
 
 
 @api.app_errorhandler(404)

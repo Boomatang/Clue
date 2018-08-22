@@ -1,6 +1,8 @@
 import pytest
 from flask import jsonify
 
+from app.api.views import get_grade
+
 paths = ['t1', 't10', 'tf']
 
 
@@ -102,3 +104,9 @@ def test_un_real_test_data_request(client):
     check = b"What are you playing at."
     result = client.get(f"/api/v1/bom/t{10**4+1}").data
     assert check in result
+
+
+def test_material_missing_grade():
+    expected = "S235 S355 S275"
+    result = get_grade(None)
+    assert result == expected
