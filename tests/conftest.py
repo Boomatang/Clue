@@ -22,3 +22,11 @@ def clean_db(app):
     db.drop_all()
     db.create_all()
     yield app
+
+
+@pytest.fixture(scope='session')
+def session_clean_db(app):
+    db.session.remove()
+    db.drop_all()
+    db.create_all()
+    yield app

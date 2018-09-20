@@ -8,13 +8,30 @@
   <section class="ui two column grid container">
   <h1>Working with Certs</h1>
     <div class="row">
-    <div class="column ">
-  <p>This page is design to rename cert files to a more human readable state. As a user its up to you to check the
-    output files are correct and match what is required.</p>
-    </div>
-  <form class="ui form column container" method="post" action="{{ url_for('cert.file_upload') }}">
-    <input type="file" class="ui positive button">
-    <input type="submit" class="ui positive button">
+      <div class="column ">
+        <p>This page is design to rename cert files to a more human readable state. As a user its up to you to check the
+          output files are correct and match what is required.</p>
+        <p>Step's to follow        </p>
+
+        <ol>
+          <li>Press the "Choose File" button and select the ZIP that contains the certs you wish to rename.</li>
+          <li>Press the "Upload Zip File" button. This will start the process of renaming the certs.</li>
+          <li>This will bring you to a landing page. When this page loads you know your file has been uploaded successfully.</li>
+          <li>On this landing page you need to record "Your ID number".</li>
+          <li>Then return back to the result page.</li>
+          <li>It may take some time for the process to complete.</li>
+          <li>Find your ID number in the table below.</li>
+          <li>You can download a ZIP file holding the certs by clicking the download button.</li>
+          <li>If the ID number is still been processed you may need to refresh the page to get the download button.</li>
+        </ol>
+      </div>
+  <form class="ui form column container" method="POST" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ form.cert_folder }}
+    {% for error in form.cert_folder.errors %}
+      <p>{{ error }}</p>
+    {% endfor %}
+    {{ form.submit(class="ui positive button") }}
   </form>
       </div>
   </section>
@@ -32,20 +49,22 @@
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td>66</td>
-        <td>Now</td>
-        <td>Unknown</td>
-        <td>Unknown</td>
-        <td>Processing.. </td>
+      {% for cert in history %}
+        <tr>
+        <td>{{ cert.id }}</td>
+        <td>{{ cert.timestamp_format() }}</td>
+          {% if cert.download_file %}
+        <td>{{ cert.file_count }}</td>
+        <td>{{ cert.run_time }} Sec's</td>
+        <td><a href="{{ url_for('cert.download', cert=cert.id) }}"> <i class="large blue download icon"></i></a></td>
+        {% else %}
+        <td class="center aligned" colspan="3">
+Been Processed...
+        </td>
+        {% endif %}
       </tr>
-      <tr>
-        <td>64</td>
-        <td>Today</td>
-        <td>45</td>
-        <td>2 hours</td>
-        <td><i class="large blue download icon"></i></td>
-      </tr>
+      {% endfor %}
+
       </tbody>
     </table>
   </section>

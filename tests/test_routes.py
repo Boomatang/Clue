@@ -3,7 +3,7 @@ from flask import url_for
 
 paths = ['main.index', 'user.dashboard', 'cutlist.bom_start',
          'BOM.BOM_upload', 'tools.bar_spacer', 'library.material_library',
-         'library.material_add', 'library.material_classes', 'cert.index', 'cert.file_upload']
+         'library.material_add', 'library.material_classes', 'cert.index']
 
 
 @pytest.mark.single_thread
