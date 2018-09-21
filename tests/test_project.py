@@ -1,4 +1,5 @@
 import datetime
+import pytest
 import re
 from flask import url_for
 
@@ -44,6 +45,7 @@ def test_adding_project_on_page(client, clean_db):
     assert data['job number'] == db_entry.job_number
 
 
+@pytest.mark.xfail()
 def test_project_view(client, clean_db):
     data = {'job number': "18-09-275",
             'project': 'Sample Project',

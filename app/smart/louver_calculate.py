@@ -97,6 +97,7 @@ def louver_efficiency(louver_width, louver_height, mesh_efficiency):
 
     output = calculate_louver_efficiency(louver_width, louver_height, mesh_efficiency)
     output = str(round(output * 100, 1))
+
     return output + '%'
 
 
@@ -110,3 +111,4 @@ if __name__ == "__main__":
     print(round(calculate_louver_efficiency(900, 300, .3), 2))
 
     print(louver_efficiency(900, 300, .7))
+
