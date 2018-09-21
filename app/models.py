@@ -382,7 +382,10 @@ class BomResultMaterial(db.Model):
         avg = []
         for beam in self.beams:
             avg.append(beam.get_percentage())
-        return avg
+        if len(avg) > 0:
+            return avg
+        else:
+            return [0, 0]
 
 
 class BomResultBeam(db.Model):
