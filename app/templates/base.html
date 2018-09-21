@@ -22,8 +22,18 @@
 
           <a class="item" href="{{ url_for('BOM.BOM_upload') }}">Create BOM</a>
 
-          <a class="item" href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a>
+    <div class="ui dropdown item">
+
+      Utilities <i class="large dropdown icon"></i>
+      <div class="menu">
+        <a class="item" href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a>
           <a class="item" href="{{ url_for('tools.louver_calculator') }}">Louver Calculator</a>
+        <a class="item" href="{{ url_for('cert.index') }}">Working with Certs</a>
+
+      </div>
+
+    </div>
+
     <div class="ui dropdown item">
       &nbsp; Admin
       <i class="large dropdown icon"></i>
