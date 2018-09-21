@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
+{% from "_formhelpers.html" import render_field %}
 
 {% block title %}{{ super() }}Bar Spacer{% endblock %}
 
@@ -11,27 +12,11 @@
         {{ form.csrf_token }}
         <h4 class="ui dividing header">Calculate louver air flow</h4>
         <div class="two fields">
-        <div class="field">
 
-          <label>{{ form.width.label }}</label>
+        {{ render_field(form.width, placeholder='Width of Louver in mm') }}
+        {{ render_field(form.height, placeholder='Height of Louver in mm') }}
 
-            <div class="field">
-            {{ form.width(placeholder='Width of Louver in mm') }}
-            </div>
-          {% for error in form.width.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
 
-        </div>
-          <div class="field">
-            <label>{{ form.height.label }}</label>
-            <div class="field">
-              {{ form.height(placeholder='Height of Louver in mm') }}
-            </div>
-            {% for error in form.height.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-          </div>
         </div>
       {{ form.submit(class="ui fluid green button") }}
       </form>

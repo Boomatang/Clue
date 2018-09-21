@@ -1,0 +1,7 @@
+{% from "_formhelpers.html" import render_field %}
+
+<form class="ui form" method="POST" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ render_field(form.cert_folder) }}
+    {{ form.submit(class="ui positive button") }}
+  </form>

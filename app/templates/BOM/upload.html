@@ -1,44 +1,23 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
+{% from "_formhelpers.html" import render_field %}
 
-{% block title %}{{super()}}form page{% endblock %}
+{% block title %}{{ super() }}form page{% endblock %}
 
 {% block page_content %}
-<form class="ui form" method="POST" enctype="multipart/form-data">
-
-      <div class="field">
-        <label class="ui" for="comment">{{ form.job_number.label }}</label>
-        <div class="ui input">
-          <label for="comment">
-            {{ form.job_number }}
-          </label>
-        </div>
-
-      <div class="field">
-        <label class="ui" for="comment">{{ form.comment.label }}</label>
-        <div class="ui input">
-          <label for="comment">
-            {{ form.comment }}
-          </label>
-        </div>
-      </div>
-      <div class="field">
-        <label class="ui" for="csv">{{ form.file_name.label }}</label>
-        <div class="ui input">
-          <label for="csv">
-            {{ form.file_name }}
-          </label>
-        </div>
-      </div>
+  <div class="ui two column grid">
+    <form class="ui column form" method="POST" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      {{ render_field(form.job_number) }}
+      {{ render_field(form.comment) }}
+      {{ render_field(form.file_name) }}
       <div class="field">
         {{ form.submit(class_="ui large positive button") }}
       </div>
-
-</form>
-
+    </form>
+  </div>
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
+  {{ super() }}
 {% endblock %}

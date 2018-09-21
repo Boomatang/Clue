@@ -25,14 +25,10 @@
           <li>If the ID number is still been processed you may need to refresh the page to get the download button.</li>
         </ol>
       </div>
-  <form class="ui form column container" method="POST" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    {{ form.cert_folder }}
-    {% for error in form.cert_folder.errors %}
-      <p>{{ error }}</p>
-    {% endfor %}
-    {{ form.submit(class="ui positive button") }}
-  </form>
+    <div class="ui column segment">
+      {% include('certs/_upload_form.html') %}
+    </div>
+
       </div>
   </section>
 
