@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Project {{ project.name }}
+
+{% endblock %}
+
+{% block page_content %}
+  <div class="ui two column grid">
+    <div class="ui row">
+      <div class="column"><h1>Client : <span id="client">{{ project.client }}</span></h1></div>
+      <div class="column">
+        <button class="ui green button" onclick="CopyToClipboard('client')">Copy Client</button>
+      </div>
+    </div>
+
+  <div class="ui row">
+      <div class="column"><h1>Project : <span id="project">{{ project.name }}</span></h1></div>
+      <div class="column">
+        <button class="ui green button" onclick="CopyToClipboard('project')">Copy Project</button>
+      </div>
+    </div>
+
+  <div class="ui row">
+      <div class="column"><h1>Job Number : <span id="job number">{{ project.job_number }}</span></h1></div>
+      <div class="column">
+        <button class="ui green button" onclick="CopyToClipboard('job number')">Copy Job Number</button>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+function CopyToClipboard(containerid) {
+    if (window.getSelection) {
+        if (window.getSelection().empty) { // Chrome
+            window.getSelection().empty();
+        } else if (window.getSelection().removeAllRanges) { // Firefox
+            window.getSelection().removeAllRanges();
+        }
+    } else if (document.selection) { // IE?
+        document.selection.empty();
+    }
+
+    if (document.selection) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(containerid));
+        range.select().createTextRange();
+        document.execCommand("copy");
+
+    } else if (window.getSelection) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerid));
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+    }
+}
+</script>
+
+
+{% endblock %}

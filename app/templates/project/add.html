@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Add Project
+
+{% endblock %}
+{% block page_content %}
+  <div class="ui two column centered grid">
+  <div class="column">
+      {% include('project/_add_project.html') %}
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
