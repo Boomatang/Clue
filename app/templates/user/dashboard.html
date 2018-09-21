@@ -11,12 +11,18 @@ Dashboard
 
 {% block page_content %}
 <div class="ui container">
-<h1 class="header">User Dashboard</h1>
-<p>Over time more items will be added here</p>
+  <div class="ui raised segment">
+  <div class="ui small header">Last Five Active Projects</div>
+  {% include('project/_main_table.html') %}
+  </div>
+
+  <div class="ui raised segment">
+  <div class="ui small header">BOM Results</div>
     {% include('BOM/_past_results_table.html') %}
     <div class="pagination">
        {{ macros.pagination_widget(pagination, '.dashboard') }}
     </div>
+  </div>
 {% endblock %}
 </div>
 {% block scripts %}

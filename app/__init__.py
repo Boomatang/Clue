@@ -43,4 +43,7 @@ def create_app(config_name):
     from .cert import cert as cert_blueprint
     app.register_blueprint(cert_blueprint, url_prefix="/cert")
 
+    from .project import project as project_blueprint
+    app.register_blueprint(project_blueprint, url_prefix="/project")
+
     return app

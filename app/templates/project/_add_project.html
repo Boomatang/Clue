@@ -1,0 +1,8 @@
+{% from "_formhelpers.html" import render_field %}
+<form class="ui form" method=post>
+  {{ form.csrf_token }}
+  {{ render_field(form.job_number) }}
+  {{ render_field(form.project) }}
+  {{ render_field(form.client) }}
+  <p>{{ form.submit(class_="ui large positive button") }}</p>
+</form>

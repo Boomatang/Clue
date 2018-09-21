@@ -1,6 +1,6 @@
 from flask import render_template, request, current_app
 
-from app.models import BomResult
+from app.models import BomResult, Project
 from app.user import user
 
 
@@ -14,4 +14,6 @@ def dashboard():
                                                  error_out=False)
     temp = pagination.items
 
-    return render_template('user/dashboard.html', BOM_results=temp, pagination=pagination)
+    projects = Project.query.order_by(Project.last_active.desc())[:5]
+
+    return render_template('user/dashboard.html', BOM_results=temp, pagination=pagination, projects=projects)

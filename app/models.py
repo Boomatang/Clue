@@ -457,3 +457,13 @@ class Certs(db.Model):
 
     def timestamp_format(self):
         return f"{self.date:%d/%m/%Y}"
+
+
+class Project(db.Model):
+    __tablename__ = 'project'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    client = db.Column(db.String)
+    job_number = db.Column(db.String)
+    timestamp = db.Column(db.DateTime)
+    last_active = db.Column(db.DateTime)

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}
+
+{{ super() }}
+
+Projects
+
+{% endblock %}
+
+{% block page_content %}
+  <a href="{{ url_for('project.add') }}"> <div class="fluid ui teal button">Add Project</div></a>
+  {% include("project/_main_table.html") %}
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}
