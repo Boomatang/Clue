@@ -248,11 +248,15 @@ class RawBomFile:
 
     @staticmethod
     def _check_is_string(string):
-        value = string.strip()
+        try:
+            value = string.strip()
 
-        if len(value) > 0:
-            return value
-        else:
+            if len(value) > 0:
+                return value
+            else:
+                return None
+        except AttributeError as e:
+            print(e)
             return None
 
     @staticmethod
