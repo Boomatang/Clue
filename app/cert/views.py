@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import render_template, url_for, redirect, request, session, flash, send_file, app
+from flask import render_template, url_for, redirect, request, session, flash, send_file
 from werkzeug.datastructures import CombinedMultiDict
 from werkzeug.utils import secure_filename
 
@@ -12,6 +12,7 @@ from app.models import Certs
 from app.smart import cert_editing
 from app.utils import file_ext_checker
 from datetime import datetime
+from manage import app
 
 
 @cert.route('/', methods=['GET', 'POST'])
