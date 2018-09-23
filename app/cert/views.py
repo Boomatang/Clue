@@ -12,7 +12,6 @@ from app.models import Certs
 from app.smart import cert_editing
 from app.utils import file_ext_checker
 from datetime import datetime
-from manage import app
 
 
 @cert.route('/', methods=['GET', 'POST'])
@@ -52,7 +51,7 @@ def index():
 @cert.route('/upload', methods=['GET', 'POST'])
 def file_upload():
     cert_id = session["cert_id"]
-    cert_editing(cert_id, app)
+    cert_editing(cert_id)
 
     return render_template('certs/upload_complete.html', cert_id=cert_id)
 

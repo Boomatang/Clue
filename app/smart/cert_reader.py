@@ -27,9 +27,8 @@ from app import db
 from app.models import Certs
 from app.utils import count_files
 
-TESTING = False
-TEST_FILE = "/home/boomatang/Projects/WorkScripts/Data/Cert (16).pdf"
-TEST_FOLDER = "/home/boomatang/Documents/WorkScripts/Sample Data/"
+from flask import current_app
+
 
 LOG_REPORT = "__log_report.tsv"
 
@@ -51,12 +50,10 @@ def get_folder_path(folder):
 
 
 def folder_name(folder_path):
-    if TESTING:
-        return TEST_FOLDER
-    else:
-        folder = trim_name(folder_path)
-        # print(folder)
-        return folder
+
+    folder = trim_name(folder_path)
+    # print(folder)
+    return folder
 
 
 def trim_name(name):
@@ -280,7 +277,7 @@ def cert_reader(folder_path):
 
     for pdf in pdf_paths:
         if x < 996:
-            work_body = PDF(pdf, TESTING)
+            work_body = PDF(pdf, False)
             work_body.do_work()
             work_body.make_file_changes(log)
             # work_body.test_print()
@@ -333,15 +330,13 @@ def run_cert_editing(entry_id, app):
 
 
 def run_cert_editing_async(cert_id, app):
+
     thr = Thread(target=run_cert_editing, args=[cert_id, app])
     thr.start()
     return thr
 
 
-def cert_editing(cert_id, app):
+def cert_editing(cert_id):
+    app = current_app._get_current_object()
     run_cert_editing_async(cert_id, app)
 
-
-if __name__ == "__main__":
-    # run the actual script
-    cert_reader(TEST_FOLDER)

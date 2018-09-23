@@ -7,3 +7,6 @@ Clue is a project designed to help the user with managing materials that maybe r
 * **API.** The newest feature, now there results for the bill of materials can be gotten from a API call where the results are returned in a json format which can be used by other programs.
 * **Simple Calculator.** There is a calculator to work out the spacings and bar count for the infill bars in a railing.
 * **Admin features.** All the materials are sorted and can be updated using the admin pages.
+* **Projects** This in its current from only allows for project name, client and job number.
+* **Cert renaming** Allows the user upload a zip folder to rename the cert with in to a file name from the pdf cert.
+* **Louver Calculator** This is to calculate the free air flow of a louver.
