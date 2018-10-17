@@ -8,7 +8,7 @@ from app.BOM import BOM
 from app.BOM.forms import BOMUpload
 from app.models import BomFile, MaterialSize, MaterialLength, BomSession, BomSessionSize, BomResult,\
     BomResultMaterial, BomResultBeam, BomResultBeamPart, BomResultMissingPart, BomSessionLength
-from app.smart import RawBomFile, CreateBom
+from app.smart import RawBomFile, CreateBom, fix_csv_file
 from app.utils import file_ext_checker, key_preferred, key_checkboxes
 
 
@@ -27,7 +27,7 @@ def BOM_upload():
             return redirect(url_for('.BOM_upload'))
 
         f.save(name)
-
+        fix_csv_file(name)
         d = RawBomFile(name)
 
         entry = d.return_entry()

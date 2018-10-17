@@ -13,6 +13,22 @@ ITEM = 'ITEM NO.'
 TOTAL = 'total'
 
 
+def fix_csv_file(file_name):
+    output = ''
+    error = 'PLATE,'
+    with open(file_name) as name:
+        for row in name:
+            if error in row:
+                values = row.split(error)
+                value = values[0] + 'PLATE' + values[1]
+                output += value
+            else:
+                output += row
+
+    with open(file_name, "w") as name:
+        name.write(output)
+
+
 class BOM:
 
     def __init__(self, file_name, ref=None):
