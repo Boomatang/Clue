@@ -52,11 +52,12 @@
         <td>{{ result.material_high_percentage(material) }}%</td>
         <td>{{ result.material_low_percentage(material) }}%</td>
 
-        {% set ns = namespace(found=false, length=0) %}
+        {% set ns = namespace(found=false, length=0, count=lengths|length) %}
 
         {% for required in result.required_lengths(material)|reverse %}
           {% if  result.required_lengths(material)|length > 1 %}
             {% set ns.found = false %}
+            {% set ns.count = ns.count - 1 %}
 
             {% for length in lengths %}
               {% if required == length %}
@@ -64,8 +65,9 @@
                 {% set ns.found = true %}
                 {% set ns.length = length %}
               {% elif not ns.found %}
-                {% if length != ns.length %}
+                {% if length != ns.length and ns.count > 0 %}
                   <td></td>
+                  {% set ns.count = ns.count - 1 %}
                 {% endif %}
               {% endif %}
             {% endfor %}
