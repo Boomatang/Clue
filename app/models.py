@@ -13,8 +13,8 @@ material_size_lengths = db.Table('material_size_lengths',
 class MaterialClass(db.Model):
     __tablename__ = 'material_class'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
-    description = db.Column(db.String)
+    name = db.Column(db.String(50), unique=True)
+    description = db.Column(db.String(150))
     materials = db.relationship('MaterialSize', backref='type', lazy=True)
 
     def has_materials(self):
@@ -108,7 +108,7 @@ class BomFile(db.Model):
     __tablename__ = 'bom_files'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-    comment = db.Column(db.String)
+    comment = db.Column(db.String(250))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     items = db.relationship('BomFileContents', cascade="all, delete-orphan", backref='file', lazy=True)
     results = db.relationship('BomResult', cascade="all, delete-orphan", backref='file', lazy=True)
@@ -240,8 +240,8 @@ class BomResult(db.Model):
     __tablename__ = 'bom_result'
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    __job_number = db.Column(db.String)
-    comment = db.Column(db.String)
+    __job_number = db.Column(db.String(20))
+    comment = db.Column(db.String(250))
     file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
     material = db.relationship('BomResultMaterial', cascade="all, delete-orphan", backref='result', lazy=True)
 
@@ -452,8 +452,8 @@ class Certs(db.Model):
     date = db.Column(db.DateTime, default=datetime.now())
     file_count = db.Column(db.Integer)
     run_time = db.Column(db.Integer)
-    upload_file = db.Column(db.String)
-    download_file = db.Column(db.String)
+    upload_file = db.Column(db.String(250))
+    download_file = db.Column(db.String(250))
 
     def timestamp_format(self):
         return f"{self.date:%d/%m/%Y}"
@@ -462,8 +462,8 @@ class Certs(db.Model):
 class Project(db.Model):
     __tablename__ = 'project'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    client = db.Column(db.String)
-    job_number = db.Column(db.String)
+    name = db.Column(db.String(100))
+    client = db.Column(db.String(100))
+    job_number = db.Column(db.String(20))
     timestamp = db.Column(db.DateTime)
     last_active = db.Column(db.DateTime)
