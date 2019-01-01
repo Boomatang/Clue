@@ -16,7 +16,7 @@ TOTAL = 'total'
 def fix_csv_file(file_name):
     output = ''
     error = 'PLATE,'
-    with open(file_name) as name:
+    with open(file_name, encoding='ISO-8859-1') as name:
         for row in name:
             if error in row:
                 values = row.split(error)
@@ -25,7 +25,7 @@ def fix_csv_file(file_name):
             else:
                 output += row
 
-    with open(file_name, "w") as name:
+    with open(file_name, "w", encoding='ISO-8859-1') as name:
         name.write(output)
 
 

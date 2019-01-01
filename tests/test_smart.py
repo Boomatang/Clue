@@ -55,3 +55,29 @@ def test_csv_fixing(tmpdir):
     a = reader(open(a_file), delimiter=',', quotechar='|')
     for row, other_row in zip(a, expected):
         assert row == other_row
+
+
+def test_csv_fixing_with_symbols(tmpdir):
+    # setup
+    # TODO refactor this to run multiply checks
+    a_file = tmpdir.join('test.csv')
+    plain_text = "ITEM NO.,PART NUMBER,Mark,DESCRIPTION,3D-Bounding Box Length," \
+                 "3D-Bounding Box Width,3D-Bounding Box Thickness,LENGTH,QTY.\n"\
+                 "1,,,Ø48 90° Key Clamp Elbow,100,100,10,150,12"
+
+    a_file.write(plain_text)
+
+    expected = [['ITEM NO.', 'PART NUMBER', 'Mark', 'DESCRIPTION',
+                 '3D-Bounding Box Length', '3D-Bounding Box Width', '3D-Bounding Box Thickness',
+                 'LENGTH', 'QTY.'],
+                ['1', '', '', 'Ø48 90° Key Clamp Elbow', '100', '100', '10', '150', '12']]
+
+    f = P(a_file)
+
+    # fixing file
+    fix_csv_file(f)
+
+    # Checking result
+    a = reader(open(a_file), delimiter=',', quotechar='|')
+    for row, other_row in zip(a, expected):
+        assert row == other_row
