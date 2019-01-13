@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 
+from app.auth_models import User, UserRole, Company, CompanyFeature, Asset
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -28,6 +29,8 @@ migrate = Migrate(app, db)
 
 def make_shell_context():
     return dict(app=app, db=db, MaterialClass=MaterialClass,
+                User=User, Company=Company, Asset=Asset,
+                UserRole=UserRole, CompanyFeature=CompanyFeature,
                 )
 
 
@@ -73,6 +76,44 @@ def deploy():
 
     # migrate database to latest revision
     upgrade()
+
+
+def set_up():
+    db.create_all()
+    UserRole.insert_roles()
+    CompanyFeature.insert_features()
+
+
+@manager.command
+def sample_data():
+    set_up()
+
+    user1 = User(username='User1', email='user1@example.com', password='cat', confirmed=True)
+    user2 = User(username='User2', email='user2@example.com', password='cat', confirmed=True)
+    user3 = User(username='User3', email='user3@example.com', password='cat', confirmed=True)
+    user4 = User(username='User4', email='user4@example.com', password='cat', confirmed=True)
+
+    company1 = Company(name='ExampleCompanyOne.com')
+    company2 = Company(name='ExampleCompanyTwo.com')
+
+    db.session.add(user1)
+    db.session.add(user2)
+    db.session.add(user3)
+    db.session.add(user4)
+
+    company1.add_user(user1)
+    company1.add_user(user2)
+    company1.set_company_owner(user1)
+    company1.add_asset('company1_asset')
+    db.session.add(company1)
+
+    company2.add_user(user3)
+    company2.add_user(user4)
+    company2.set_company_owner(user3)
+    company2.add_asset('company2_asset')
+    db.session.add(company2)
+
+    db.session.commit()
 
 
 if __name__ == '__main__':

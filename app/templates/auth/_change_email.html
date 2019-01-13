@@ -1,0 +1,19 @@
+{% from "_formhelpers.html" import render_field %}
+
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <h2 class="ui teal image header">
+      Change your current email
+    </h2>
+    <form class="ui large form" method="POST">
+      {{ form.csrf_token }}
+      <div class="ui stacked segment">
+        {{ render_field(form.email, placeholder="E-mail address", autocomplete="off") }}
+        {{ render_field(form.password, placeholder="Password", autocomplete="off") }}
+        {{ form.submit(class="ui fluid large teal submit button") }}
+      </div>
+
+    </form>
+
+  </div>
+</div>

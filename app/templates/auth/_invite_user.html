@@ -1,0 +1,17 @@
+{% from "_formhelpers.html" import render_field %}
+      <form class="ui large form"  method="Post">
+              {{ form.csrf_token }}
+
+  <div class="ui raised segment">
+    <div class="ui form">
+      <div class="fields">
+        <div class="field">
+          {{ render_field(form.email, placeholder="Invite user") }}
+        </div>
+        <div class="field">
+          {{ form.submit(class="ui fluid large teal submit button") }}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

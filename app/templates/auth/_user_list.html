@@ -1,0 +1,25 @@
+<div class="ui raised segment">
+  <table class="ui table">
+    <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+      <td><a href="{{ url_for('auth.reset_user_password', user_id=user.id) }}"><i class="large green sync icon">Reset</i></a></td>
+        <td>
+        <a href="{{ url_for('auth.remove_user', user_id=user.id) }}"><i class="large red trash alternate
+        icon">Delete</i></a>
+      </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

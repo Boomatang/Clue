@@ -196,4 +196,5 @@ package.json
 *.bak
 semantic/
 Pipfile.lock
+local_config.sh
 

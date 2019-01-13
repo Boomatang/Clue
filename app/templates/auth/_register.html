@@ -1,0 +1,22 @@
+{% from "_formhelpers.html" import render_field %}
+
+<div class="ui middle aligned center aligned grid">
+  <div class="column">
+    <h2 class="ui teal image header">
+      Register your account
+    </h2>
+    <form class="ui large form" method="POST">
+      {{ form.csrf_token }}
+      <div class="ui stacked segment">
+        {{ render_field(form.company, placeholder="Company Name", autocomplete="off") }}
+        {{ render_field(form.username, placeholder="Username", autocomplete="off") }}
+        {{ render_field(form.email, placeholder="E-mail address", autocomplete="off") }}
+        {{ render_field(form.password, placeholder="Password", autocomplete="off") }}
+        {{ render_field(form.password2, placeholder="Repeat Password", autocomplete="off") }}
+        {{ form.submit(class="ui fluid large teal submit button") }}
+      </div>
+
+    </form>
+
+  </div>
+</div>

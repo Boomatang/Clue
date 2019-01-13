@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ super() }} Auth Index {% endblock %}
+
+{% block page_content %}
+
+
+
+
+  <div class="ui two column centered grid">
+    <div class="ui column container">
+
+            {% for message in get_flashed_messages() %}
+      <div class="ui message transition">
+        <i class="close icon"></i>
+        {{ message }}
+      </div>
+    {% endfor %}
+
+      <h1>{{ current_user.company.name }} owns this asset</h1>
+      <h1>{{ asset }}</h1>
+
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}

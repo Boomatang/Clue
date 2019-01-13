@@ -1,0 +1,13 @@
+Welcome to Flasky!
+
+You have been invited by {{ user.company.owner.username }} <{{ user.company.owner.email }}> to join.
+
+To confirm your account please click on the following link:
+
+{{ url_for('auth.invited', token=token, _external=True) }}
+
+Sincerely,
+
+The Flasky Team
+
+Note: replies to this email address are not monitored.

@@ -59,12 +59,12 @@ def get_grade(material):
     except AttributeError:
         return "S235 S355 S275"
 
-
-@api.app_errorhandler(404)
-def page_not_found(e):
-    result = jsonify({"error": "Resource not found"})
-    result.status_code = 404
-    return result
+#
+# @api.app_errorhandler(404)
+# def page_not_found(e):
+#     result = jsonify({"error": "Resource not found"})
+#     result.status_code = 404
+#     return result
 
 
 @api.route("/bom/<ref>", methods=['GET'])

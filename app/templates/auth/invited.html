@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ super() }} Auth Index {% endblock %}
+
+{% block page_content %}
+
+
+
+
+  <div class="ui two column centered grid">
+    <div class="ui column container">
+      <div>
+        {% for message in get_flashed_messages() %}
+          <div class="ui message transition">
+            <i class="close icon"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+
+
+
+    {% include 'auth/_invited_form.html' %}
+
+
+
+
+
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}

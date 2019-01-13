@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ super() }} Auth Register {% endblock %}
+
+{% block page_content %}
+  <div class="ui three column grid">
+  <div class="ui centered column">
+{% include('auth/_register.html') %}
+  </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% endblock %}
