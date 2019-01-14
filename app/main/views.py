@@ -38,4 +38,3 @@ def test_asset(asset):
 @login_required
 def test():
     return render_template('main/test.html')
-

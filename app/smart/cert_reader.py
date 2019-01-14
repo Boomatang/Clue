@@ -339,4 +339,3 @@ def run_cert_editing_async(cert_id, app):
 def cert_editing(cert_id):
     app = current_app._get_current_object()
     run_cert_editing_async(cert_id, app)
-

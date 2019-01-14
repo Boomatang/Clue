@@ -4,7 +4,8 @@ from app import db
 from app.auth import auth
 from flask import render_template, url_for, redirect, request, flash
 
-from app.auth.forms import LoginForm, RegistrationForm, ChangePasswordForm, PasswordResetRequestForm, PasswordResetForm, \
+from app.auth.forms import LoginForm, RegistrationForm, \
+    ChangePasswordForm, PasswordResetRequestForm, PasswordResetForm, \
     ChangeEmailForm, InviteUserForm, InvitedUserForm
 from app.auth_models import User, Company, email_in_system, invite_user
 from app.email import send_email

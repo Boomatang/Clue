@@ -129,7 +129,7 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except ValueError:
             return False
         if data.get('confirm') != self.id:
             return False
@@ -145,7 +145,7 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except ValueError:
             return False
         if data.get('reset') != self.id:
             return False
@@ -161,7 +161,7 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except ValueError:
             return False
         if data.get('change_email') != self.id:
             return False
@@ -189,8 +189,8 @@ class User(UserMixin, db.Model):
     def confirm_invited_user(token):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)
-        except:
+            s.loads(token)
+        except ValueError:
             return False
         return True
 
@@ -199,7 +199,7 @@ class User(UserMixin, db.Model):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except ValueError:
             return False
 
         user_id = data.get('invite')
@@ -311,5 +311,3 @@ def invite_user(email):
     token = user.generate_invite_token()
     send_email(user.email, 'You have been invited',
                'auth/email/invite', user=user, token=token)
-
-

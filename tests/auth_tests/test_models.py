@@ -1,5 +1,4 @@
 import pytest
-from flask import url_for
 
 from app import db
 from app.auth_models import User, Company
@@ -15,7 +14,7 @@ def test_user_no_password_getter():
     u = User()
     u.password = 'cat'
     with pytest.raises(AttributeError):
-        b = u.password
+        u.password
 
 
 def test_user_password_verification():

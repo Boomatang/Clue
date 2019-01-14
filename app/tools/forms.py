@@ -16,5 +16,4 @@ class LouverCalculatorForm(FlaskForm):
     height = StringField('Height of Louver',
                          validators=[DataRequired(message='You most give a height for the louver')])
 
-    submit =SubmitField('Calculate')
-
+    submit = SubmitField('Calculate')

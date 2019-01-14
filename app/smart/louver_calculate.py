@@ -37,7 +37,7 @@ class LouverCalculator:
         self.width = width
         self.height = height
         self.frame_height_allowance = 144
-        self.standard_blade_gap =28
+        self.standard_blade_gap = 28
 
     @property
     def frame_width_allowance(self):
@@ -111,4 +111,3 @@ if __name__ == "__main__":
     print(round(calculate_louver_efficiency(900, 300, .3), 2))
 
     print(louver_efficiency(900, 300, .7))
-

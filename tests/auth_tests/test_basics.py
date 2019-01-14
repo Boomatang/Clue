@@ -55,7 +55,8 @@ def test_user_login_fails(client, user):
     assert b'Invalid E-mail or Password' in response.data
 
 
-users = [{'company': 'Boring Company', 'username': 'jim', 'email': 'jim@test.com', 'password': 'cat', 'password2': 'cat'}]
+users = [{'company': 'Boring Company', 'username': 'jim', 'email': 'jim@test.com',
+          'password': 'cat', 'password2': 'cat'}]
 
 
 @pytest.mark.parametrize('user', users)
@@ -109,11 +110,9 @@ def test_login_required(clean_db, client, path):
     u.email = 'test@test.test'
     u.confirmed = True
 
-    response = client.post(url_for('auth.login'),
-                           data={
-                               'email': 'test@test.com',
-                               'password': 'cat'},
-                           follow_redirects=True)
+    client.post(url_for('auth.login'),
+                data={'email': 'test@test.com', 'password': 'cat'},
+                follow_redirects=True)
 
     assert client.get(url_for(path), follow_redirects=True).status_code == 200
 
