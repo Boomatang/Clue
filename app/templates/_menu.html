@@ -1,34 +1,42 @@
 <div class="ui huge attached inverted stackable pointing menu">
   <div class="ui container">
     <a class="item" href="{{ url_for('main.index') }}">Clue</a>
+    {% if current_user.is_authenticated %}
+      <a class="item" href="{{ url_for('user.dashboard') }}">Dashboard</a>
+      <a class="item" href="{{ url_for('project.index') }}">Projects</a>
 
-    <a class="item" href="{{ url_for('user.dashboard') }}">Dashboard</a>
-    <a class="item" href="{{ url_for('project.index') }}">Projects</a>
 
+      <div class="ui dropdown item">
 
-    <div class="ui dropdown item">
-
-      Create <i class="large dropdown icon"></i>
-      <div class="menu">
-        <a class="item" href="{{ url_for('BOM.BOM_upload') }}">Bill Of Materials</a>
-        <a class="item" href="{{ url_for('cutlist.bom_start') }}">Cut List</a>
-        <a class="item" href="{{ url_for('project.add') }}">Project</a>
-      </div>
-
-    </div>
-
-    <div class="ui dropdown item">
-
-      Utilities <i class="large dropdown icon"></i>
-      <div class="menu">
-        <a class="item" href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a>
-        <a class="item" href="{{ url_for('tools.louver_calculator') }}">Louver Calculator</a>
-        <a class="item" href="{{ url_for('cert.index') }}">Working with Certs</a>
+        Create <i class="large dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="{{ url_for('BOM.BOM_upload') }}">Bill Of Materials</a>
+          <a class="item" href="{{ url_for('cutlist.bom_start') }}">Cut List</a>
+          <a class="item" href="{{ url_for('project.add') }}">Project</a>
+        </div>
 
       </div>
 
-    </div>
+      <div class="ui dropdown item">
 
+        Utilities <i class="large dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="{{ url_for('tools.bar_spacer') }}">Calculate Bar Spacing</a>
+          <a class="item" href="{{ url_for('tools.louver_calculator') }}">Louver Calculator</a>
+          <a class="item" href="{{ url_for('cert.index') }}">Working with Certs</a>
+
+        </div>
+
+      </div>
+      <div class="ui dropdown item">
+        &nbsp; Admin
+        <i class="large dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="{{ url_for('library.material_library') }}">Material Library</a>
+          <a class="item" href="{{ url_for('library.material_classes') }}">Material Classes</a>
+        </div>
+      </div>
+    {% endif %}
     {% include "auth/_auth_menu.html" %}
 
   </div>

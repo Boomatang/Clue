@@ -1,20 +1,22 @@
+{% if current_user.is_authenticated %}
 
-    {% if current_user.is_authenticated %}
+  <div class="ui dropdown item">
 
-      <div class="ui  item">
+    Account <i class="large dropdown icon"></i>
+    <div class="menu">
+      <a class="item" href="{{ url_for('auth.change_password') }}">Change Password</a>
+      <a class="item" href="{{ url_for('auth.change_email_request') }}">Change Email</a>
+      {% if current_user.is_admin %}
+        <a class="item" href="{{ url_for('auth.company_settings') }}">Company Settings</a>
+      {% endif %}
+      <a class="item" href="{{ url_for('auth.logout') }}">Log Out</a>
+    </div>
 
-          <a href="{{ url_for('auth.change_password') }}">Change Password</a>
-          <a href="{{ url_for('auth.change_email_request') }}">Change Email</a>
-          {% if current_user.is_admin %}
-          <a href="{{ url_for('auth.company_settings') }}">Company Settings</a>
-          {% endif %}
-          <a href="{{ url_for('auth.logout') }}">Log Out</a>
+  </div>
 
-      </div>
-
-    {% else %}
-      <div class="ui item">
-        <a class="item" href="{{ url_for('auth.login') }}">Login <i class="sign-in icon"></i></a>
-        <a class="item" href="{{ url_for('auth.register') }}">Sign Up</a>
-      </div>
-    {% endif %}
+{% else %}
+  <div class="ui item">
+    <a class="item" href="{{ url_for('auth.login') }}">Login <i class="sign-in icon"></i></a>
+    <a class="item" href="{{ url_for('auth.register') }}">Sign Up</a>
+  </div>
+{% endif %}
