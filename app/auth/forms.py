@@ -22,7 +22,8 @@ class RegistrationForm(FlaskForm):
                                                'Username\'s must have only letters, '
                                                'numbers, dots or underscores')])
     password = PasswordField('Password', validators=[
-        data_required(), EqualTo('password2', message='Passwords must match.')])
+        data_required(), EqualTo('password2', message='Passwords must match.'), Length(8, message="Password most be "
+                                                                                                  "8 characters long")])
     password2 = PasswordField('Confirm password', validators=[data_required()])
     submit = SubmitField('Register')
 

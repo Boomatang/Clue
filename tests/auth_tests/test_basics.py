@@ -56,7 +56,7 @@ def test_user_login_fails(client, user):
 
 
 users = [{'company': 'Boring Company', 'username': 'jim', 'email': 'jim@test.com',
-          'password': 'cat', 'password2': 'cat'}]
+          'password': 'cats1234', 'password2': 'cats1234'}]
 
 
 @pytest.mark.parametrize('user', users)
@@ -76,12 +76,16 @@ def test_user_register_complete(clean_db, client, user):
     assert db_user.company.owner.email == user['email']
 
 
-users = [{'company': 'Boring Company', 'username': 'jim fitz', 'email': 'test@test.com', 'password': 'cat',
-          'password2': 'cat', 'massage': b'must have only letters'},
-         {'company': 'The Fast Company', 'username': 'jim', 'email': 'jim@test', 'password': 'cat', 'password2': 'cat',
+users = [{'company': 'Boring Company', 'username': 'jim fitz', 'email': 'test@test.com', 'password': 'cats1234',
+          'password2': 'cats1234', 'massage': b'must have only letters'},
+         {'company': 'The Fast Company', 'username': 'jim', 'email': 'jim@test', 'password': 'cats1234', 'password2': 'cats1234',
           'massage': b'Invalid email address'},
-         {'company': 'Bad Company', 'username': 'jim', 'email': 'jim@test.com', 'password': 'cat', 'password2': 'dog',
-          'massage': b'Passwords must match'}]
+         {'company': 'Bad Company', 'username': 'jim', 'email': 'jim@test.com', 'password': 'cats1234', 'password2': 'dog',
+          'massage': b'Passwords must match'},
+         {'company': 'Bad Company', 'username': 'jim', 'email': 'jim@test.com', 'password': 'cats',
+          'password2': 'cats',
+          'massage': b'8 characters long'}
+         ]
 
 
 @pytest.mark.parametrize('user', users)

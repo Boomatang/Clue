@@ -82,6 +82,7 @@ def set_up():
     db.create_all()
     UserRole.insert_roles()
     CompanyFeature.insert_features()
+    MaterialClass.setup()
 
 
 @manager.command
