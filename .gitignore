@@ -195,3 +195,5 @@ package-lock.json
 package.json
 *.bak
 semantic/
+Pipfile.lock
+
