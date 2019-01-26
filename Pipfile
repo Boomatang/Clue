@@ -21,6 +21,10 @@ flask-login = "*"
 flask-wtf = "*"
 pdfminer-six = "*"
 chardet = "*"
+python-dotenv = "*"
+mysqldb = "*"
+flask-mysqldb = "*"
+mysqlclient = "*"
 
 [requires]
 python_version = "3.7"

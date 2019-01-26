@@ -77,7 +77,7 @@ def deploy():
     # migrate database to latest revision
     upgrade()
 
-
+@manager.command
 def set_up():
     db.create_all()
     UserRole.insert_roles()

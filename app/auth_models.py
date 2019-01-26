@@ -280,7 +280,7 @@ class Asset(db.Model):
     __tablename__ = 'asset'
     id = db.Column(db.Integer, primary_key=True)
     asset = db.Column(db.String(64), index=True, unique=True)
-    company_id = db.Column(db.Integer, db.ForeignKey('company.asset'), nullable=True)
+    company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=True)
     company = db.relationship("Company", back_populates="assets", lazy=False)
 
 
