@@ -17,10 +17,10 @@
       <td>{{ result.comment }}</td>
       <td class="single line">{{ result.timestamp_format() }}</td>
       <td class="collapsing"><a class="ui positive button"
-                                href="{{ url_for('BOM.BOM_result', result_id=result.id) }}"><i class="eye icon"></i>
+                                href="{{ url_for('BOM.BOM_result', asset=result.asset) }}"><i class="eye icon"></i>
         View</a></td>
       <td class="collapsing"><a class="ui negative icon button"
-                                href="{{ url_for('BOM.BOM_remove_result', result_id=result.id) }}"><i
+                                href="{{ url_for('BOM.BOM_remove_result', result_id=result.asset) }}"><i
           class="trash icon"></i></a></td>
 
     </tr>

@@ -1,6 +1,7 @@
 import statistics
 from datetime import datetime
 
+from app.auth_models import uuid_key
 from . import db
 
 material_size_lengths = db.Table('material_size_lengths',
@@ -244,6 +245,8 @@ class BomResult(db.Model):
     comment = db.Column(db.String(250))
     file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
     material = db.relationship('BomResultMaterial', cascade="all, delete-orphan", backref='result', lazy=True)
+    asset = db.Column(db.String(64), index=True, default=uuid_key)
+    company = db.Column(db.Integer)
 
     @property
     def job_number(self):

@@ -1,11 +1,13 @@
 import os
 
 from flask import flash, redirect, url_for, session, render_template, request
+from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
 from app import db
 from app.BOM import BOM
 from app.BOM.forms import BOMUpload
+from app.decorators import company_asset
 from app.models import BomFile, MaterialSize, MaterialLength, BomSession, BomSessionSize, BomResult,\
     BomResultMaterial, BomResultBeam, BomResultBeamPart, BomResultMissingPart, BomSessionLength
 from app.smart import RawBomFile, CreateBom, fix_csv_file
@@ -121,7 +123,7 @@ def BOM_calculate():
 
     result = create_result(b_o_m, session['file'])
 
-    return redirect(url_for('.BOM_result', result_id=result.id))
+    return redirect(url_for('.BOM_result', asset=result.asset))
 
 
 def create_result(bom_data, session_id):
@@ -131,6 +133,7 @@ def create_result(bom_data, session_id):
     result: BomResult = BomResult()
     item: BomFile = BomFile.query.filter_by(id=session_id).first()
     result.comment = item.comment
+    result.company = current_user.company.id
     try:
         result.job_number = session["job_number"]
     except KeyError as e:
@@ -158,12 +161,17 @@ def create_result(bom_data, session_id):
                 material.missing.append(part_missing)
     db.session.commit()
 
+    print(f'\n\n{result.asset}\n\n')
+    current_user.company.add_asset(result.asset)
+    db.session.commit()
     return result
 
 
-@BOM.route('/BOM/result/<result_id>', methods=['POST', 'GET'])
-def BOM_result(result_id):
-    result: BomResult = BomResult.query.filter_by(id=result_id).first_or_404()
+@BOM.route('/BOM/result/<asset>', methods=['POST', 'GET'])
+@login_required
+@company_asset()
+def BOM_result(asset):
+    result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
 
     session['file'] = result.file_id
     # lengths = [6100, 7500, 12000]

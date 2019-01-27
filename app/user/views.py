@@ -1,4 +1,5 @@
 from flask import render_template, request, current_app
+from flask_login import current_user
 
 from app.models import BomResult, Project
 from app.user import user
@@ -8,7 +9,7 @@ from app.user import user
 def dashboard():
 
     page = request.args.get('page', 1, type=int)
-    pagination = BomResult.query.order_by(
+    pagination = BomResult.query.filter_by(company=current_user.company.id).order_by(
             BomResult.timestamp.desc()).paginate(page,
                                                  per_page=current_app.config['POSTS_PER_PAGE'],
                                                  error_out=False)
