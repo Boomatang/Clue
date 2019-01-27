@@ -15,6 +15,6 @@ def dashboard():
                                                  error_out=False)
     temp = pagination.items
 
-    projects = Project.query.order_by(Project.last_active.desc())[:5]
+    projects = Project.query.filter_by(company=current_user.company.id).order_by(Project.last_active.desc())[:5]
 
     return render_template('user/dashboard.html', BOM_results=temp, pagination=pagination, projects=projects)

@@ -13,7 +13,8 @@
       <td class="collapsing">{{ project.job_number }}</td>
       <td>{{ project.name }}</td>
       <td>{{ project.client }}</td>
-      <td class="collapsing"><a href="{{ url_for('project.view', id=project.id) }}"><i class="large violet eye icon"></i></a></td>
+      <td class="collapsing"><a href="{{ url_for('project.view', asset=project.asset) }}"><i class="large violet eye
+      icon"></i></a></td>
     </tr>
   {% endfor %}
   </tbody>

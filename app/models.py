@@ -470,3 +470,5 @@ class Project(db.Model):
     job_number = db.Column(db.String(20))
     timestamp = db.Column(db.DateTime)
     last_active = db.Column(db.DateTime)
+    company = db.Column(db.Integer)
+    asset = db.Column(db.String(64), index=True, default=uuid_key)
