@@ -47,7 +47,8 @@ Material Library
                         {% endfor %}
                             </td>
 
-						<td><button type="submit" class="ui positive button" formaction="{{ url_for('library.material_view', material_id=unit.id) }}"><i class="edit icon"></i> EDIT</button></td>
+						<td><button type="submit" class="ui positive button" formaction="{{ url_for('library.material_view',
+						asset=unit.asset) }}"><i class="edit icon"></i> EDIT</button></td>
 
 					</tr>
 					{% endfor %}

@@ -9,11 +9,9 @@ from app.models import MaterialSize, MaterialClass
 class ChoicesBase:
 
     def __init__(self, material_id):
-        self.id = 30
-        self.choices = [(40, "test", True),
-                        (50, "look at me", False)]
         self.choices = self._get_choices(material_id)
-        self.name = "cool"
+        self.name = None
+        self.id = None
 
     def iter_choices(self):
         for choice in self.choices:
@@ -31,12 +29,15 @@ class ChoicesBase:
 
 
 class ClassList(ChoicesBase):
+    def __init__(self, company):
+        ChoicesBase.__init__(self, None)
+        self.choices = self._get_choices(company=company)
 
     @staticmethod
-    def _get_choices(material_id=None):
+    def _get_choices(material_id=None, company=None):
         results = []
 
-        for item in MaterialClass.query.all():
+        for item in MaterialClass.query.filter_by(company=company).all():
             results.append((item.id, item.name, False))
 
         return results
@@ -103,9 +104,9 @@ class testform(FlaskForm):
 class RemoveClassForm(FlaskForm):
     submit = SubmitField('Remove Material Class')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, company, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
-        choices = ClassList(None)
+        choices = ClassList(company=company)
 
         choices.id = "remove"
         choices.name = "remove"

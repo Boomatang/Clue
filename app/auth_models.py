@@ -262,6 +262,11 @@ class Company(db.Model):
     def set_company_owner(self, user):
         self.owner = user
 
+    def company_materials_setup(self):
+        from app.models import MaterialClass
+
+        MaterialClass.setup(self.id)
+
     @staticmethod
     def load_company_by_name(name):
         return Company.query.filter_by(name=name).first()

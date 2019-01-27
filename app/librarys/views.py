@@ -1,8 +1,10 @@
+from flask_login import current_user, login_required
 from sqlalchemy.exc import IntegrityError
 
 from flask import render_template, request, flash, redirect, url_for, session
 
 from app import db
+from app.decorators import company_asset
 from app.librarys import library
 from app.librarys.forms import AddClass, testform, RemoveClassForm
 from app.models import MaterialSize, MaterialClass
@@ -10,25 +12,35 @@ from app.utils import isInt, hasName, hasValues, error_builder
 
 
 @library.route('/', methods=['POST', 'GET'])
+@login_required
 def material_library():
-    size = MaterialSize.query.order_by(MaterialSize.size).all()[:]
+    size = MaterialSize.query.filter_by(company=current_user.company.id).order_by(MaterialSize.size).all()[:]
     types = []
-    for item in MaterialClass.query.order_by(MaterialClass.name).all()[:]:
+    for item in MaterialClass.query.filter_by(company=current_user.company.id).order_by(MaterialClass.name).all()[:]:
+        print(item.materials)
         if item.has_materials():
             types.append(item)
     if not len(size):
         return render_template('materials/no_materials.html')
 
+    print('\n\n')
+    print(size)
+    print(types)
+    print(current_user.company.id)
+    print('\n\n')
+
     return render_template('materials/index.html', units=size, types=types)
 
 
-@library.route('/<material_id>', methods=['POST', 'GET'])
-def material_view(material_id):
+@library.route('/<asset>', methods=['POST', 'GET'])
+@login_required
+@company_asset()
+def material_view(asset):
 
-    unit: MaterialSize = MaterialSize.query.filter_by(id=material_id).first_or_404()
+    unit: MaterialSize = MaterialSize.query.filter_by(asset=asset).first_or_404()
     choice = unit.class_id
 
-    form = testform(material_id)
+    form = testform(unit.id)
 
     if form.is_submitted():
         print(request.form.getlist('remove'))
@@ -61,6 +73,7 @@ def material_view(material_id):
 
 
 @library.route('/material-edit', methods=['POST', 'GET'])
+@login_required
 def material_edit():
 
     if request.method == 'POST':
@@ -73,6 +86,7 @@ def material_edit():
 
 
 @library.route('/material/add', methods=['POST', 'GET'])
+@login_required
 def material_add():
 
     if request.method == "POST":
@@ -109,7 +123,7 @@ def material_add():
 def get_choices():
     results = []
 
-    for item in MaterialClass.query.all():
+    for item in MaterialClass.query.filter_by(company=current_user.company.id).all():
         local = {
             "id": item.id,
             "description": item.name,
@@ -125,6 +139,7 @@ def get_choices():
 
 
 @library.route('/missing', methods=['POST', 'GET'])
+@login_required
 def material_missing():
     material = session['material_missing']
     choices = get_choices()
@@ -148,7 +163,7 @@ def material_missing():
             flash(error_builder(failed_lengths))
 
         if hasName(size) and hasValues(checked_lengths):
-            MaterialSize.add_new_material(size, checked_lengths, group=group)
+            MaterialSize.add_new_material(size, checked_lengths, group=group, company=current_user.company.id)
             flash(f'{size} has been added to the database')
             return redirect(url_for('BOM.BOM_setup'))
 
@@ -160,18 +175,22 @@ def material_missing():
 
 
 @library.route("/classes", methods=["POST", "GET"])
+@login_required
 def material_classes():
     add_form = AddClass(prefix="add_form")
-    remove_form = RemoveClassForm(prefix="remove_form")
+    remove_form = RemoveClassForm(prefix="remove_form", company=current_user.company.id)
 
     if add_form.is_submitted():
         if add_form.validate():
             material_class = MaterialClass(
                 name=add_form.name.data,
-                description=add_form.description.data
+                description=add_form.description.data,
+                company=current_user.company.id
             )
             try:
                 db.session.add(material_class)
+                db.session.commit()
+                current_user.company.add_asset(material_class.asset)
                 db.session.commit()
             except IntegrityError as e:
                 db.session.rollback()

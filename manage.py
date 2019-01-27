@@ -82,7 +82,6 @@ def set_up():
     db.create_all()
     UserRole.insert_roles()
     CompanyFeature.insert_features()
-    MaterialClass.setup()
 
 
 @manager.command
@@ -114,6 +113,9 @@ def sample_data():
     company2.add_asset('company2_asset')
     db.session.add(company2)
 
+    db.session.commit()
+    company1.company_materials_setup()
+    company2.company_materials_setup()
     db.session.commit()
 
 

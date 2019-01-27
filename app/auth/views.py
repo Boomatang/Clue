@@ -68,6 +68,9 @@ def register():
         company.add_user(user)
 
         db.session.commit()
+        company.company_materials_setup()
+
+        db.session.commit()
         token = user.generate_confirmation_token()
         send_email(user.email, 'Confirm Your Account',
                    'auth/email/confirm', user=user, token=token)

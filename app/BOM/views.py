@@ -55,7 +55,7 @@ def BOM_setup():
     materials_used = []
 
     for material in materials:
-        item = MaterialSize.query.filter_by(size=material).first()
+        item = MaterialSize.query.filter_by(size=material, company=current_user.company.id).first()
         if item is not None:
             materials_used.append(item)
         else:
