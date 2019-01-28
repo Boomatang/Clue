@@ -5,6 +5,7 @@ from flask import url_for
 
 from app import db
 from app.models import Project
+from tests.conftest import login_standard_user
 
 
 def test_add_project_to_db(client, clean_db):
@@ -25,6 +26,7 @@ def test_add_project_to_db(client, clean_db):
 
 
 def test_index_has_table(client):
+    login_standard_user(client)
     page = client.get(url_for('project.index'))
     search = b'<table id="project_table"'
     assert re.search(search, page.data)
@@ -34,7 +36,7 @@ def test_adding_project_on_page(client, clean_db):
     data = {'job number': "18-09-275",
             'project': 'Sample Project',
             'client': 'Project Client'}
-
+    login_standard_user(client)
     client.post(url_for('project.add'), data={
         'job_number': data['job number'],
         'project': data['project'],

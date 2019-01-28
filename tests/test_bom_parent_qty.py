@@ -7,6 +7,7 @@ from app.models import BomResult, BomSession, BomSessionSize, \
 
 
 from app.smart import CreateBom, RawBomFile
+from tests.conftest import login_standard_user
 
 
 @pytest.fixture()
@@ -47,6 +48,7 @@ def test_creating_bom(client, setup_for_creating_bom):
     bom = CreateBom(setup=1, data=1)
     bom.run()
 
+    login_standard_user(client)
     result: BomResult = create_result(bom, 1)
     result = result.required_length_qty('large', 6500)
     assert expected == result
