@@ -1,7 +1,6 @@
 import pytest
 
 from app import db
-from app.BOM.views import create_result
 from app.models import BomResult, BomSession, BomSessionSize, \
     BomSessionLength, BomFileContents
 
@@ -49,7 +48,7 @@ def test_creating_bom(client, setup_for_creating_bom):
     bom.run()
 
     login_standard_user(client)
-    result: BomResult = create_result(bom, 1)
+    result: BomResult = bom.create_result()
     result = result.required_length_qty('large', 6500)
     assert expected == result
 

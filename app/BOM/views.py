@@ -121,50 +121,9 @@ def BOM_calculate():
     b_o_m = CreateBom(setup_id, data_id)
     b_o_m.run()
 
-    result = create_result(b_o_m, session['file'])
+    result = b_o_m.create_result()
 
     return redirect(url_for('.BOM_result', asset=result.asset))
-
-
-def create_result(bom_data, session_id):
-    values = bom_data.beams
-    missing = bom_data.un_cut_parts
-
-    result: BomResult = BomResult()
-    item: BomFile = BomFile.query.filter_by(id=session_id).first()
-    result.comment = item.comment
-    result.company = current_user.company.id
-    try:
-        result.job_number = session["job_number"]
-    except KeyError as e:
-        print(f'Found Error:\n {e}')
-    item.results.append(result)
-    db.session.add(result)
-
-    for key in values.keys():
-        material = BomResultMaterial(size=key)
-        result.material.append(material)
-
-        for beam in values[key]:
-            b = BomResultBeam(length=beam['length'], waste=beam['waste'])
-            material.beams.append(b)
-
-            for thing in beam['items']:
-                part = BomResultBeamPart(item_no=beam['items'][thing]['item'],
-                                         length=beam['items'][thing]['length'],
-                                         qty=beam['items'][thing]['qty'])
-                b.parts.append(part)
-
-        for item in missing:
-            if key == item['description']:
-                part_missing = BomResultMissingPart(item_no=item['item'], length=item['length'], qty=item['missing'])
-                material.missing.append(part_missing)
-    db.session.commit()
-
-    print(f'\n\n{result.asset}\n\n')
-    current_user.company.add_asset(result.asset)
-    db.session.commit()
-    return result
 
 
 @BOM.route('/BOM/result/<asset>', methods=['POST', 'GET'])

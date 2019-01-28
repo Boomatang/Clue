@@ -1,7 +1,11 @@
 from csv import DictReader
+from flask import session
+from flask_login import current_user
 from pathlib import Path as P
 
-from app.models import BomFile, BomFileContents, BomSession
+from app import db
+from app.models import BomFile, BomFileContents, BomSession, BomResult, BomResultMaterial, BomResultBeam, \
+    BomResultBeamPart, BomResultMissingPart
 from app.utils import isFloat, isInt
 
 DESC = 'DESCRIPTION'
@@ -319,6 +323,7 @@ class CreateBom:
         """
 
     def __init__(self, setup, data):
+        self.data_id = data
         self.data: BomFile = BomFile.query.filter_by(id=data).first()
         self.setup: BomSession = BomSession.query.filter_by(id=setup).first()
         self.data_store = {'unused': []}
@@ -331,6 +336,7 @@ class CreateBom:
         self._create_cutting_list()
 
     def _setup_data_store_basic_information(self):
+        """ Get Materials to be used including their length"""
         for size in self.setup.sizes:
             self.data_store[size.size] = []
 
@@ -383,14 +389,56 @@ class CreateBom:
 
             while counter:
                 entry, count = self._create_beam(size.default)
+
+                ################################
+                # Math on beam need to go here #
+                ################################
+
+                ################################
+
                 if entry is not None:
                     self.beams[size.size].append(entry)
                 counter -= count
+        self._beam_compile()
+
+    def _beam_compile(self):
+        """This function will take the existing beam setup and reduce the list to a smaller number"""
+        for beam_type in self.beams.keys():
+            beam = self.beams.get(beam_type)[0]
+            beams = self.beams.get(beam_type)
+            temp = []
+            stop = len(beams)
+            main = 0
+
+            lengths = []
+
+            while main < stop:
+                if beam is not None:
+                    temp.append(beam)
+                else:
+                    print(f'Beam was {beam}')
+                main += 1
+                counter = 0
+                next_beam = None
+
+                for b in beams:
+                    if b == beam:
+                        counter += 1
+                    elif next_beam is None and counter > 0:
+                        next_beam = b
+                lengths.append(counter)
+                beam = next_beam
+                if lengths[-1] == 0:
+                    break
+
+                temp[-1]['qty'] = lengths[-1]
+
+            self.beams[beam_type] = temp
 
     def _create_beam(self, size):
         beam = {'length': size,
                 'items': {}}
-        beam_length = beam['length']
+        beam_length = beam.get('length')
 
         counter = 0
         for part in self.parts:
@@ -427,6 +475,9 @@ class CreateBom:
                     counter += part["missing"]
 
         beam['waste'] = int(beam_length)
+
+
+
         output = beam
 
         return output, counter
@@ -466,6 +517,47 @@ class CreateBom:
                         return length
 
         return None
+
+    def create_result(self):
+        values = self.beams
+        missing = self.un_cut_parts
+
+        result: BomResult = BomResult()
+        item: BomFile = BomFile.query.filter_by(id=self.data_id).first()
+        result.comment = item.comment
+        result.company = current_user.company.id
+        try:
+            result.job_number = session["job_number"]
+        except KeyError as e:
+            print(f'Found Error:\n {e}')
+        item.results.append(result)
+        db.session.add(result)
+
+        for key in values.keys():
+            material = BomResultMaterial(size=key)
+            result.material.append(material)
+
+            for beam in values[key]:
+                b = BomResultBeam(length=beam['length'], waste=beam['waste'], qty=beam['qty'])
+                material.beams.append(b)
+
+                for part_id in beam['items']:
+                    part = BomResultBeamPart(item_no=beam['items'][part_id]['item'],
+                                             length=beam['items'][part_id]['length'],
+                                             qty=beam['items'][part_id]['qty'])
+                    b.parts.append(part)
+
+            for item in missing:
+                if key == item['description']:
+                    part_missing = BomResultMissingPart(item_no=item['item'], length=item['length'],
+                                                        qty=item['missing'])
+                    material.missing.append(part_missing)
+        db.session.commit()
+
+        print(f'\n\n{result.asset}\n\n')
+        current_user.company.add_asset(result.asset)
+        db.session.commit()
+        return result
 
     def _total_number_of_parts(self):
         count = 0

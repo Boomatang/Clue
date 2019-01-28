@@ -1,24 +1,32 @@
-  <h1>{{ material }}</h1>
+<h1>{{ material }}</h1>
 
 <div class="ui raised column segment">
   <div class="ui three column stackable grid container">
-  <br>
+    <br>
     {% for beam in  result.get_beams_for_material(material) %}
       <div class="ui column segment">
         <div class="ui progress {{ beam.progress_bar_state() }}">
           <div class="bar"
                style="width: {{ beam.get_percentage() }}%;">
-                      <div class="progress">{{ beam.get_percentage() }}%</div>
+            <div class="progress">{{ beam.get_percentage() }}%</div>
 
           </div>
         </div>
         <div class="">
-        <div class="ui padded container">
-          <strong>Beam Length: {{ beam.length }}, Waste: {{ beam.waste }}</strong>
-        <br>
-        </div>
           <div class="ui two column grid container">
-          <br>
+            <div class="ui padded column container">
+              <strong>
+                <p>Length: {{ beam.length }}</p>
+                <p>Waste: {{ beam.waste }}</p>
+              </strong>
+              <br>
+            </div>
+            <div class="ui padded center aligned column container">
+              <h1 class="ui huge red header">Qty. {{ beam.qty }}  </h1>
+            </div>
+          </div>
+          <div class="ui two column grid container">
+            <br>
             {% for part in beam.parts %}
               {% include("BOM/_part_result.html") %}
             {% endfor %}

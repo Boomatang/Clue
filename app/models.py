@@ -321,7 +321,7 @@ class BomResult(db.Model):
             if item.size == size:
                 for beam in item.beams:
                     if beam.length == length:
-                        counter += 1
+                        counter = counter + beam.qty
         return counter
 
     def material_missing(self, material):
@@ -413,6 +413,7 @@ class BomResultMaterial(db.Model):
 class BomResultBeam(db.Model):
     __tablename__ = 'bom_result_beam'
     id = db.Column(db.Integer, primary_key=True)
+    qty = db.Column(db.Integer)
     length = db.Column(db.Integer)
     waste = db.Column(db.Integer)
     material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)
