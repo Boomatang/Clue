@@ -22,9 +22,8 @@ flask-wtf = "*"
 pdfminer-six = "*"
 chardet = "*"
 python-dotenv = "*"
-mysqldb = "*"
-flask-mysqldb = "*"
 mysqlclient = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
