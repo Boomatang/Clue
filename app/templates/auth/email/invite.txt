@@ -1,4 +1,4 @@
-Welcome to Flasky!
+Welcome to Clue!
 
 You have been invited by {{ user.company.owner.username }} <{{ user.company.owner.email }}> to join.
 
@@ -8,6 +8,6 @@ To confirm your account please click on the following link:
 
 Sincerely,
 
-The Flasky Team
+The Clue Team
 
 Note: replies to this email address are not monitored.
