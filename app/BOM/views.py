@@ -163,7 +163,7 @@ def BOM_result(asset):
 def BOM_remove_result(asset):
     result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
     massage = f"Your about to remove result {result.job_number}: {result.comment}"
-    session['check'] = result.asset
+    session["check"] = result.asset
 
     return render_template("user/yes_no.html", massage=massage, asset=result.asset)
 
@@ -173,9 +173,9 @@ def BOM_remove_result(asset):
 @company_asset()
 def BOM_remove_result_agree(asset):
     result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
-    if result.asset != session['check']:
+    if result.asset != session["check"]:
         flash("Unkown action")
-        return redirect(url_for('user.dashboard'))
+        return redirect(url_for("user.dashboard"))
     job = result.job_number
 
     result.delete()
@@ -190,9 +190,9 @@ def BOM_remove_result_agree(asset):
 @company_asset()
 def BOM_remove_result_disagree(asset):
     result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
-    if result.asset != session['check']:
+    if result.asset != session["check"]:
         flash("Unkown action")
-        return redirect(url_for('user.dashboard'))
+        return redirect(url_for("user.dashboard"))
     job = result.job_number
 
     flash(f"BOM with job number {job} has not been removed from the system")

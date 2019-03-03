@@ -14,8 +14,6 @@ from app.smart import CreateBom, RawBomFile
 from tests.conftest import login_standard_user
 
 
-
-
 def test_creating_bom(client, setup_for_creating_bom):
     expected = 27
     bom = CreateBom(setup=1, data=1)

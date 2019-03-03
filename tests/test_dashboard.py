@@ -1,12 +1,10 @@
-
-
 from tests.conftest import login_standard_user
 
 
 def test_user_deletes_bom_result(client, simple_bom):
     login_standard_user(client)
     bom = simple_bom
-    view_url = f'/BOM/result/{bom.asset}'
+    view_url = f"/BOM/result/{bom.asset}"
     url = f"/BOM/results/remove/{bom.asset}"
 
     resp = client.get(url)
