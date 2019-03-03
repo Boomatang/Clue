@@ -10,7 +10,9 @@ def company_asset():
             if not current_user.company_asset(*args, **kwargs):
                 abort(404)
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 
@@ -21,7 +23,9 @@ def feature_required(feature):
             if not current_user.company.can(feature):
                 abort(403)
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 
@@ -32,7 +36,9 @@ def permission_required(permission):
             if not current_user.can(permission):
                 abort(403)
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 

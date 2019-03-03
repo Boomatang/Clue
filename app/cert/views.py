@@ -14,7 +14,7 @@ from app.utils import file_ext_checker
 from datetime import datetime
 
 
-@cert.route('/', methods=['GET', 'POST'])
+@cert.route("/", methods=["GET", "POST"])
 def index():
     form = CertForm(CombinedMultiDict((request.files, request.form)))
 
@@ -23,14 +23,17 @@ def index():
         f = form.cert_folder.data
         filename = secure_filename(f.filename)
 
-        if not file_ext_checker(str(filename), '.zip'):
-            flash('File type was not a zip file type.', 'Error')
-            return redirect(url_for('cert.index'))
+        if not file_ext_checker(str(filename), ".zip"):
+            flash("File type was not a zip file type.", "Error")
+            return redirect(url_for("cert.index"))
 
         filename = uuid.uuid4()
 
-        name = os.path.join(os.environ.get('CLUE_UPLOADS', '/home/boomatang/Public'),
-                            'cert_uploads', str(filename) + '.zip')
+        name = os.path.join(
+            os.environ.get("CLUE_UPLOADS", "/home/boomatang/Public"),
+            "cert_uploads",
+            str(filename) + ".zip",
+        )
 
         f.save(name)
 
@@ -45,18 +48,18 @@ def index():
 
     history = Certs.query.order_by(Certs.date.desc())[:]
 
-    return render_template('certs/index.html', form=form, history=history)
+    return render_template("certs/index.html", form=form, history=history)
 
 
-@cert.route('/upload', methods=['GET', 'POST'])
+@cert.route("/upload", methods=["GET", "POST"])
 def file_upload():
     cert_id = session["cert_id"]
     cert_editing(cert_id)
 
-    return render_template('certs/upload_complete.html', cert_id=cert_id)
+    return render_template("certs/upload_complete.html", cert_id=cert_id)
 
 
-@cert.route('/download/<cert>')
+@cert.route("/download/<cert>")
 def download(cert):
 
     db_entry = Certs.query.filter_by(id=cert).first_or_404()

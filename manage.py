@@ -4,15 +4,16 @@ import os
 from app.auth_models import User, UserRole, Company, CompanyFeature, Asset
 
 COV = None
-if os.environ.get('FLASK_COVERAGE'):
+if os.environ.get("FLASK_COVERAGE"):
     import coverage
-    COV = coverage.coverage(branch=True, include='app/*')
+
+    COV = coverage.coverage(branch=True, include="app/*")
     COV.start()
 
-if os.path.exists('.env'):
-    print('Importing environment from .env...')
-    for line in open('.env'):
-        var = line.strip().split('=')
+if os.path.exists(".env"):
+    print("Importing environment from .env...")
+    for line in open(".env"):
+        var = line.strip().split("=")
         if len(var) == 2:
             os.environ[var[0]] = var[1]
 
@@ -22,41 +23,49 @@ from flask_migrate import Migrate, MigrateCommand
 from app.models import MaterialClass
 
 
-app = create_app(os.getenv('CLUE_CONFIG') or 'default')
+app = create_app(os.getenv("CLUE_CONFIG") or "default")
 manager = Manager(app)
 migrate = Migrate(app, db)
 
 
 def make_shell_context():
-    return dict(app=app, db=db, MaterialClass=MaterialClass,
-                User=User, Company=Company, Asset=Asset,
-                UserRole=UserRole, CompanyFeature=CompanyFeature,
-                )
+    return dict(
+        app=app,
+        db=db,
+        MaterialClass=MaterialClass,
+        User=User,
+        Company=Company,
+        Asset=Asset,
+        UserRole=UserRole,
+        CompanyFeature=CompanyFeature,
+    )
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
-manager.add_command('db', MigrateCommand)
+manager.add_command("db", MigrateCommand)
 
 
 @manager.command
 def test(coverage=False):
     """Run the unit tests."""
-    if coverage and not os.environ.get('FLASK_COVERAGE'):
+    if coverage and not os.environ.get("FLASK_COVERAGE"):
         import sys
-        os.environ['FLASK_COVERAGE'] = '1'
+
+        os.environ["FLASK_COVERAGE"] = "1"
         os.execvp(sys.executable, [sys.executable] + sys.argv)
     import unittest
-    tests = unittest.TestLoader().discover('tests')
+
+    tests = unittest.TestLoader().discover("tests")
     unittest.TextTestRunner(verbosity=2).run(tests)
     if COV:
         COV.stop()
         COV.save()
-        print('Coverage Summary:')
+        print("Coverage Summary:")
         COV.report()
         basedir = os.path.abspath(os.path.dirname(__file__))
-        covdir = os.path.join(basedir, 'tmp/coverage')
+        covdir = os.path.join(basedir, "tmp/coverage")
         COV.html_report(directory=covdir)
-        print('HTML version: file://%s/index.html' % covdir)
+        print("HTML version: file://%s/index.html" % covdir)
         COV.erase()
 
 
@@ -64,8 +73,10 @@ def test(coverage=False):
 def profile(length=25, profile_dir=None):
     """Start the application under the code profiler."""
     from werkzeug.contrib.profiler import ProfilerMiddleware
-    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length],
-                                      profile_dir=profile_dir)
+
+    app.wsgi_app = ProfilerMiddleware(
+        app.wsgi_app, restrictions=[length], profile_dir=profile_dir
+    )
     app.run()
 
 
@@ -76,6 +87,7 @@ def deploy():
 
     # migrate database to latest revision
     upgrade()
+
 
 @manager.command
 def set_up():
@@ -88,13 +100,21 @@ def set_up():
 def sample_data():
     set_up()
 
-    user1 = User(username='User1', email='user1@example.com', password='cat', confirmed=True)
-    user2 = User(username='User2', email='user2@example.com', password='cat', confirmed=True)
-    user3 = User(username='User3', email='user3@example.com', password='cat', confirmed=True)
-    user4 = User(username='User4', email='user4@example.com', password='cat', confirmed=True)
+    user1 = User(
+        username="User1", email="user1@example.com", password="cat", confirmed=True
+    )
+    user2 = User(
+        username="User2", email="user2@example.com", password="cat", confirmed=True
+    )
+    user3 = User(
+        username="User3", email="user3@example.com", password="cat", confirmed=True
+    )
+    user4 = User(
+        username="User4", email="user4@example.com", password="cat", confirmed=True
+    )
 
-    company1 = Company(name='ExampleCompanyOne.com')
-    company2 = Company(name='ExampleCompanyTwo.com')
+    company1 = Company(name="ExampleCompanyOne.com")
+    company2 = Company(name="ExampleCompanyTwo.com")
 
     db.session.add(user1)
     db.session.add(user2)
@@ -104,13 +124,13 @@ def sample_data():
     company1.add_user(user1)
     company1.add_user(user2)
     company1.set_company_owner(user1)
-    company1.add_asset('company1_asset')
+    company1.add_asset("company1_asset")
     db.session.add(company1)
 
     company2.add_user(user3)
     company2.add_user(user4)
     company2.set_company_owner(user3)
-    company2.add_asset('company2_asset')
+    company2.add_asset("company2_asset")
     db.session.add(company2)
 
     db.session.commit()
@@ -119,5 +139,5 @@ def sample_data():
     db.session.commit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     manager.run()

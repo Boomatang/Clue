@@ -11,28 +11,36 @@ from app.models import MaterialSize, MaterialClass
 from app.utils import isInt, hasName, hasValues, error_builder
 
 
-@library.route('/', methods=['POST', 'GET'])
+@library.route("/", methods=["POST", "GET"])
 @login_required
 def material_library():
-    size = MaterialSize.query.filter_by(company=current_user.company.id).order_by(MaterialSize.size).all()[:]
+    size = (
+        MaterialSize.query.filter_by(company=current_user.company.id)
+        .order_by(MaterialSize.size)
+        .all()[:]
+    )
     types = []
-    for item in MaterialClass.query.filter_by(company=current_user.company.id).order_by(MaterialClass.name).all()[:]:
+    for item in (
+        MaterialClass.query.filter_by(company=current_user.company.id)
+        .order_by(MaterialClass.name)
+        .all()[:]
+    ):
         print(item.materials)
         if item.has_materials():
             types.append(item)
     if not len(size):
-        return render_template('materials/no_materials.html')
+        return render_template("materials/no_materials.html")
 
-    print('\n\n')
+    print("\n\n")
     print(size)
     print(types)
     print(current_user.company.id)
-    print('\n\n')
+    print("\n\n")
 
-    return render_template('materials/index.html', units=size, types=types)
+    return render_template("materials/index.html", units=size, types=types)
 
 
-@library.route('/<asset>', methods=['POST', 'GET'])
+@library.route("/<asset>", methods=["POST", "GET"])
 @login_required
 @company_asset()
 def material_view(asset):
@@ -43,8 +51,8 @@ def material_view(asset):
     form = testform(unit.id)
 
     if form.is_submitted():
-        print(request.form.getlist('remove'))
-        remove_lengths = request.form.getlist('remove')
+        print(request.form.getlist("remove"))
+        remove_lengths = request.form.getlist("remove")
         remove_lengths = [int(l) for l in remove_lengths]
 
         print(remove_lengths)
@@ -59,7 +67,7 @@ def material_view(asset):
                 flash(f"{new_length} has been added to {unit.size}")
 
             else:
-                flash('The length most be a whole number.', 'error')
+                flash("The length most be a whole number.", "error")
 
         if form.choice.data != choice:
             unit.class_id = form.choice.data
@@ -69,30 +77,30 @@ def material_view(asset):
         # return redirect(url_for(".material_view", material_id=material_id))
         return redirect(url_for(".material_library"))
 
-    return render_template('materials/view.html', unit=unit, form=form, choice=choice)
+    return render_template("materials/view.html", unit=unit, form=form, choice=choice)
 
 
-@library.route('/material-edit', methods=['POST', 'GET'])
+@library.route("/material-edit", methods=["POST", "GET"])
 @login_required
 def material_edit():
 
-    if request.method == 'POST':
-        flash('Got Post')
+    if request.method == "POST":
+        flash("Got Post")
 
         for item in request.values.items(multi=True):
             print(item)
 
-    return render_template('materials/edit.html')
+    return render_template("materials/edit.html")
 
 
-@library.route('/material/add', methods=['POST', 'GET'])
+@library.route("/material/add", methods=["POST", "GET"])
 @login_required
 def material_add():
 
     if request.method == "POST":
 
-        size = request.form.get('size')
-        lengths = request.form.getlist('lengths')
+        size = request.form.get("size")
+        lengths = request.form.getlist("lengths")
 
         checked_lengths = []
         failed_lengths = []
@@ -108,27 +116,23 @@ def material_add():
 
         if hasName(size) and hasValues(checked_lengths):
             MaterialSize.add_new_material(size, checked_lengths)
-            flash(f'{size} has been added to the database')
+            flash(f"{size} has been added to the database")
 
         else:
-            flash('There was some error with your input please try again')
-            return redirect(url_for('.material_add'))
+            flash("There was some error with your input please try again")
+            return redirect(url_for(".material_add"))
 
-        print(f'this was the size {size}')
-        print(f'lengths are {checked_lengths}')
+        print(f"this was the size {size}")
+        print(f"lengths are {checked_lengths}")
 
-    return render_template('materials/add.html')
+    return render_template("materials/add.html")
 
 
 def get_choices():
     results = []
 
     for item in MaterialClass.query.filter_by(company=current_user.company.id).all():
-        local = {
-            "id": item.id,
-            "description": item.name,
-            "selected": False,
-        }
+        local = {"id": item.id, "description": item.name, "selected": False}
 
         if item.name == "Undefined":
             local["selected"] = True
@@ -138,17 +142,17 @@ def get_choices():
     return results
 
 
-@library.route('/missing', methods=['POST', 'GET'])
+@library.route("/missing", methods=["POST", "GET"])
 @login_required
 def material_missing():
-    material = session['material_missing']
+    material = session["material_missing"]
     choices = get_choices()
 
     if request.method == "POST":
 
         size = material
-        lengths = request.form.getlist('lengths')
-        group = request.form.get('choice')
+        lengths = request.form.getlist("lengths")
+        group = request.form.get("choice")
 
         checked_lengths = []
         failed_lengths = []
@@ -163,15 +167,17 @@ def material_missing():
             flash(error_builder(failed_lengths))
 
         if hasName(size) and hasValues(checked_lengths):
-            MaterialSize.add_new_material(size, checked_lengths, group=group, company=current_user.company.id)
-            flash(f'{size} has been added to the database')
-            return redirect(url_for('BOM.BOM_setup'))
+            MaterialSize.add_new_material(
+                size, checked_lengths, group=group, company=current_user.company.id
+            )
+            flash(f"{size} has been added to the database")
+            return redirect(url_for("BOM.BOM_setup"))
 
         else:
-            flash('There was some error with your input please try again')
-            return redirect(url_for('.material_missing'))
+            flash("There was some error with your input please try again")
+            return redirect(url_for(".material_missing"))
 
-    return render_template('materials/missing.html', material=material, choices=choices)
+    return render_template("materials/missing.html", material=material, choices=choices)
 
 
 @library.route("/classes", methods=["POST", "GET"])
@@ -185,7 +191,7 @@ def material_classes():
             material_class = MaterialClass(
                 name=add_form.name.data,
                 description=add_form.description.data,
-                company=current_user.company.id
+                company=current_user.company.id,
             )
             try:
                 db.session.add(material_class)
@@ -194,20 +200,24 @@ def material_classes():
                 db.session.commit()
             except IntegrityError as e:
                 db.session.rollback()
-                flash("There was an error saving your entry. It looks like that name was used before.")
+                flash(
+                    "There was an error saving your entry. It looks like that name was used before."
+                )
             return redirect(url_for(".material_classes"))
 
         else:
             flash_form_errors(add_form)
 
     if remove_form.is_submitted():
-        data = request.form.getlist('remove')
+        data = request.form.getlist("remove")
         if len(data):
             default = MaterialClass.query.filter_by(name="Undefined").first_or_404()
             remove = False
             for item in data:
                 if isInt(item):
-                    entry: MaterialClass = MaterialClass.query.filter_by(id=int(item)).first_or_404()
+                    entry: MaterialClass = MaterialClass.query.filter_by(
+                        id=int(item)
+                    ).first_or_404()
 
                     if entry.id != default.id:
                         for material in entry.materials:
@@ -217,14 +227,18 @@ def material_classes():
                         db.session.delete(entry)
                         remove = True
                     else:
-                        flash(f"You cannot remove the {default.name} class. Its a system default.")
+                        flash(
+                            f"You cannot remove the {default.name} class. Its a system default."
+                        )
             db.session.add(default)
             db.session.commit()
             if remove:
                 flash("Material Class has been removed.")
             return redirect(url_for(".material_classes"))
 
-    return render_template('materials/classes.html', add_form=add_form, remove_form=remove_form)
+    return render_template(
+        "materials/classes.html", add_form=add_form, remove_form=remove_form
+    )
 
 
 def flash_form_errors(form):

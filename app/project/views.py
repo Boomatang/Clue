@@ -9,16 +9,18 @@ from app.project import project
 from app.project.form import AddProject
 
 
-@project.route('/')
+@project.route("/")
 @login_required
 def index():
 
-    projects = Project.query.filter_by(company=current_user.company.id).order_by(Project.job_number.desc())[:]
+    projects = Project.query.filter_by(company=current_user.company.id).order_by(
+        Project.job_number.desc()
+    )[:]
 
     return render_template("project/index.html", projects=projects)
 
 
-@project.route('/add', methods=['GET', 'POST'])
+@project.route("/add", methods=["GET", "POST"])
 @login_required
 def add():
     form = AddProject()
@@ -36,9 +38,9 @@ def add():
         db.session.commit()
 
         flash("Project added")
-        return redirect(url_for('project.view', asset=entry.asset))
+        return redirect(url_for("project.view", asset=entry.asset))
 
-    return render_template('project/add.html', form=form)
+    return render_template("project/add.html", form=form)
 
 
 @project.route("/project/<asset>")
@@ -49,4 +51,4 @@ def view(asset):
     db_entry: Project = Project.query.filter_by(asset=asset).first_or_404()
     db_entry.last_active = datetime.datetime.now()
 
-    return render_template('project/view.html', project=db_entry)
+    return render_template("project/view.html", project=db_entry)

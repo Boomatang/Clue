@@ -12,18 +12,22 @@ def bom_api_test_function(ref):
     else:
         num = int(ref[1:])
 
-        if num > 10**4:
-            return {"error": f"What are you playing at.\nYou asked for a result with {num} material types."}
+        if num > 10 ** 4:
+            return {
+                "error": f"What are you playing at.\nYou asked for a result with {num} material types."
+            }
 
-        output = {"job number": f"{ref} test",
-                  "material": [],
-                  "total": num,
-                  "massage": f"Found data for ID {ref}"}
+        output = {
+            "job number": f"{ref} test",
+            "material": [],
+            "total": num,
+            "massage": f"Found data for ID {ref}",
+        }
 
         index = 1
 
         while index <= num:
-            output['material'].append({"size": f"beam size {index}", "qty": f"{index}"})
+            output["material"].append({"size": f"beam size {index}", "qty": f"{index}"})
             index += 1
 
         return output
@@ -32,23 +36,31 @@ def bom_api_test_function(ref):
 def get_bom_ref_data(ID):
     bom: BomResult = BomResult.query.filter_by(id=ID).first_or_404()
 
-    output = {"job number": bom.job_number,
-              "material": [],
-              "total": 0,
-              "massage": f"Found data for ID {ID}",
-              "data id": ID}
+    output = {
+        "job number": bom.job_number,
+        "material": [],
+        "total": 0,
+        "massage": f"Found data for ID {ID}",
+        "data id": ID,
+    }
 
     for material in bom.material_review():
         for length in bom.required_lengths(material):
-            output["material"].append({"size": f"{material} @ {length}",
-                                       "qty": bom.required_length_qty(material, length),
-                                       "grade": get_grade(material)})
+            output["material"].append(
+                {
+                    "size": f"{material} @ {length}",
+                    "qty": bom.required_length_qty(material, length),
+                    "grade": get_grade(material),
+                }
+            )
 
     output["total"] = len(output["material"])
 
     if bom.has_missing_parts():
-        output['massage'] = output['massage'] + \
-                            "\n\n*** WARNING ***\nThis data reports that \nthere is missing parts"
+        output["massage"] = (
+            output["massage"]
+            + "\n\n*** WARNING ***\nThis data reports that \nthere is missing parts"
+        )
 
     return output
 
@@ -59,6 +71,7 @@ def get_grade(material):
     except AttributeError:
         return "S235 S355 S275"
 
+
 #
 # @api.app_errorhandler(404)
 # def page_not_found(e):
@@ -67,10 +80,10 @@ def get_grade(material):
 #     return result
 
 
-@api.route("/bom/<ref>", methods=['GET'])
+@api.route("/bom/<ref>", methods=["GET"])
 def get_one_bom(ref):
 
-    if ref.lower().startswith('t'):
+    if ref.lower().startswith("t"):
         result = bom_api_test_function(ref)
     else:
         if not isInt(ref):

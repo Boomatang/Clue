@@ -36,7 +36,8 @@ LOG_REPORT = "__log_report.tsv"
 def get_folder_path(folder):
     print(
         "\n **** Please enter the path to the folder where the certs are held,"
-        " This should be a local or mapped drive. ****")
+        " This should be a local or mapped drive. ****"
+    )
 
     output = folder
     output = folder_name(output)
@@ -64,6 +65,7 @@ def trim_name(name):
 
 
 # getting list of pdfs
+
 
 def get_pdf_paths(path):
     excluded = ["COMBINED"]
@@ -101,7 +103,7 @@ def convert(fname, pages=None):
     converter = XMLConverter(manager, output, laparams=LAParams())
     interpreter = PDFPageInterpreter(manager, converter)
 
-    infile = open(fname, 'rb')
+    infile = open(fname, "rb")
     for page in PDFPage.get_pages(infile, pagenums):
         interpreter.process_page(page)
     infile.close()
@@ -137,7 +139,7 @@ class PDF:
         # self.save_as()
 
     def make_file_changes(self, log):
-        with open(log, 'a') as info:
+        with open(log, "a") as info:
             try:
                 name = Path(self.file.parent, self.new_name + ".pdf")
                 self.file.replace(name)
@@ -166,13 +168,13 @@ class PDF:
 
     def get_current_line(self, line):
         for page in self.xml:
-            for textbox in page.findall('textbox'):
-                if textbox.get('id').startswith(line):
+            for textbox in page.findall("textbox"):
+                if textbox.get("id").startswith(line):
                     word = []
                     for textline in textbox:
                         for char in textline:
                             word.append(char.text)
-                    return ''.join(word)
+                    return "".join(word)
 
     def convert_to_number_test(self, text):
         numbers = 0
@@ -208,15 +210,15 @@ class PDF:
         found = False
         test = "Location at which examination was made, if different"
         for page in self.xml:
-            for textbox in page.findall('textbox'):
+            for textbox in page.findall("textbox"):
                 if not found:
                     word = []
                     for textline in textbox:
                         for char in textline:
                             word.append(char.text)
-                    word = ''.join(word)
+                    word = "".join(word)
                     if word.startswith(test):
-                        ids = (word[:24], textbox.get('id'))
+                        ids = (word[:24], textbox.get("id"))
                         found = True
                         break
         if not found:
@@ -230,17 +232,17 @@ class PDF:
         found = False
 
         for page in self.xml:
-            for textbox in page.findall('textbox'):
+            for textbox in page.findall("textbox"):
 
                 if not found:
                     word = []
                     for textline in textbox:
                         for char in textline:
                             word.append(char.text)
-                    word = ''.join(word)
+                    word = "".join(word)
                     if len(word) == 5:
                         if word.startswith("Pass"):
-                            ids.append((word[:4], textbox.get('id')))
+                            ids.append((word[:4], textbox.get("id")))
                             found = True
                             break
 
@@ -292,10 +294,13 @@ def run_cert_editing(entry_id, app):
         print(f"The db_entry ID = {db_entry.id}")
 
         # unpack the zip folder
-        unzip_folder = os.path.join(os.environ.get('CLUE_UPLOADS', '/home/boomatang/Public'),
-                                    'cert_uploads', str(uuid.uuid4()))
+        unzip_folder = os.path.join(
+            os.environ.get("CLUE_UPLOADS", "/home/boomatang/Public"),
+            "cert_uploads",
+            str(uuid.uuid4()),
+        )
 
-        zip_ref = zipfile.ZipFile(db_entry.upload_file, 'r')
+        zip_ref = zipfile.ZipFile(db_entry.upload_file, "r")
         zip_ref.extractall(unzip_folder)
         zip_ref.close()
 
@@ -306,7 +311,7 @@ def run_cert_editing(entry_id, app):
         # repack the zip folder
 
         zip_name = unzip_folder
-        shutil.make_archive(zip_name, 'zip', unzip_folder)
+        shutil.make_archive(zip_name, "zip", unzip_folder)
 
         db_entry.download_file = zip_name + ".zip"
 

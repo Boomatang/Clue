@@ -5,19 +5,21 @@ from flask_login import current_user
 from app.auth_models import uuid_key, Company
 from . import db
 
-material_size_lengths = db.Table('material_size_lengths',
-                                 db.Column('size_id', db.Integer, db.ForeignKey('material.id'), primary_key=True),
-                                 db.Column('length_id', db.Integer, db.ForeignKey('material_length.id'),
-                                           primary_key=True)
-                                 )
+material_size_lengths = db.Table(
+    "material_size_lengths",
+    db.Column("size_id", db.Integer, db.ForeignKey("material.id"), primary_key=True),
+    db.Column(
+        "length_id", db.Integer, db.ForeignKey("material_length.id"), primary_key=True
+    ),
+)
 
 
 class MaterialClass(db.Model):
-    __tablename__ = 'material_class'
+    __tablename__ = "material_class"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     description = db.Column(db.String(150))
-    materials = db.relationship('MaterialSize', backref='type', lazy=True)
+    materials = db.relationship("MaterialSize", backref="type", lazy=True)
     company = db.Column(db.Integer)
     asset = db.Column(db.String(64), index=True, default=uuid_key)
 
@@ -36,8 +38,10 @@ class MaterialClass(db.Model):
     def _add_basic_classes(company):
         db_company = Company.query.filter_by(id=company).first_or_404()
 
-        items = [("Undefined", "This is the default when no class is add to the materials"),
-                 ("Miscellaneous", "A list of various materials from different sources")]
+        items = [
+            ("Undefined", "This is the default when no class is add to the materials"),
+            ("Miscellaneous", "A list of various materials from different sources"),
+        ]
         temp = []
 
         for item in items:
@@ -53,7 +57,9 @@ class MaterialClass(db.Model):
 
     @staticmethod
     def _set_default_classes_on_materials(company):
-        default = MaterialClass.query.filter_by(name="Undefined", company=company).first()
+        default = MaterialClass.query.filter_by(
+            name="Undefined", company=company
+        ).first()
 
         for entry in MaterialSize.query.all():
             entry.type = default
@@ -61,17 +67,21 @@ class MaterialClass(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<Material Class : {self.name}'
+        return f"<Material Class : {self.name}"
 
 
 class MaterialSize(db.Model):
-    __tablename__ = 'material'
+    __tablename__ = "material"
     id = db.Column(db.Integer, primary_key=True)
     size = db.Column(db.String(64))
-    lengths = db.relationship('MaterialLength', secondary=material_size_lengths, lazy='subquery',
-                              backref=db.backref('sizes', lazy=False))
+    lengths = db.relationship(
+        "MaterialLength",
+        secondary=material_size_lengths,
+        lazy="subquery",
+        backref=db.backref("sizes", lazy=False),
+    )
     default = "Not Working"
-    class_id = db.Column(db.Integer, db.ForeignKey('material_class.id'))
+    class_id = db.Column(db.Integer, db.ForeignKey("material_class.id"))
     company = db.Column(db.Integer)
     asset = db.Column(db.String(64), index=True, default=uuid_key)
 
@@ -86,7 +96,9 @@ class MaterialSize(db.Model):
                 entry.class_id = group
 
             for length in lengths:
-                entry_length = MaterialLength.query.filter_by(length=int(length)).first()
+                entry_length = MaterialLength.query.filter_by(
+                    length=int(length)
+                ).first()
                 if entry_length is None:
                     entry_length = MaterialLength(length=int(length))
                 entry.lengths.append(entry_length)
@@ -112,26 +124,30 @@ class MaterialSize(db.Model):
                 self.lengths.remove(length)
 
     def __repr__(self):
-        return f'<Size : {self.size}>'
+        return f"<Size : {self.size}>"
 
 
 class MaterialLength(db.Model):
-    __tablename__ = 'material_length'
+    __tablename__ = "material_length"
     id = db.Column(db.Integer, primary_key=True)
     length = db.Column(db.Integer, unique=True)
 
     def __repr__(self):
-        return f'<Length : {self.length}>'
+        return f"<Length : {self.length}>"
 
 
 class BomFile(db.Model):
-    __tablename__ = 'bom_files'
+    __tablename__ = "bom_files"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     comment = db.Column(db.String(250))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    items = db.relationship('BomFileContents', cascade="all, delete-orphan", backref='file', lazy=True)
-    results = db.relationship('BomResult', cascade="all, delete-orphan", backref='file', lazy=True)
+    items = db.relationship(
+        "BomFileContents", cascade="all, delete-orphan", backref="file", lazy=True
+    )
+    results = db.relationship(
+        "BomResult", cascade="all, delete-orphan", backref="file", lazy=True
+    )
 
     def configure_file(self):
         for item in self.items:
@@ -144,16 +160,16 @@ class BomFile(db.Model):
                 if item.description not in material and item.is_material():
                     material.append(item.description)
         if len(material) == 0:
-            material.append('No materials Found')
+            material.append("No materials Found")
 
         return material
 
     def __repr__(self):
-        return f'<File Name : {self.name}'
+        return f"<File Name : {self.name}"
 
 
 class BomFileContents(db.Model):
-    __tablename__ = 'bom_file_contents'
+    __tablename__ = "bom_file_contents"
     id = db.Column(db.Integer, primary_key=True)
     item_no = db.Column(db.String(64))
     part_number = db.Column(db.String(64))
@@ -164,7 +180,7 @@ class BomFileContents(db.Model):
     length = db.Column(db.Float)
     qty = db.Column(db.Integer)
     parent = db.Column(db.Integer)
-    file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
+    file_id = db.Column(db.Integer, db.ForeignKey("bom_files.id"), nullable=False)
 
     def set_parent(self):
         parent_item_no = self._get_parent_item_no()
@@ -188,17 +204,17 @@ class BomFileContents(db.Model):
             return None
 
     def _get_parent_item_no(self):
-        parent = self.item_no.split('.')
+        parent = self.item_no.split(".")
 
         if len(parent) == 1:
             return None
         else:
-            return '.'.join(parent[:-1])
+            return ".".join(parent[:-1])
 
     def is_plate(self):
-        contains = ['pl', 'plate']
+        contains = ["pl", "plate"]
 
-        string = self.description.split('-')
+        string = self.description.split("-")
         test = string[-1].lower()
         if string is not None:
             for item in contains:
@@ -220,50 +236,58 @@ class BomFileContents(db.Model):
         return out
 
     def __repr__(self):
-        return f'<Item : {self.item_no} - {self.part_number} - {self.description}'
+        return f"<Item : {self.item_no} - {self.part_number} - {self.description}"
 
 
 class BomSession(db.Model):
-    __tablename__ = 'bom_session'
+    __tablename__ = "bom_session"
 
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    sizes = db.relationship('BomSessionSize', cascade="all, delete-orphan", backref='session', lazy=True)
+    sizes = db.relationship(
+        "BomSessionSize", cascade="all, delete-orphan", backref="session", lazy=True
+    )
 
     def __repr__(self):
-        return f'<BomSession : {self.id} Timestamp : {self.timestamp}>'
+        return f"<BomSession : {self.id} Timestamp : {self.timestamp}>"
 
 
 class BomSessionSize(db.Model):
-    __tablename__ = 'bom_session_size'
+    __tablename__ = "bom_session_size"
     id = db.Column(db.Integer, primary_key=True)
     size = db.Column(db.String(64))
     default = db.Column(db.Integer)
-    lengths = db.relationship('BomSessionLength', cascade="all, delete-orphan", backref='size', lazy=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('bom_session.id'), nullable=False)
+    lengths = db.relationship(
+        "BomSessionLength", cascade="all, delete-orphan", backref="size", lazy=True
+    )
+    session_id = db.Column(db.Integer, db.ForeignKey("bom_session.id"), nullable=False)
 
     def __repr__(self):
-        return f'<BomSessionSize : {self.size}>'
+        return f"<BomSessionSize : {self.size}>"
 
 
 class BomSessionLength(db.Model):
-    __tablename__ = 'bom_session_length'
+    __tablename__ = "bom_session_length"
     id = db.Column(db.Integer, primary_key=True)
     length = db.Column(db.Integer)
-    size_id = db.Column(db.Integer, db.ForeignKey('bom_session_size.id'), nullable=False)
+    size_id = db.Column(
+        db.Integer, db.ForeignKey("bom_session_size.id"), nullable=False
+    )
 
     def __repr__(self):
-        return f'<BomSessionLength : {self.length}>'
+        return f"<BomSessionLength : {self.length}>"
 
 
 class BomResult(db.Model):
-    __tablename__ = 'bom_result'
+    __tablename__ = "bom_result"
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     __job_number = db.Column(db.String(20))
     comment = db.Column(db.String(250))
-    file_id = db.Column(db.Integer, db.ForeignKey('bom_files.id'), nullable=False)
-    material = db.relationship('BomResultMaterial', cascade="all, delete-orphan", backref='result', lazy=True)
+    file_id = db.Column(db.Integer, db.ForeignKey("bom_files.id"), nullable=False)
+    material = db.relationship(
+        "BomResultMaterial", cascade="all, delete-orphan", backref="result", lazy=True
+    )
     asset = db.Column(db.String(64), index=True, default=uuid_key)
     company = db.Column(db.Integer)
 
@@ -331,19 +355,25 @@ class BomResult(db.Model):
 
     def get_beams_for_material(self, material):
 
-        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+        size = BomResultMaterial.query.filter_by(
+            result_id=self.id, size=material
+        ).first()
 
         return size.beams
 
     def get_missing_parts_for_material(self, material):
 
-        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+        size = BomResultMaterial.query.filter_by(
+            result_id=self.id, size=material
+        ).first()
 
         return size.missing
 
     def is_missing_parts_for_material(self, material):
 
-        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+        size = BomResultMaterial.query.filter_by(
+            result_id=self.id, size=material
+        ).first()
         if len(size.missing):
             return True
 
@@ -357,28 +387,39 @@ class BomResult(db.Model):
         return False
 
     def material_average_percentage(self, material):
-        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+        size = BomResultMaterial.query.filter_by(
+            result_id=self.id, size=material
+        ).first()
 
         return size.average()
 
     def material_low_percentage(self, material):
-        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+        size = BomResultMaterial.query.filter_by(
+            result_id=self.id, size=material
+        ).first()
 
         return size.low()
 
     def material_high_percentage(self, material):
-        size = BomResultMaterial.query.filter_by(result_id=self.id, size=material).first()
+        size = BomResultMaterial.query.filter_by(
+            result_id=self.id, size=material
+        ).first()
 
         return size.high()
 
 
 class BomResultMaterial(db.Model):
-    __tablename__ = 'bom_result_material'
+    __tablename__ = "bom_result_material"
     id = db.Column(db.Integer, primary_key=True)
     size = db.Column(db.String(64))
-    beams = db.relationship('BomResultBeam', backref='material', lazy=True)
-    missing = db.relationship('BomResultMissingPart', cascade="all,delete-orphan", backref='material', lazy=True)
-    result_id = db.Column(db.Integer, db.ForeignKey('bom_result.id'), nullable=False)
+    beams = db.relationship("BomResultBeam", backref="material", lazy=True)
+    missing = db.relationship(
+        "BomResultMissingPart",
+        cascade="all,delete-orphan",
+        backref="material",
+        lazy=True,
+    )
+    result_id = db.Column(db.Integer, db.ForeignKey("bom_result.id"), nullable=False)
 
     def delete(self):
         for beam in self.beams:
@@ -411,13 +452,17 @@ class BomResultMaterial(db.Model):
 
 
 class BomResultBeam(db.Model):
-    __tablename__ = 'bom_result_beam'
+    __tablename__ = "bom_result_beam"
     id = db.Column(db.Integer, primary_key=True)
     qty = db.Column(db.Integer)
     length = db.Column(db.Integer)
     waste = db.Column(db.Integer)
-    material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)
-    parts = db.relationship('BomResultBeamPart', cascade="all, delete-orphan", backref='beam', lazy=True)
+    material_id = db.Column(
+        db.Integer, db.ForeignKey("bom_result_material.id"), nullable=False
+    )
+    parts = db.relationship(
+        "BomResultBeamPart", cascade="all, delete-orphan", backref="beam", lazy=True
+    )
 
     def delete(self):
         for part in self.parts:
@@ -444,12 +489,12 @@ class BomResultBeam(db.Model):
 
 
 class BomResultBeamPart(db.Model):
-    __tablename__ = 'bom_result_beam_part'
+    __tablename__ = "bom_result_beam_part"
     id = db.Column(db.Integer, primary_key=True)
     item_no = db.Column(db.String(64))
     length = db.Column(db.Float)
     qty = db.Column(db.Integer)
-    beam_id = db.Column(db.Integer, db.ForeignKey('bom_result_beam.id'), nullable=False)
+    beam_id = db.Column(db.Integer, db.ForeignKey("bom_result_beam.id"), nullable=False)
 
     def delete(self):
         db.session.delete(self)
@@ -457,12 +502,14 @@ class BomResultBeamPart(db.Model):
 
 
 class BomResultMissingPart(db.Model):
-    __tablename__ = 'bom_result_missing_part'
+    __tablename__ = "bom_result_missing_part"
     id = db.Column(db.Integer, primary_key=True)
     item_no = db.Column(db.String(64))
     length = db.Column(db.Float)
     qty = db.Column(db.Integer)
-    material_id = db.Column(db.Integer, db.ForeignKey('bom_result_material.id'), nullable=False)
+    material_id = db.Column(
+        db.Integer, db.ForeignKey("bom_result_material.id"), nullable=False
+    )
 
     def delete(self):
         db.session.delete(self)
@@ -470,7 +517,7 @@ class BomResultMissingPart(db.Model):
 
 
 class Certs(db.Model):
-    __tablename__ = 'certs'
+    __tablename__ = "certs"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, default=datetime.now())
     file_count = db.Column(db.Integer)
@@ -483,7 +530,7 @@ class Certs(db.Model):
 
 
 class Project(db.Model):
-    __tablename__ = 'project'
+    __tablename__ = "project"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     client = db.Column(db.String(100))

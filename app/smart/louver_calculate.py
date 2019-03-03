@@ -21,7 +21,9 @@ class MeshCalculator:
 
     @property
     def frame_area(self):
-        return (self.width - self.mesh_frame_width_allowance) * (self.height - self.mesh_frame_height_allowance)
+        return (self.width - self.mesh_frame_width_allowance) * (
+            self.height - self.mesh_frame_height_allowance
+        )
 
     @property
     def unit_efficiency(self):
@@ -52,7 +54,7 @@ class LouverCalculator:
 
     @property
     def number_of_blade_gaps(self):
-        return (self.height - self.frame_height_allowance)/45
+        return (self.height - self.frame_height_allowance) / 45
 
     @property
     def number_of_full_blade_gaps(self):
@@ -75,8 +77,10 @@ class LouverCalculator:
 
     @property
     def louver_free_area(self):
-        return self.width * ((self.number_of_full_blade_gaps * self.standard_blade_gap)
-                             + self.effective_partial_blade_gap)
+        return self.width * (
+            (self.number_of_full_blade_gaps * self.standard_blade_gap)
+            + self.effective_partial_blade_gap
+        )
 
     @property
     def free_area_of_louver_unit(self):
@@ -98,16 +102,16 @@ def louver_efficiency(louver_width, louver_height, mesh_efficiency):
     output = calculate_louver_efficiency(louver_width, louver_height, mesh_efficiency)
     output = str(round(output * 100, 1))
 
-    return output + '%'
+    return output + "%"
 
 
 if __name__ == "__main__":
-    sample_mesh = MeshCalculator(900, 300, .3)
+    sample_mesh = MeshCalculator(900, 300, 0.3)
     print(sample_mesh.free_area_of_mesh)
 
     sample_louver = LouverCalculator(900, 300)
     print(sample_louver.free_area_of_louver_unit)
 
-    print(round(calculate_louver_efficiency(900, 300, .3), 2))
+    print(round(calculate_louver_efficiency(900, 300, 0.3), 2))
 
-    print(louver_efficiency(900, 300, .7))
+    print(louver_efficiency(900, 300, 0.7))

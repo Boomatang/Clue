@@ -5,9 +5,9 @@ from app import create_app, db
 from app.auth_models import User, Company
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app():
-    app = create_app('testing')
+    app = create_app("testing")
     app_context = app.app_context()
     app_context.push()
     db.create_all()
@@ -19,7 +19,7 @@ def app():
     db.drop_all()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def clean_db(app):
     db.session.remove()
     db.drop_all()
@@ -28,7 +28,7 @@ def clean_db(app):
     yield app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def session_clean_db(app):
     db.session.remove()
     db.drop_all()
@@ -37,13 +37,21 @@ def session_clean_db(app):
 
 
 def create_company():
-    user1 = User(username='User1', email='user1@example.com', password='cat', confirmed=True)
-    user2 = User(username='User2', email='user2@example.com', password='cat', confirmed=True)
-    user3 = User(username='User3', email='user3@example.com', password='cat', confirmed=True)
-    user4 = User(username='User4', email='user4@example.com', password='cat', confirmed=True)
+    user1 = User(
+        username="User1", email="user1@example.com", password="cat", confirmed=True
+    )
+    user2 = User(
+        username="User2", email="user2@example.com", password="cat", confirmed=True
+    )
+    user3 = User(
+        username="User3", email="user3@example.com", password="cat", confirmed=True
+    )
+    user4 = User(
+        username="User4", email="user4@example.com", password="cat", confirmed=True
+    )
 
-    company1 = Company(name='ExampleCompanyOne.com')
-    company2 = Company(name='ExampleCompanyTwo.com')
+    company1 = Company(name="ExampleCompanyOne.com")
+    company2 = Company(name="ExampleCompanyTwo.com")
 
     db.session.add(user1)
     db.session.add(user2)
@@ -64,9 +72,7 @@ def create_company():
 
 
 def login_standard_user(client):
-    data = {'email': 'user1@example.com',
-            'password': 'cat'}
-    response = client.post(url_for('auth.login'),
-                           data=data, follow_redirects=True)
+    data = {"email": "user1@example.com", "password": "cat"}
+    response = client.post(url_for("auth.login"), data=data, follow_redirects=True)
 
     return response

@@ -1,8 +1,13 @@
 import pytest
 
 from app import db
-from app.models import BomResult, BomSession, BomSessionSize, \
-    BomSessionLength, BomFileContents
+from app.models import (
+    BomResult,
+    BomSession,
+    BomSessionSize,
+    BomSessionLength,
+    BomFileContents,
+)
 
 
 from app.smart import CreateBom, RawBomFile
@@ -12,11 +17,13 @@ from tests.conftest import login_standard_user
 @pytest.fixture()
 def csv_file(tmpdir):
     p = tmpdir.mkdir("sub").join("sample.csv")
-    p.write("ITEM NO.,PART NUMBER,DESCRIPTION,3D-Bounding Box Length,3D-Bounding Box Width,3D-Bounding Box Thickness,"
-            "LENGTH,QTY.\n "
-            "1,18-06-148-J01-A01,,,,,,3\n"
-            "1.1,  18-06-148-J01-P01,,,,,,3\n"
-            "1.1.1,    ,large,,,,6000,3")
+    p.write(
+        "ITEM NO.,PART NUMBER,DESCRIPTION,3D-Bounding Box Length,3D-Bounding Box Width,3D-Bounding Box Thickness,"
+        "LENGTH,QTY.\n "
+        "1,18-06-148-J01-A01,,,,,,3\n"
+        "1.1,  18-06-148-J01-P01,,,,,,3\n"
+        "1.1.1,    ,large,,,,6000,3"
+    )
 
     return p
 
@@ -35,7 +42,9 @@ def setup_for_creating_bom(clean_db, csv_file):
 
     db.session.add(length)
 
-    size = BomSessionSize(id=1, size='large', session_id=1, lengths=[length], default=6500)
+    size = BomSessionSize(
+        id=1, size="large", session_id=1, lengths=[length], default=6500
+    )
     db.session.add(size)
 
     db.session.commit()
@@ -49,7 +58,7 @@ def test_creating_bom(client, setup_for_creating_bom):
 
     login_standard_user(client)
     result: BomResult = bom.create_result()
-    result = result.required_length_qty('large', 6500)
+    result = result.required_length_qty("large", 6500)
     assert expected == result
 
 

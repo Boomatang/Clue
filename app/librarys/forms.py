@@ -7,7 +7,6 @@ from app.models import MaterialSize, MaterialClass
 
 
 class ChoicesBase:
-
     def __init__(self, material_id):
         self.choices = self._get_choices(material_id)
         self.name = None
@@ -43,26 +42,26 @@ class ClassList(ChoicesBase):
         return results
 
 
-def select_multi_checkbox(field, ul_class='', **kwargs):
+def select_multi_checkbox(field, ul_class="", **kwargs):
     """When this is called you need to pipe it through safe"""
-    kwargs.setdefault('type', 'checkbox')
-    field_id = kwargs.pop('id', field.id)
+    kwargs.setdefault("type", "checkbox")
+    field_id = kwargs.pop("id", field.id)
     html = [u'<div class="list" %s>' % html_params(id=field_id, class_=ul_class)]
     for value, label, checked in field.iter_choices():
-        choice_id = u'%s-%s' % (field_id, value)
+        choice_id = u"%s-%s" % (field_id, value)
         options = dict(kwargs, name=field.name, value=value, id=choice_id)
         if checked:
-            options['checked'] = 'checked'
+            options["checked"] = "checked"
         html.append(u'<div class="item">')
         html.append(u'<div class="ui toggle checkbox">')
         html.append(u'<label for="%s">%s</label>' % (field_id, label))
-        html.append(u'<input %s /> ' % html_params(**options))
-        html.append(u'</div>')
-        html.append(u'</div>')
-        html.append(u'<br>')
+        html.append(u"<input %s /> " % html_params(**options))
+        html.append(u"</div>")
+        html.append(u"</div>")
+        html.append(u"<br>")
 
-    html.append(u'</div>')
-    return u''.join(html)
+    html.append(u"</div>")
+    return u"".join(html)
 
 
 def material_classes():
@@ -81,15 +80,17 @@ def material_default_class(material):
 
 
 class AddClass(FlaskForm):
-    name = StringField('Class Name', validators=[DataRequired("A class name is required")])
+    name = StringField(
+        "Class Name", validators=[DataRequired("A class name is required")]
+    )
     description = TextAreaField("Description of Class")
-    submit = SubmitField('Submit')
+    submit = SubmitField("Submit")
 
 
 class testform(FlaskForm):
     add = StringField("Add Beam Length")
     choice = SelectField("Select Material Class")
-    submit = SubmitField('Update Material')
+    submit = SubmitField("Update Material")
 
     def __init__(self, material_id):
         FlaskForm.__init__(self)
@@ -102,7 +103,7 @@ class testform(FlaskForm):
 
 
 class RemoveClassForm(FlaskForm):
-    submit = SubmitField('Remove Material Class')
+    submit = SubmitField("Remove Material Class")
 
     def __init__(self, company, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)

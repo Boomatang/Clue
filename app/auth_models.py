@@ -24,24 +24,25 @@ class Feature:
 
 
 class CompanyFeature(db.Model):
-    __tablename__ = 'company_features'
+    __tablename__ = "company_features"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     feature = db.Column(db.Integer)
-    companies = db.relationship('Company', backref='feature', lazy='dynamic')
+    companies = db.relationship("Company", backref="feature", lazy="dynamic")
 
     @staticmethod
     def insert_features():
         features = {
-            'Level_1': (Feature.FEATURE1 |
-                        Feature.FEATURE2 |
-                        Feature.FEATURE3, True),
-            'Level_2': (Feature.FEATURE1 |
-                        Feature.FEATURE2 |
-                        Feature.FEATURE3 |
-                        Feature.FEATURE4, False),
-            'Super': (0xff, False)
+            "Level_1": (Feature.FEATURE1 | Feature.FEATURE2 | Feature.FEATURE3, True),
+            "Level_2": (
+                Feature.FEATURE1
+                | Feature.FEATURE2
+                | Feature.FEATURE3
+                | Feature.FEATURE4,
+                False,
+            ),
+            "Super": (0xFF, False),
         }
         for r in features:
             feature = CompanyFeature.query.filter_by(name=r).first()
@@ -53,7 +54,7 @@ class CompanyFeature(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f'<Role {self.name}>'
+        return f"<Role {self.name}>"
 
 
 class Permission:
@@ -65,24 +66,28 @@ class Permission:
 
 
 class UserRole(db.Model):
-    __tablename__ = 'user_roles'
+    __tablename__ = "user_roles"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    users = db.relationship('User', backref='role', lazy='dynamic')
+    users = db.relationship("User", backref="role", lazy="dynamic")
 
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, False),
-            'Administrator': (0xff, False)
+            "User": (
+                Permission.FOLLOW | Permission.COMMENT | Permission.WRITE_ARTICLES,
+                True,
+            ),
+            "Moderator": (
+                Permission.FOLLOW
+                | Permission.COMMENT
+                | Permission.WRITE_ARTICLES
+                | Permission.MODERATE_COMMENTS,
+                False,
+            ),
+            "Administrator": (0xFF, False),
         }
         for r in roles:
             role = UserRole.query.filter_by(name=r).first()
@@ -94,25 +99,25 @@ class UserRole(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return '<Role %r>' % self.name
+        return "<Role %r>" % self.name
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
-    company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=True)
+    company_id = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=True)
     company = db.relationship("Company", back_populates="users", lazy=False)
     admin = db.relationship("Company", back_populates="owner")
-    role_id = db.Column(db.Integer, db.ForeignKey('user_roles.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey("user_roles.id"))
     asset = db.Column(db.String(64), index=True, default=uuid_key)
 
     @property
     def password(self):
-        raise AttributeError('password is not a readable attribute')
+        raise AttributeError("password is not a readable attribute")
 
     @password.setter
     def password(self, password):
@@ -122,50 +127,50 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def generate_confirmation_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'confirm': self.id})
+        s = Serializer(current_app.config["SECRET_KEY"], expiration)
+        return s.dumps({"confirm": self.id})
 
     def confirm(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = Serializer(current_app.config["SECRET_KEY"])
         try:
             data = s.loads(token)
         except ValueError:
             return False
-        if data.get('confirm') != self.id:
+        if data.get("confirm") != self.id:
             return False
         self.confirmed = True
         db.session.add(self)
         return True
 
     def generate_reset_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'reset': self.id})
+        s = Serializer(current_app.config["SECRET_KEY"], expiration)
+        return s.dumps({"reset": self.id})
 
     def reset_password(self, token, new_password):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = Serializer(current_app.config["SECRET_KEY"])
         try:
             data = s.loads(token)
         except ValueError:
             return False
-        if data.get('reset') != self.id:
+        if data.get("reset") != self.id:
             return False
         self.password = new_password
         db.session.add(self)
         return True
 
     def generate_email_change_token(self, new_email, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'change_email': self.id, 'new_email': new_email})
+        s = Serializer(current_app.config["SECRET_KEY"], expiration)
+        return s.dumps({"change_email": self.id, "new_email": new_email})
 
     def change_email(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = Serializer(current_app.config["SECRET_KEY"])
         try:
             data = s.loads(token)
         except ValueError:
             return False
-        if data.get('change_email') != self.id:
+        if data.get("change_email") != self.id:
             return False
-        new_email = data.get('new_email')
+        new_email = data.get("new_email")
         if new_email is None:
             return False
         if self.query.filter_by(email=new_email).first() is not None:
@@ -182,12 +187,12 @@ class User(UserMixin, db.Model):
             return False
 
     def generate_invite_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'invite': self.id})
+        s = Serializer(current_app.config["SECRET_KEY"], expiration)
+        return s.dumps({"invite": self.id})
 
     @staticmethod
     def confirm_invited_user(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = Serializer(current_app.config["SECRET_KEY"])
         try:
             s.loads(token)
         except ValueError:
@@ -196,13 +201,13 @@ class User(UserMixin, db.Model):
 
     @staticmethod
     def load_invited_user(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = Serializer(current_app.config["SECRET_KEY"])
         try:
             data = s.loads(token)
         except ValueError:
             return False
 
-        user_id = data.get('invite')
+        user_id = data.get("invite")
 
         user = User.load_user(user_id)
 
@@ -231,11 +236,13 @@ class User(UserMixin, db.Model):
             return False
 
     def can(self, permissions):
-        return self.role is not None and \
-            (self.role.permissions & permissions) == permissions
+        return (
+            self.role is not None
+            and (self.role.permissions & permissions) == permissions
+        )
 
     def __repr__(self):
-        return f'<email : {self.email}>'
+        return f"<email : {self.email}>"
 
 
 class AnonymousUser(AnonymousUserMixin):
@@ -247,13 +254,13 @@ class AnonymousUser(AnonymousUserMixin):
 
 
 class Company(db.Model):
-    __tablename__ = 'company'
+    __tablename__ = "company"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     users = db.relationship("User", back_populates="company")
     owner = db.relationship("User", uselist=False, back_populates="admin")
     assets = db.relationship("Asset", back_populates="company")
-    feature_id = db.Column(db.Integer, db.ForeignKey('company_features.id'))
+    feature_id = db.Column(db.Integer, db.ForeignKey("company_features.id"))
     asset = db.Column(db.String(64), index=True, default=uuid_key)
 
     def add_user(self, user):
@@ -277,15 +284,16 @@ class Company(db.Model):
         entry.company = self
 
     def can(self, feature):
-        return self.feature is not None and \
-               (self.feature.permissions & feature) == feature
+        return (
+            self.feature is not None and (self.feature.permissions & feature) == feature
+        )
 
 
 class Asset(db.Model):
-    __tablename__ = 'asset'
+    __tablename__ = "asset"
     id = db.Column(db.Integer, primary_key=True)
     asset = db.Column(db.String(64), index=True, unique=True)
-    company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=True)
+    company_id = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=True)
     company = db.relationship("Company", back_populates="assets", lazy=False)
 
 
@@ -304,7 +312,7 @@ def email_in_system(email):
 
 
 def invite_user(email):
-    flash(f'Invite email has been set to {email}')
+    flash(f"Invite email has been set to {email}")
 
     user = User()
     user.email = email
@@ -314,5 +322,6 @@ def invite_user(email):
     db.session.commit()
 
     token = user.generate_invite_token()
-    send_email(user.email, 'You have been invited',
-               'auth/email/invite', user=user, token=token)
+    send_email(
+        user.email, "You have been invited", "auth/email/invite", user=user, token=token
+    )

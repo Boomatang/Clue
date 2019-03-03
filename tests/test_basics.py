@@ -6,4 +6,4 @@ def test_app_exists(client):
 
 
 def test_app_is_testing(client):
-    assert current_app.config['TESTING']
+    assert current_app.config["TESTING"]

@@ -31,15 +31,17 @@ def test_add_bom_file_contents(client):
     qty = 10
     file_id = 1
 
-    bom_file_contents = BomFileContents(item_no=item_no,
-                                        part_number=part_number,
-                                        description=description,
-                                        BB_length=BB_length,
-                                        BB_width=BB_width,
-                                        BB_thickness=BB_thickness,
-                                        length=length,
-                                        qty=qty,
-                                        file_id=file_id)
+    bom_file_contents = BomFileContents(
+        item_no=item_no,
+        part_number=part_number,
+        description=description,
+        BB_length=BB_length,
+        BB_width=BB_width,
+        BB_thickness=BB_thickness,
+        length=length,
+        qty=qty,
+        file_id=file_id,
+    )
 
     db.session.add(bom_file_contents)
     db.session.commit()
