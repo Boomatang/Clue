@@ -11,18 +11,19 @@ Removing something
 
 {% block page_content %}
 
-<form class="ui raised segment" method="POST">
     <h1 class="header">{{ massage }}</h1>
 <!-- Button (Double) -->
 <div class="">
   <div class="">
-    <button id="agree" name="agree" class="ui positive button">Yes, I understand</button>
-    <button id="disagree" name="disagree" class="ui negative button">No, Cancel</button>
+    <button id="agree" name="agree" onclick="window.location.href='{{ url_for('BOM.BOM_remove_result_agree',
+    asset=asset) }}'" class="ui positive button">Yes, I understand</button>
+    <button id="disagree" name="disagree" class="ui negative button"
+    onclick="window.location.href='{{ url_for('BOM.BOM_remove_result_disagree', asset=asset) }}'"
+    >No, Cancel</button>
   </div>
     <p>This action can not be on done.</p>
 </div>
 
-</form>
 {% endblock %}
 
 {% block scripts %}

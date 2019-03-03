@@ -157,19 +157,43 @@ def BOM_result(asset):
     return render_template("BOM/results.html", result=result, lengths=lengths)
 
 
-@BOM.route("/BOM/results/remove/<result_id>", methods=["POST", "GET"])
-def BOM_remove_result(result_id):
-    result: BomResult = BomResult.query.filter_by(id=result_id).first_or_404()
-    massage = f"Your about to remove result {result.id}: {result.comment}"
-    if request.method == "POST":
-        print(request.values)
-        for item in request.values.items(multi=True):
-            if item[0] == "disagree":
-                return redirect(url_for("user.dashboard"))
-            print(item)
-        print("deleting the item")
-        result.delete()
-        db.session.commit()
-        return redirect(url_for("user.dashboard"))
+@BOM.route("/BOM/results/remove/<asset>", methods=["GET"])
+@login_required
+@company_asset()
+def BOM_remove_result(asset):
+    result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
+    massage = f"Your about to remove result {result.job_number}: {result.comment}"
+    session['check'] = result.asset
 
-    return render_template("user/yes_no.html", massage=massage)
+    return render_template("user/yes_no.html", massage=massage, asset=result.asset)
+
+
+@BOM.route("/BOM/results/remove/<asset>/agree", methods=["get"])
+@login_required
+@company_asset()
+def BOM_remove_result_agree(asset):
+    result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
+    if result.asset != session['check']:
+        flash("Unkown action")
+        return redirect(url_for('user.dashboard'))
+    job = result.job_number
+
+    result.delete()
+    db.session.commit()
+
+    flash(f"BOM with job number {job} has been removed from the system")
+    return redirect(url_for("user.dashboard"))
+
+
+@BOM.route("/BOM/results/remove/<asset>/disagree", methods=["get"])
+@login_required
+@company_asset()
+def BOM_remove_result_disagree(asset):
+    result: BomResult = BomResult.query.filter_by(asset=asset).first_or_404()
+    if result.asset != session['check']:
+        flash("Unkown action")
+        return redirect(url_for('user.dashboard'))
+    job = result.job_number
+
+    flash(f"BOM with job number {job} has not been removed from the system")
+    return redirect(url_for("user.dashboard"))
