@@ -11,13 +11,6 @@
   <div class="ui two column centered grid">
     <div class="ui column container">
 
-            {% for message in get_flashed_messages() %}
-      <div class="ui message transition">
-        <i class="close icon"></i>
-        {{ message }}
-      </div>
-    {% endfor %}
-
       <h1>{{ current_user.company.name }} Company Settings</h1>
 
       {% include 'auth/_invite_user.html' %}

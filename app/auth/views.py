@@ -271,7 +271,7 @@ def invited(token):
 def remove_user(user_id):
     user = User.load_user(user_id)
     if user.is_admin:
-        flash("You cannot remove admin accounts. Pleas contact support for help.")
+        flash("You cannot remove admin accounts. Please contact support for help.")
         return redirect(url_for("auth.company_settings"))
     name = user.username
     db.session.delete(user)
