@@ -61,6 +61,13 @@ users = [
         "email": "jim@test.com",
         "password": "cats1234",
         "password2": "cats1234",
+    },
+    {
+        "company": "Boring Company",
+        "username": "jim fitz",
+        "email": "jim@test.com",
+        "password": "cats1234",
+        "password2": "cats1234",
     }
 ]
 
@@ -84,14 +91,6 @@ def test_user_register_complete(clean_db, client, user):
 
 
 users = [
-    {
-        "company": "Boring Company",
-        "username": "jim fitz",
-        "email": "test@test.com",
-        "password": "cats1234",
-        "password2": "cats1234",
-        "massage": b"must have only letters",
-    },
     {
         "company": "The Fast Company",
         "username": "jim",

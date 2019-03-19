@@ -31,7 +31,7 @@ class RegistrationForm(FlaskForm):
             data_required(),
             Length(1, 64),
             Regexp(
-                "^[A-Za-z][A-Za-z0-9_.\s]*$",
+                "^[A-Za-z][A-Za-z0-9_. ]*$",
                 0,
                 "Username's must have only letters, " "numbers, dots or underscores",
             ),
