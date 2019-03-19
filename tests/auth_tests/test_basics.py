@@ -68,7 +68,7 @@ users = [
         "email": "jim@test.com",
         "password": "cats1234",
         "password2": "cats1234",
-    }
+    },
 ]
 
 
