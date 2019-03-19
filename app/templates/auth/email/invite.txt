@@ -4,7 +4,7 @@ You have been invited by {{ user.company.owner.username }} <{{ user.company.owne
 
 To confirm your account please click on the following link:
 
-{{ url_for('auth.invited', token=token, _external=True) }}
+{{ url_for('auth.invited', token=token, _external=True, _scheme='https') }}
 
 Sincerely,
 
