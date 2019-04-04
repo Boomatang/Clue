@@ -140,7 +140,7 @@ def get_choices():
 
         results.append(local)
 
-    local = {"id": '', "description": "Please Select Something", "selected": True}
+    local = {"id": "", "description": "Please Select Something", "selected": True}
     results.append(local)
 
     return results
