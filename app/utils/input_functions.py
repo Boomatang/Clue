@@ -12,3 +12,8 @@ def hasName(string):
 def hasValues(values):
     """Checks if a list is longer than zero"""
     return hasName(values)
+
+
+def hasGroup(group):
+    """Checks for a group value"""
+    return hasName(group)

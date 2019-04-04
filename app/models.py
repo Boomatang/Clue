@@ -67,7 +67,7 @@ class MaterialClass(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return f"<Material Class : {self.name}"
+        return f"<Material Class : {self.name}>"
 
 
 class MaterialSize(db.Model):

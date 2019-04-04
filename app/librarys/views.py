@@ -9,6 +9,7 @@ from app.librarys import library
 from app.librarys.forms import AddClass, testform, RemoveClassForm
 from app.models import MaterialSize, MaterialClass
 from app.utils import isInt, hasName, hasValues, error_builder
+from app.utils.input_functions import hasGroup
 
 
 @library.route("/", methods=["POST", "GET"])
@@ -133,11 +134,14 @@ def get_choices():
 
     for item in MaterialClass.query.filter_by(company=current_user.company.id).all():
         local = {"id": item.id, "description": item.name, "selected": False}
-
-        if item.name == "Undefined":
-            local["selected"] = True
+        #
+        # if item.name == "Undefined":
+        #     local["selected"] = True
 
         results.append(local)
+
+    local = {"id": '', "description": "Please Select Something", "selected": True}
+    results.append(local)
 
     return results
 
@@ -166,7 +170,8 @@ def material_missing():
         if len(failed_lengths) > 1:
             flash(error_builder(failed_lengths))
 
-        if hasName(size) and hasValues(checked_lengths):
+        # TODO this needs to be refactored 2019-04-04
+        if hasName(size) and hasValues(checked_lengths) and hasGroup(group):
             MaterialSize.add_new_material(
                 size, checked_lengths, group=group, company=current_user.company.id
             )
