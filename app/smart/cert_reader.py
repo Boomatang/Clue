@@ -26,9 +26,9 @@ from threading import Thread
 from app import db
 from app.models import Certs
 from app.utils import count_files
+from app.utils import log as logger
 
 from flask import current_app
-
 
 LOG_REPORT = "__log_report.tsv"
 
@@ -51,7 +51,6 @@ def get_folder_path(folder):
 
 
 def folder_name(folder_path):
-
     folder = trim_name(folder_path)
     # print(folder)
     return folder
@@ -130,11 +129,14 @@ class PDF:
 
     def do_work(self):
         # print(self.file)
-        self.convert_to_xml_tree()
-        self.pass_id = int(self.find_pass_value())
-        self.guess_id_number()
-        self.find_description()
-        self.make_new_file_name()
+        try:
+            self.convert_to_xml_tree()
+            self.pass_id = int(self.find_pass_value())
+            self.guess_id_number()
+            self.find_description()
+            self.make_new_file_name()
+        except Exception as e:
+            logger.info(e)
         # testing
         # self.save_as()
 
@@ -146,9 +148,17 @@ class PDF:
                 # print(Path(self.file.parent, self.new_name + ".pdf"))
                 info.write(name.name + "\n")
 
+            except TypeError as err:
+                logger.error(err)
+
             except OSError as err:
+                logger.info("Error renaming File?")
                 print("Error renaming file ?")
                 print(err)
+
+            except Exception as err:
+                logger.error("Big error happened")
+                logger.error(err)
 
     def make_new_file_name(self):
         self.new_name = self.description + " - " + self.id_name
@@ -157,14 +167,19 @@ class PDF:
         self.new_name = re.sub(r"^-", "___", self.new_name)
 
     def find_description(self):
-        line = self.id_line_number + 1
-        word = None
-        while line < self.pass_id:
-            word = self.get_current_line(str(line))
-            line += 1
+        try:
+            line = self.id_line_number + 1
+            word = None
+            while line < self.pass_id:
+                word = self.get_current_line(str(line))
+                line += 1
 
-        word = re.sub(r"\n", " ", word[:-1])
-        self.description = word
+            word = re.sub(r"\n", " ", word[:-1])
+            self.description = word
+        except TypeError as e:
+            logger.error(f"Error happened in {self.file}")
+            logger.error(e)
+            raise Exception("Error happened when getting cert description")
 
     def get_current_line(self, line):
         for page in self.xml:
@@ -335,7 +350,6 @@ def run_cert_editing(entry_id, app):
 
 
 def run_cert_editing_async(cert_id, app):
-
     thr = Thread(target=run_cert_editing, args=[cert_id, app])
     thr.start()
     return thr

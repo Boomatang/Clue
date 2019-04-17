@@ -25,6 +25,7 @@ chardet = "*"
 python-dotenv = "*"
 mysqlclient = "*"
 gunicorn = "*"
+loguru = "*"
 
 [requires]
 python_version = "3.7"
