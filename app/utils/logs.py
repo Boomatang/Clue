@@ -15,4 +15,4 @@ logger.add(
 # Remove the logging print out to standard error
 # logger.remove(0)
 
-log = logger
+logger = logger

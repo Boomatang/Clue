@@ -26,7 +26,7 @@ from threading import Thread
 from app import db
 from app.models import Certs
 from app.utils import count_files
-from app.utils import log as logger
+from app.utils import logger
 
 from flask import current_app
 

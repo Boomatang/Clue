@@ -3,4 +3,4 @@ from .math_functions import isFloat, isInt
 from .input_functions import hasName, hasValues
 from .page import flash_massages, error_builder
 from .forms import key_checkboxes, key_preferred
-from .logs import log
+from .logs import logger
