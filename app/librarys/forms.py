@@ -64,10 +64,10 @@ def select_multi_checkbox(field, ul_class="", **kwargs):
     return u"".join(html)
 
 
-def material_classes():
+def material_classes(company=None):
     things = []
 
-    values = MaterialClass.query.all()[:]
+    values = MaterialClass.query.filter_by(company=company).all()[:]
     for value in values:
         things.append((value.id, value.name))
 
@@ -92,14 +92,14 @@ class testform(FlaskForm):
     choice = SelectField("Select Material Class")
     submit = SubmitField("Update Material")
 
-    def __init__(self, material_id):
+    def __init__(self, material_id, company):
         FlaskForm.__init__(self)
         choices = ChoicesBase(material_id)
 
         choices.id = "remove"
         choices.name = "remove"
         self.check = select_multi_checkbox(choices)
-        self.choice.choices = material_classes()
+        self.choice.choices = material_classes(company)
 
 
 class RemoveClassForm(FlaskForm):

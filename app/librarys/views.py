@@ -49,7 +49,7 @@ def material_view(asset):
     unit: MaterialSize = MaterialSize.query.filter_by(asset=asset).first_or_404()
     choice = unit.class_id
 
-    form = testform(unit.id)
+    form = testform(unit.id, current_user.company.id)
 
     if form.is_submitted():
         print(request.form.getlist("remove"))
