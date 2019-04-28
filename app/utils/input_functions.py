@@ -24,5 +24,5 @@ def is_number(number):
     try:
         number = int(number)
         return True
-    except TypeError:
+    except ValueError:
         return False

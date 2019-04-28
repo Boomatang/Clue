@@ -598,6 +598,7 @@ class CreateBom:
         else:
             return False
 
+
 def find_project_id_from_id(project_id):
     """Find the project in the database or return None"""
 

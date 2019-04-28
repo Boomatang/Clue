@@ -6,7 +6,8 @@ from app import db
 from app.decorators import company_asset
 from app.models import Project, BomResult
 from app.project import project
-from app.project.form import AddProject
+from app.project.form import AddProject, AddBOMToProjectForm
+from app.smart.smart import find_project_id_from_id
 
 
 @project.route("/")
@@ -42,7 +43,7 @@ def add():
     return render_template("project/add.html", form=form)
 
 
-@project.route("/project/<asset>")
+@project.route("/<asset>")
 @login_required
 @company_asset()
 def view(asset):
@@ -62,3 +63,26 @@ def view(asset):
                            BOM_results=BOM_results,
                            pagination=pagination
                            )
+
+
+@project.route("/bom/<asset>", methods=['GET', 'POST'])
+@login_required
+@company_asset()
+def add_project_to_bom(asset):
+    """Add a project to an existing BOM"""
+
+    form = AddBOMToProjectForm(current_user.company.id)
+
+    if form.submit.data:
+        new_project_id = form.projects.data
+
+        project_id = find_project_id_from_id(new_project_id)
+
+        bom: BomResult = BomResult.query.filter_by(asset=asset).first()
+        bom.project_id = project_id
+        db.session.commit()
+
+        flash("Project has been add to BOM")
+        return redirect(url_for('BOM.BOM_result', asset=asset))
+
+    return render_template("project/bom_add.html", form=form)

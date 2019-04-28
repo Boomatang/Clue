@@ -1,0 +1,43 @@
+<div class="ui raised equal width grid segment">
+
+  <div class="column">
+
+    {% if result.project %}
+
+    <h1 class="ui header">Project Details</h1>
+
+    <p>
+      <strong>Project: </strong> {{ result.project.name }} <br>
+      <strong>Client: </strong> {{ result.project.client }} <br>
+      <strong>Job Number: </strong> {{ result.project.job_number }} <br>
+      <strong>Total BOM's: </strong>{{ result.project.bom_count }}<br>
+    </p>
+
+    <a class="ui teal button" href="{{ url_for('project.view', asset=result.project.asset) }}"><i class="large eye
+    icon"></i>
+      View Project</a></li>
+
+    {% else %}
+
+    <h1 class="ui red header">No Project Details to Show</h1>
+
+    {% endif %}
+
+  </div>
+
+  <div class=" column">
+    <p>
+      <strong>Job Number: </strong> {{ result.job_number }} <br>
+      <strong>Comment: </strong> {{ result.comment }} <br>
+      <strong>File Used: </strong> {{ result.file.name }} <br>
+      <strong>Create Date: </strong> {{ result.timestamp }} <br>
+      <strong>Result Reference: </strong> {{ result.id }}
+    </p>
+  </div>
+  <div class="column">
+    <a class="ui primary button" href="{{ url_for('BOM.BOM_setup') }}"><i class="power off icon"></i> Rerun BOM
+      Tool</a></li>
+    <a class="ui teal button" href="{{ url_for('project.add_project_to_bom', asset=result.asset) }}"><i class="edit icon"></i>
+      Edit / Add Project</a></li>
+  </div>
+</div>

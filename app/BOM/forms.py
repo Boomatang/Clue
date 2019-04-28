@@ -17,7 +17,7 @@ def get_projects(company):
         logger.info("There was no project for the company when building the form")
     else:
 
-        choices.append(("None", "Select Project"))
+        choices.append(("None", "Select Project Or No Project"))
 
         for value in values:
             value_name = f"{value.job_number} - {value.name}"
