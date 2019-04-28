@@ -20,14 +20,16 @@ from app.models import (
     BomResultBeamPart,
     BomResultMissingPart,
     BomSessionLength,
-)
+    Project)
 from app.smart import RawBomFile, CreateBom, fix_csv_file
-from app.utils import file_ext_checker, key_preferred, key_checkboxes
+from app.utils import file_ext_checker, key_preferred, key_checkboxes, is_number
+
+
 
 
 @BOM.route("/BOM/upload", methods=["POST", "GET"])
 def BOM_upload():
-    form = BOMUpload()
+    form = BOMUpload(current_user.company.id)
 
     if form.is_submitted():
         f = form.file_name.data
@@ -47,7 +49,13 @@ def BOM_upload():
 
         entry = d.return_entry()
         entry.comment = form.comment.data
+
+        entry.project_id = form.projects.data
+
         session["job_number"] = form.job_number.data
+
+        print(form.projects.data)
+
         db.session.add(entry)
         db.session.commit()
         entry.configure_file()

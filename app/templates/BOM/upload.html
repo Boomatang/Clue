@@ -8,6 +8,7 @@
   <div class="ui two column grid">
     <form class="ui column form" method="POST" enctype="multipart/form-data">
       {{ form.csrf_token }}
+      {{ render_field(form.projects) }}
       {{ render_field(form.job_number) }}
       {{ render_field(form.comment) }}
       {{ render_field(form.file_name) }}

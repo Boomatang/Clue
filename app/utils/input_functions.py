@@ -17,3 +17,12 @@ def hasValues(values):
 def hasGroup(group):
     """Checks for a group value"""
     return hasName(group)
+
+
+def is_number(number):
+    """Checks if a string can be a number"""
+    try:
+        number = int(number)
+        return True
+    except TypeError:
+        return False

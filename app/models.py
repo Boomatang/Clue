@@ -148,6 +148,7 @@ class BomFile(db.Model):
     results = db.relationship(
         "BomResult", cascade="all, delete-orphan", backref="file", lazy=True
     )
+    project_id = db.Column(db.String(64))
 
     def configure_file(self):
         for item in self.items:
@@ -290,6 +291,8 @@ class BomResult(db.Model):
     )
     asset = db.Column(db.String(64), index=True, default=uuid_key)
     company = db.Column(db.Integer)
+
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"))
 
     @property
     def job_number(self):
@@ -539,3 +542,7 @@ class Project(db.Model):
     last_active = db.Column(db.DateTime)
     company = db.Column(db.Integer)
     asset = db.Column(db.String(64), index=True, default=uuid_key)
+    is_active = db.Column(db.BOOLEAN, default=True)
+    bom = db.relationship(
+        "BomResult", cascade="all, delete-orphan", backref="result", lazy=True
+    )

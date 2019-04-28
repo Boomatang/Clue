@@ -13,8 +13,8 @@ from app.models import (
     BomResultBeam,
     BomResultBeamPart,
     BomResultMissingPart,
-)
-from app.utils import isFloat, isInt
+    Project)
+from app.utils import isFloat, isInt, is_number
 
 DESC = "DESCRIPTION"
 PLATE = "PL"
@@ -538,6 +538,9 @@ class CreateBom:
 
         result: BomResult = BomResult()
         item: BomFile = BomFile.query.filter_by(id=self.data_id).first()
+
+        result.project_id = find_project_id_from_id(item.project_id)
+
         result.comment = item.comment
         result.company = current_user.company.id
         try:
@@ -594,3 +597,16 @@ class CreateBom:
             return True
         else:
             return False
+
+def find_project_id_from_id(project_id):
+    """Find the project in the database or return None"""
+
+    if is_number(project_id):
+        project_id = int(project_id)
+
+        project = Project.query.filter_by(id=project_id).first()
+
+        return project.id
+
+    else:
+        return None
