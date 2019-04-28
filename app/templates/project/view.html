@@ -10,6 +10,7 @@ Project {{ project.name }}
 {% endblock %}
 
 {% block page_content %}
+  <div class="ui segment">
   <div class="ui two column grid">
     <div class="ui row">
       <div class="column"><h1>Client : <span id="client">{{ project.client }}</span></h1></div>
@@ -30,6 +31,19 @@ Project {{ project.name }}
       <div class="column">
         <button class="ui green button" onclick="CopyToClipboard('job number')">Copy Job Number</button>
       </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+
+  <div class="ui segment">
+  <div class="ui small header">BOM Results</div>
+    {% include('BOM/_past_results_table.html') %}
+    <div class="pagination">
+       {{ macros.pagination_widget(pagination, '.view', asset=project.asset) }}
     </div>
   </div>
 

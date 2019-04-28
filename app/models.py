@@ -544,5 +544,10 @@ class Project(db.Model):
     asset = db.Column(db.String(64), index=True, default=uuid_key)
     is_active = db.Column(db.BOOLEAN, default=True)
     bom = db.relationship(
-        "BomResult", cascade="all, delete-orphan", backref="result", lazy=True
+        "BomResult", cascade="all, delete-orphan", backref="project", lazy=True
     )
+
+
+    @property
+    def bom_count(self):
+        return len(self.bom)
