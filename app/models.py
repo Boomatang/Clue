@@ -547,7 +547,6 @@ class Project(db.Model):
         "BomResult", cascade="all, delete-orphan", backref="project", lazy=True
     )
 
-
     @property
     def bom_count(self):
         return len(self.bom)

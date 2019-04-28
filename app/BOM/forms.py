@@ -11,7 +11,9 @@ def get_projects(company):
 
     choices = []
 
-    values = Project.query.filter_by(company=company).order_by(Project.job_number).all()[:]
+    values = (
+        Project.query.filter_by(company=company).order_by(Project.job_number).all()[:]
+    )
 
     if len(values) == 0:
         logger.info("There was no project for the company when building the form")

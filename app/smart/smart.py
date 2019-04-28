@@ -13,7 +13,8 @@ from app.models import (
     BomResultBeam,
     BomResultBeamPart,
     BomResultMissingPart,
-    Project)
+    Project,
+)
 from app.utils import isFloat, isInt, is_number
 
 DESC = "DESCRIPTION"

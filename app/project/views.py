@@ -52,20 +52,23 @@ def view(asset):
 
     page = request.args.get("page", 1, type=int)
     pagination = (
-        BomResult.query.filter_by(company=current_user.company.id, project_id=db_entry.id)
-            .order_by(BomResult.timestamp.desc())
-            .paginate(page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False)
+        BomResult.query.filter_by(
+            company=current_user.company.id, project_id=db_entry.id
+        )
+        .order_by(BomResult.timestamp.desc())
+        .paginate(page, per_page=current_app.config["POSTS_PER_PAGE"], error_out=False)
     )
     BOM_results = pagination.items
 
-    return render_template("project/view.html",
-                           project=db_entry,
-                           BOM_results=BOM_results,
-                           pagination=pagination
-                           )
+    return render_template(
+        "project/view.html",
+        project=db_entry,
+        BOM_results=BOM_results,
+        pagination=pagination,
+    )
 
 
-@project.route("/bom/<asset>", methods=['GET', 'POST'])
+@project.route("/bom/<asset>", methods=["GET", "POST"])
 @login_required
 @company_asset()
 def add_project_to_bom(asset):
@@ -83,6 +86,6 @@ def add_project_to_bom(asset):
         db.session.commit()
 
         flash("Project has been add to BOM")
-        return redirect(url_for('BOM.BOM_result', asset=asset))
+        return redirect(url_for("BOM.BOM_result", asset=asset))
 
     return render_template("project/bom_add.html", form=form)

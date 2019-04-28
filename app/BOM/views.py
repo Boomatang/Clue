@@ -20,11 +20,10 @@ from app.models import (
     BomResultBeamPart,
     BomResultMissingPart,
     BomSessionLength,
-    Project)
+    Project,
+)
 from app.smart import RawBomFile, CreateBom, fix_csv_file
 from app.utils import file_ext_checker, key_preferred, key_checkboxes, is_number
-
-
 
 
 @BOM.route("/BOM/upload", methods=["POST", "GET"])
