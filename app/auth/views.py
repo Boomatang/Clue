@@ -14,7 +14,7 @@ from app.auth.forms import (
     InviteUserForm,
     InvitedUserForm,
 )
-from app.auth_models import User, Company, email_in_system, invite_user
+from app.models import User, Company, email_in_system, invite_user
 from app.email import send_email
 
 

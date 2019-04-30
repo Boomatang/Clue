@@ -2,7 +2,7 @@ import pytest
 from flask import url_for
 
 from app import create_app, db
-from app.auth_models import User, Company
+from app.models import User, Company
 from app.models import BomSession, BomSessionLength, BomSessionSize, BomResult
 from app.smart import RawBomFile, CreateBom
 

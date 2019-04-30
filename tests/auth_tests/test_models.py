@@ -1,7 +1,7 @@
 import pytest
 
 from app import db
-from app.auth_models import User, Company
+from app.models import User, Company
 
 
 def test_user_password_setter():

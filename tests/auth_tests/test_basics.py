@@ -2,8 +2,7 @@ import pytest
 from flask import current_app, url_for
 
 from app import db
-from app.auth_models import User, Company
-from tests.conftest import create_company
+from app.models import User, Company
 
 paths = ["main.index", "auth.login", "auth.register"]
 

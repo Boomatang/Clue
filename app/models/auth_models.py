@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, current_user, AnonymousUserMixin
 
 from app.email import send_email
-from . import db, login_manager
+from app import db, login_manager
 
 
 def uuid_key():

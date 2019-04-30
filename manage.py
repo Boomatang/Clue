@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 
-from app.auth_models import User, UserRole, Company, CompanyFeature, Asset
+from app.models import User, UserRole, Company, CompanyFeature, Asset
 
 COV = None
 if os.environ.get("FLASK_COVERAGE"):

@@ -26,3 +26,5 @@ def is_number(number):
         return True
     except ValueError:
         return False
+    except TypeError:
+        return False
