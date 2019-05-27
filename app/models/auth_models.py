@@ -1,4 +1,6 @@
 import uuid
+from datetime import datetime
+
 from flask import flash, current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -114,6 +116,8 @@ class User(UserMixin, db.Model):
     admin = db.relationship("Company", back_populates="owner")
     role_id = db.Column(db.Integer, db.ForeignKey("user_roles.id"))
     asset = db.Column(db.String(64), index=True, default=uuid_key)
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
 
     @property
     def password(self):
@@ -240,6 +244,10 @@ class User(UserMixin, db.Model):
             self.role is not None
             and (self.role.permissions & permissions) == permissions
         )
+
+    def ping(self):
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
 
     def __repr__(self):
         return f"<email : {self.email}>"
