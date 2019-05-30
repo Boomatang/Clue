@@ -17,69 +17,8 @@
 
         <h1 class="header">Required Materials</h1>
 
-  <table class="ui celled striped table center aligned">
-    <tr class="ui header">
-      <th></th>
-      <th>Average</th>
-      <th>High</th>
-      <th>Low</th>
 
-      {% for length in lengths %}
-        <th>{{ length }}</th>
-      {% endfor %}
-    </tr>
-    {% for material in result.material_review() %}
-      <tr>
-        {% if result.material_missing(material) %}
-          <td class="ui collapsing header">
-            <div class="ui red ribbon large header label">{{ material }} - Parts Missing</div>
-          </td>
-        {% else %}
-          <td class="ui collapsing header">{{ material }}</td>
-        {% endif %}
-        <td>{{ result.material_average_percentage(material) }}%</td>
-        <td>{{ result.material_high_percentage(material) }}%</td>
-        <td>{{ result.material_low_percentage(material) }}%</td>
-
-        {% set ns = namespace(found=false, length=0, count=lengths|length) %}
-
-        {% for required in result.required_lengths(material)|reverse %}
-          {% if  result.required_lengths(material)|length > 1 %}
-            {% set ns.found = false %}
-            {% set ns.count = ns.count - 1 %}
-
-            {% for length in lengths %}
-              {% if required == length %}
-                <td class="warning">{{ result.required_length_qty(material, required) }}</td>
-                {% set ns.found = true %}
-                {% set ns.length = length %}
-              {% elif not ns.found %}
-                {% if length != ns.length and ns.count > 0 %}
-                  <td></td>
-                  {% set ns.count = ns.count - 1 %}
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-
-          {% else %}
-            {% for length in lengths %}
-              {% if length in result.required_lengths(material) %}
-                {% if required == length %}
-                  <td class="warning">{{ result.required_length_qty(material, required) }}</td>
-
-                {% endif %}
-
-              {% else %}
-                <td></td>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endfor %}
-      </tr>
-    {% endfor %}
-
-  </table>
-
+{% include "BOM/_result_table.html" %}
 
 
 {% if result.has_missing_parts() %}

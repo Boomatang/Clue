@@ -3,6 +3,7 @@ from datetime import datetime
 
 from app import db
 from app.models import uuid_key
+from app.utils import logger, isInt
 
 
 class BomResult(db.Model):
@@ -76,6 +77,55 @@ class BomResult(db.Model):
                     if beam.length == length:
                         counter = counter + beam.qty
         return counter
+
+    def generate_results_table(self):
+        logger.info("Entered the method creating the results table")
+        lengths = []
+        output = {}
+        for material in self.material:
+            for beam in material.beams:
+                if beam.length not in lengths:
+                    lengths.append(beam.length)
+
+        lengths.sort()
+        logger.info(lengths)
+
+        for material in self.material:
+            output.setdefault(material.size, [])
+
+        for material in self.material:
+            for beam in material.beams:
+                for length in lengths:
+                    if beam.length == length:
+                        output[material.size].append((beam.qty, 'warning', length))
+                    else:
+                        output[material.size].append(('', '', length))
+
+            if len(output[material.size]) != len(lengths):
+                new_values = []
+
+                for length in lengths:
+                    best = None
+                    for bad_value in output[material.size]:
+                        if best is None:
+                            best = bad_value
+                        if bad_value[2] == length:
+                            if isInt(best[0]) and best[0] > 0:
+                                new_values.append(best)
+                                break
+                            else:
+                                best = bad_value
+                    else:
+                        new_values.append(best)
+                output[material.size] = new_values
+               # logger.info(new_values)
+            # logger.info(output[material.size])
+
+        self.result_table = output
+        logger.info("Exiting the method creating the results table")
+
+    def get_material_results(self, material):
+        return self.result_table[material]
 
     def material_missing(self, material):
         for item in self.material:
