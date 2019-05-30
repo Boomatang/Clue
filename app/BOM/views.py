@@ -49,7 +49,10 @@ def BOM_upload():
         entry = d.return_entry()
         entry.comment = form.comment.data
 
-        entry.project_id = form.projects.data
+        project = form.projects.data
+        project = None if project == "None" else project  # Check if string == to None
+        if project is not None:
+            entry.project_id = project
 
         session["job_number"] = form.job_number.data
 
