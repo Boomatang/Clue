@@ -22,9 +22,47 @@
         <td>{{ result.material_high_percentage(material) }}%</td>
         <td>{{ result.material_low_percentage(material) }}%</td>
 
-        {% for entry in result.get_material_results(material) %}
-          <td class="{{ entry[1] }}">{{ entry[0] }}</td>
+
+
+        {% set ns = namespace(found=false, length=0, count=lengths|length) %}
+
+        {% for required in result.required_lengths(material)|reverse %}
+          {% if  result.required_lengths(material)|length > 1 %}
+            {% set ns.found = false %}
+            {% set ns.count = ns.count - 1 %}
+
+            {% for length in lengths %}
+              {% if required == length %}
+                <td class="warning">{{ result.required_length_qty(material, required) }}</td>
+                {% set ns.found = true %}
+                {% set ns.length = length %}
+              {% elif not ns.found %}
+                {% if length != ns.length and ns.count > 0 %}
+                  <td></td>
+                  {% set ns.count = ns.count - 1 %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+          {% else %}
+            {% for length in lengths %}
+              {% if length in result.required_lengths(material) %}
+                {% if required == length %}
+                  <td class="warning">{{ result.required_length_qty(material, required) }}</td>
+
+                {% endif %}
+
+              {% else %}
+                <td></td>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
         {% endfor %}
+
+{#      #}
+{#        {% for entry in result.get_material_results(material) %}#}
+{#          <td class="{{ entry[1] }}">{{ entry[0] }}</td>#}
+{#        {% endfor %}#}
 
       </tr>
     {% endfor %}
