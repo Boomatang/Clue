@@ -88,38 +88,42 @@ class BomResult(db.Model):
                     lengths.append(beam.length)
 
         lengths.sort()
-        logger.info(lengths)
+        logger.debug(lengths)
 
         for material in self.material:
             output.setdefault(material.size, [])
 
+        logger.debug(output)
+
+        answer = {}
         for material in self.material:
+            answer.setdefault(material.size, {})
+            for length in lengths:
+                answer[material.size][length] = 0
+
             for beam in material.beams:
-                for length in lengths:
-                    if beam.length == length:
-                        output[material.size].append((beam.qty, 'warning', length))
-                    else:
-                        output[material.size].append(('', '', length))
+                if beam.length in answer[material.size].keys():
+                    answer[material.size][beam.length] += beam.qty
 
-            if len(output[material.size]) != len(lengths):
-                new_values = []
+            logger.debug(answer[material.size])
+        logger.debug(answer)
 
-                for length in lengths:
-                    best = None
-                    for bad_value in output[material.size]:
-                        if best is None:
-                            best = bad_value
-                        if bad_value[2] == length:
-                            if isInt(best[0]) and best[0] > 0:
-                                new_values.append(best)
-                                break
-                            else:
-                                best = bad_value
-                    else:
-                        new_values.append(best)
-                output[material.size] = new_values
-               # logger.info(new_values)
-            # logger.info(output[material.size])
+        output = {}
+
+        for key in answer.keys():
+            current = answer[key]
+            output[key] = []
+
+            for length in lengths:
+                qty = ''
+                warning = ''
+                if current[length] > 0:
+                    qty = current[length]
+                    warning = 'warning'
+
+                output[key].append((qty, warning, length))
+
+        logger.debug(output)
 
         self.result_table = output
         logger.info("Exiting the method creating the results table")
