@@ -249,6 +249,9 @@ class User(UserMixin, db.Model):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
 
+    def last_active(self):
+        return f"{self.last_seen:%d/%m/%Y}"
+
     def __repr__(self):
         return f"<email : {self.email}>"
 
