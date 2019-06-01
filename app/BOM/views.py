@@ -163,7 +163,7 @@ def BOM_result(asset):
     lengths = result.lengths
 
     lengths.sort()
-
+    result.generate_results_table()
     return render_template("BOM/results.html", result=result, lengths=lengths)
 
 

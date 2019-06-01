@@ -1,0 +1,32 @@
+  <table class="ui celled striped table center aligned">
+    <tr class="ui header">
+      <th></th>
+      <th>Average</th>
+      <th>High</th>
+      <th>Low</th>
+
+      {% for length in lengths %}
+        <th>{{ length }}</th>
+      {% endfor %}
+    </tr>
+    {% for material in result.material_review() %}
+      <tr>
+        {% if result.material_missing(material) %}
+          <td class="ui collapsing header">
+            <div class="ui red ribbon large header label">{{ material }} - Parts Missing</div>
+          </td>
+        {% else %}
+          <td class="ui collapsing header">{{ material }}</td>
+        {% endif %}
+        <td>{{ result.material_average_percentage(material) }}%</td>
+        <td>{{ result.material_high_percentage(material) }}%</td>
+        <td>{{ result.material_low_percentage(material) }}%</td>
+
+        {% for entry in result.get_material_results(material) %}
+          <td class="{{ entry[1] }}">{{ entry[0] }}</td>
+        {% endfor %}
+
+      </tr>
+    {% endfor %}
+
+  </table>

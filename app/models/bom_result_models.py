@@ -3,6 +3,7 @@ from datetime import datetime
 
 from app import db
 from app.models import uuid_key
+from app.utils import logger, isInt
 
 
 class BomResult(db.Model):
@@ -76,6 +77,59 @@ class BomResult(db.Model):
                     if beam.length == length:
                         counter = counter + beam.qty
         return counter
+
+    def generate_results_table(self):
+        logger.info("Entered the method creating the results table")
+        lengths = []
+        output = {}
+        for material in self.material:
+            for beam in material.beams:
+                if beam.length not in lengths:
+                    lengths.append(beam.length)
+
+        lengths.sort()
+        logger.debug(lengths)
+
+        for material in self.material:
+            output.setdefault(material.size, [])
+
+        logger.debug(output)
+
+        answer = {}
+        for material in self.material:
+            answer.setdefault(material.size, {})
+            for length in lengths:
+                answer[material.size][length] = 0
+
+            for beam in material.beams:
+                if beam.length in answer[material.size].keys():
+                    answer[material.size][beam.length] += beam.qty
+
+            logger.debug(answer[material.size])
+        logger.debug(answer)
+
+        output = {}
+
+        for key in answer.keys():
+            current = answer[key]
+            output[key] = []
+
+            for length in lengths:
+                qty = ''
+                warning = ''
+                if current[length] > 0:
+                    qty = current[length]
+                    warning = 'warning'
+
+                output[key].append((qty, warning, length))
+
+        logger.debug(output)
+
+        self.result_table = output
+        logger.info("Exiting the method creating the results table")
+
+    def get_material_results(self, material):
+        return self.result_table[material]
 
     def material_missing(self, material):
         for item in self.material:
