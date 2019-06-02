@@ -52,25 +52,18 @@ data_points = [
                 "QTY.",
             ],
             ["1", "", "", "PLATE 100x100x10", "100", "100", "10", "", "12"],
-        ]
+        ],
     ),
-(
+    (
         (
             "ITEM NO.,PART NUMBER,Mark,DESCRIPTION,LENGTH,QTY.\n"
             "1,,,PLATE 100x100x10,500,12"
         ),
         [
-            [
-                "ITEM NO.",
-                "PART NUMBER",
-                "Mark",
-                "DESCRIPTION",
-                "LENGTH",
-                "QTY.",
-            ],
+            ["ITEM NO.", "PART NUMBER", "Mark", "DESCRIPTION", "LENGTH", "QTY."],
             ["1", "", "", "PLATE 100x100x10", "500", "12"],
-        ]
-    )
+        ],
+    ),
 ]
 
 

@@ -115,11 +115,11 @@ class BomResult(db.Model):
             output[key] = []
 
             for length in lengths:
-                qty = ''
-                warning = ''
+                qty = ""
+                warning = ""
                 if current[length] > 0:
                     qty = current[length]
-                    warning = 'warning'
+                    warning = "warning"
 
                 output[key].append((qty, warning, length))
 

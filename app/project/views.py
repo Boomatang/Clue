@@ -15,13 +15,17 @@ from app.smart.smart import find_project_id_from_id
 def index():
 
     page = request.args.get("page", 1, type=int)
-    pagination = Project.query.filter_by(company=current_user.company.id)\
-        .order_by(Project.job_number.desc())\
+    pagination = (
+        Project.query.filter_by(company=current_user.company.id)
+        .order_by(Project.job_number.desc())
         .paginate(page, per_page=50, error_out=False)
+    )
 
     projects = pagination.items
 
-    return render_template("project/index.html", projects=projects, pagination=pagination)
+    return render_template(
+        "project/index.html", projects=projects, pagination=pagination
+    )
 
 
 @project.route("/add", methods=["GET", "POST"])
