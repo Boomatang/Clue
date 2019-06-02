@@ -259,9 +259,22 @@ class RawBomFile:
         item.item_no = value[self.ITEM_NO]
         item.part_number = value[self.PART_NUMBER]
         item.description = value[self.DESCRIPTION]
-        item.BB_length = value[self.BB_LENGTH]
-        item.BB_width = value[self.BB_WIDTH]
-        item.BB_thickness = value[self.BB_THICKNESS]
+
+        try:
+            item.BB_length = value[self.BB_LENGTH]
+        except KeyError:
+            item.BB_length = None
+
+        try:
+            item.BB_width = value[self.BB_WIDTH]
+        except KeyError:
+            item.BB_width = None
+
+        try:
+            item.BB_thickness = value[self.BB_THICKNESS]
+        except KeyError:
+            item.BB_thickness = None
+
         item.length = value[self.LENGTH]
         item.qty = value[self.QTY]
         item.parent = None
@@ -273,9 +286,21 @@ class RawBomFile:
         data[self.PART_NUMBER] = self._check_is_string(data[self.PART_NUMBER])
         data[self.DESCRIPTION] = self._check_is_string(data[self.DESCRIPTION])
 
-        data[self.BB_LENGTH] = self._check_is_float(data[self.BB_LENGTH])
-        data[self.BB_WIDTH] = self._check_is_float(data[self.BB_WIDTH])
-        data[self.BB_THICKNESS] = self._check_is_float(data[self.BB_THICKNESS])
+        try:
+            data[self.BB_LENGTH] = self._check_is_float(data[self.BB_LENGTH])
+        except KeyError:
+            data[self.BB_LENGTH] = None
+
+        try:
+            data[self.BB_WIDTH] = self._check_is_float(data[self.BB_WIDTH])
+        except KeyError:
+            data[self.BB_WIDTH] = None
+
+        try:
+            data[self.BB_THICKNESS] = self._check_is_float(data[self.BB_THICKNESS])
+        except KeyError:
+            data[self.BB_THICKNESS] = None
+
         data[self.LENGTH] = self._check_is_float(data[self.LENGTH])
 
         data[self.QTY] = self._check_is_int(data[self.QTY])

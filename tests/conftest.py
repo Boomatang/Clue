@@ -95,9 +95,45 @@ def csv_file(tmpdir):
 
 
 @pytest.fixture()
+def csv_file_no_plate(tmpdir):
+    p = tmpdir.mkdir("sub").join("sample.csv")
+    p.write(
+        "ITEM NO.,PART NUMBER,DESCRIPTION,LENGTH,QTY.\n "
+        "1,18-06-148-J01-A01,,,3\n"
+        "1.1,  18-06-148-J01-P01,,,3\n"
+        "1.1.1,    ,large,6000,3"
+    )
+
+    return p
+
+
+@pytest.fixture()
 def setup_for_creating_bom(clean_db, csv_file):
 
     raw: RawBomFile = RawBomFile(csv_file)
+    entry = raw.return_entry()
+    db.session.add(entry)
+
+    bom_session: BomSession = BomSession(id=1)
+    db.session.add(bom_session)
+
+    length = BomSessionLength(length=6500, size_id=1)
+
+    db.session.add(length)
+
+    size = BomSessionSize(
+        id=1, size="large", session_id=1, lengths=[length], default=6500
+    )
+    db.session.add(size)
+
+    db.session.commit()
+    entry.configure_file()
+
+
+@pytest.fixture()
+def setup_for_creating_bom_with_no_plate(clean_db, csv_file_no_plate):
+
+    raw: RawBomFile = RawBomFile(csv_file_no_plate)
     entry = raw.return_entry()
     db.session.add(entry)
 

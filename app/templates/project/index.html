@@ -12,6 +12,11 @@ Projects
 {% block page_content %}
   <a href="{{ url_for('project.add') }}"> <div class="fluid ui teal button">Add Project</div></a>
   {% include("project/_main_table.html") %}
+
+  <div class="pagination">
+     {{ macros.pagination_widget(pagination, '.index') }}
+  </div>
+
 {% endblock %}
 {% block scripts %}
 {{ super() }}

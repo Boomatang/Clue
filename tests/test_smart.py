@@ -32,32 +32,51 @@ def test_function_check_is_int():
     assert RawBomFile._check_is_int(True) is None
 
 
-def test_csv_fixing(tmpdir):
+data_points = [
+    (
+        (
+            "ITEM NO.,PART NUMBER,Mark,DESCRIPTION,3D-Bounding Box Length,"
+            "3D-Bounding Box Width,3D-Bounding Box Thickness,LENGTH,QTY.\n"
+            "1,,,PLATE, 100x100x10,100,100,10,,12"
+        ),
+        [
+            [
+                "ITEM NO.",
+                "PART NUMBER",
+                "Mark",
+                "DESCRIPTION",
+                "3D-Bounding Box Length",
+                "3D-Bounding Box Width",
+                "3D-Bounding Box Thickness",
+                "LENGTH",
+                "QTY.",
+            ],
+            ["1", "", "", "PLATE 100x100x10", "100", "100", "10", "", "12"],
+        ],
+    ),
+    (
+        (
+            "ITEM NO.,PART NUMBER,Mark,DESCRIPTION,LENGTH,QTY.\n"
+            "1,,,PLATE 100x100x10,500,12"
+        ),
+        [
+            ["ITEM NO.", "PART NUMBER", "Mark", "DESCRIPTION", "LENGTH", "QTY."],
+            ["1", "", "", "PLATE 100x100x10", "500", "12"],
+        ],
+    ),
+]
+
+
+@pytest.mark.parametrize("data", data_points)
+def test_csv_fixing(tmpdir, data):
     # setup
     # TODO refactor this to run multiply checks
     a_file = tmpdir.join("test.csv")
-    plain_text = (
-        "ITEM NO.,PART NUMBER,Mark,DESCRIPTION,3D-Bounding Box Length,"
-        "3D-Bounding Box Width,3D-Bounding Box Thickness,LENGTH,QTY.\n"
-        "1,,,PLATE, 100x100x10,100,100,10,,12"
-    )
+    plain_text = data[0]
 
     a_file.write(plain_text)
 
-    expected = [
-        [
-            "ITEM NO.",
-            "PART NUMBER",
-            "Mark",
-            "DESCRIPTION",
-            "3D-Bounding Box Length",
-            "3D-Bounding Box Width",
-            "3D-Bounding Box Thickness",
-            "LENGTH",
-            "QTY.",
-        ],
-        ["1", "", "", "PLATE 100x100x10", "100", "100", "10", "", "12"],
-    ]
+    expected = data[1]
 
     f = P(a_file)
 
