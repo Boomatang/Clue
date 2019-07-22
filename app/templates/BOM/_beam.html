@@ -2,7 +2,7 @@
 
 <div class="ui raised column segment">
   <div class="ui three column stackable grid container">
-    <br>
+  <br/>
     {% for beam in  result.get_beams_for_material(material) %}
       <div class="ui column segment">
         <div class="ui progress {{ beam.progress_bar_state() }}">
@@ -12,29 +12,61 @@
 
           </div>
         </div>
-        <div class="">
-          <div class="ui two column grid container">
-            <div class="ui padded column container">
-              <strong>
-                <p>Beam Length: {{ beam.length }}</p>
-                <p>Usage Length: {{ beam.usage }}</p>
-                <p>Waste: {{ beam.waste }}</p>
-              </strong>
-              <br>
+        <div class="ui container">
+          <div class="ui container">
+            <div class="ui mini statistics">
+              <div class="ui  statistic">
+                <div class="label">
+                  Beam Length&nbsp;
+                </div>
+                <div class="value">
+                  {{ beam.length }}
+                </div>
+
+              </div>
+
+              <div class="ui  statistic">
+                <div class="label">
+                  Waste&nbsp;
+                </div>
+                <div class="value">
+                  {{ beam.waste }}
+                </div>
+
+              </div>
             </div>
-            <div class="ui padded center aligned column container">
-              <h1 class="ui huge red header">Qty. {{ beam.qty }}  </h1>
+            <div class="ui statistics">
+
+              <div class="ui green  statistic">
+                <div class="label">
+                  Usage Length&nbsp;
+                </div>
+                <div class="value">
+                  {{ beam.usage }}
+                </div>
+
+              </div>
+              <div class="ui red statistic">
+                <div class="label">
+                  Qty&nbsp;
+                </div>
+                <div class="value">
+                  {{ beam.qty }}
+                </div>
+              </div>
             </div>
           </div>
-          <div class="ui two column grid container">
-            <br>
+
+          <div class="ui container">
             {% for part in beam.parts %}
               {% include("BOM/_part_result.html") %}
             {% endfor %}
           </div>
+
         </div>
       </div>
 
     {% endfor %}
+  <br/>
   </div>
 </div>
