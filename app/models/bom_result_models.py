@@ -247,6 +247,10 @@ class BomResultBeam(db.Model):
         "BomResultBeamPart", cascade="all, delete-orphan", backref="beam", lazy=True
     )
 
+    @property
+    def usage(self):
+        return self.length - self.waste
+
     def delete(self):
         for part in self.parts:
             part.delete()
