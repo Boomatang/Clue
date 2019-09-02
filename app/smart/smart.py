@@ -15,7 +15,7 @@ from app.models import (
     BomResultMissingPart,
     Project,
 )
-from app.utils import isFloat, isInt, is_number
+from app.utils import isFloat, isInt, is_number, logger
 
 DESC = "DESCRIPTION"
 PLATE = "PL"
@@ -447,36 +447,43 @@ class CreateBom:
     def _beam_compile(self):
         """This function will take the existing beam setup and reduce the list to a smaller number"""
         for beam_type in self.beams.keys():
-            beam = self.beams.get(beam_type)[0]
-            beams = self.beams.get(beam_type)
-            temp = []
-            stop = len(beams)
-            main = 0
+            try:
+                beam = self.beams.get(beam_type)[0]
+                beams = self.beams.get(beam_type)
+                temp = []
+                stop = len(beams)
+                main = 0
 
-            lengths = []
+                lengths = []
 
-            while main < stop:
-                if beam is not None:
-                    temp.append(beam)
-                else:
-                    print(f"Beam was {beam}")
-                main += 1
-                counter = 0
-                next_beam = None
+                while main < stop:
+                    if beam is not None:
+                        temp.append(beam)
+                    else:
+                        print(f"Beam was {beam}")
+                    main += 1
+                    counter = 0
+                    next_beam = None
 
-                for b in beams:
-                    if b == beam:
-                        counter += 1
-                    elif next_beam is None and counter > 0:
-                        next_beam = b
-                lengths.append(counter)
-                beam = next_beam
-                if lengths[-1] == 0:
-                    break
+                    for b in beams:
+                        if b == beam:
+                            counter += 1
+                        elif next_beam is None and counter > 0:
+                            next_beam = b
+                    lengths.append(counter)
+                    beam = next_beam
+                    if lengths[-1] == 0:
+                        break
 
-                temp[-1]["qty"] = lengths[-1]
+                    temp[-1]["qty"] = lengths[-1]
 
-            self.beams[beam_type] = temp
+                self.beams[beam_type] = temp
+            except IndexError as err:
+                logger.error("Out of index error")
+                logger.error(err)
+            except Exception as err:
+                logger.error("A really bad error happened")
+                logger.error(err)
 
     def _create_beam(self, size):
         beam = {"length": size, "items": {}}
